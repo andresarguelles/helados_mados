@@ -1,0 +1,342 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useStore } from '../../lib/store'
+import { Dynamic } from '../../lib/mock-data'
+import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming } from '../../lib/utils'
+import { cn } from '../../lib/utils'
+import {
+  IceCream2, Plus, LogOut, QrCode, Pencil, Trash2, X,
+  Package, ChevronRight, Loader2, AlertCircle, Clock,
+} from 'lucide-react'
+
+type ModalMode = 'create' | 'edit' | null
+
+const emptyForm = {
+  keyword: '',
+  physical_stock: 30,
+  starts_at: '',
+  ends_at: '',
+  description: '',
+  prize_label: '',
+}
+
+export default function AdminDashboard() {
+  const navigate = useNavigate()
+  const { dynamics, addDynamic, updateDynamic, deleteDynamic, logout, coupons } = useStore()
+  const [modal, setModal] = useState<ModalMode>(null)
+  const [editTarget, setEditTarget] = useState<Dynamic | null>(null)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+
+  const openCreate = () => {
+    setForm(emptyForm)
+    setEditTarget(null)
+    setError('')
+    setModal('create')
+  }
+
+  const openEdit = (d: Dynamic) => {
+    setForm({
+      keyword: d.keyword,
+      physical_stock: d.physical_stock,
+      starts_at: d.starts_at.slice(0, 16),
+      ends_at: d.ends_at.slice(0, 16),
+      description: d.description,
+      prize_label: d.prize_label,
+    })
+    setEditTarget(d)
+    setError('')
+    setModal('edit')
+  }
+
+  const handleSave = async () => {
+    setError('')
+    if (!form.keyword.trim()) { setError('La palabra secreta es requerida'); return }
+    if (!form.starts_at || !form.ends_at) { setError('Configura las fechas de vigencia'); return }
+    if (new Date(form.starts_at) >= new Date(form.ends_at)) { setError('La fecha de fin debe ser posterior a la de inicio'); return }
+    if (!form.prize_label.trim()) { setError('Describe el premio'); return }
+
+    setSaving(true)
+    await new Promise(r => setTimeout(r, 400))
+
+    const data = {
+      keyword: form.keyword.trim().toUpperCase(),
+      physical_stock: Number(form.physical_stock),
+      starts_at: new Date(form.starts_at).toISOString(),
+      ends_at: new Date(form.ends_at).toISOString(),
+      description: form.description,
+      prize_label: form.prize_label.trim(),
+    }
+
+    if (modal === 'create') {
+      addDynamic(data)
+    } else if (editTarget) {
+      updateDynamic(editTarget.id, data)
+    }
+
+    setSaving(false)
+    setModal(null)
+  }
+
+  const handleDelete = (id: string) => {
+    if (deleteConfirm === id) {
+      deleteDynamic(id)
+      setDeleteConfirm(null)
+    } else {
+      setDeleteConfirm(id)
+      setTimeout(() => setDeleteConfirm(null), 3000)
+    }
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/admin')
+  }
+
+  const getStatusBadge = (d: Dynamic) => {
+    if (isDynamicActive(d)) return { label: '🟢 Activa', cls: 'bg-green-100 text-green-700' }
+    if (isDynamicExpired(d)) return { label: '⚫ Expirada', cls: 'bg-gray-100 text-gray-500' }
+    if (isDynamicUpcoming(d)) return { label: '🟡 Próxima', cls: 'bg-yellow-100 text-yellow-700' }
+    return { label: 'Desconocido', cls: '' }
+  }
+
+  const getCouponCount = (dynamicId: string) =>
+    coupons.filter(c => c.dynamic_id === dynamicId).length
+
+  return (
+    <div className="min-h-screen bg-brand-navy flex flex-col">
+      {/* Top bar */}
+      <header className="bg-brand-navy/95 border-b border-white/10 px-4 h-14 flex items-center justify-between sticky top-0 z-10">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-brand-coral rounded-lg flex items-center justify-center">
+            <IceCream2 className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-heading font-black text-white">Panel Admin</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/admin/scanner')}
+            className="flex items-center gap-1.5 bg-brand-coral text-white text-xs font-heading font-bold px-3 py-1.5 rounded-xl"
+          >
+            <QrCode className="w-3.5 h-3.5" />Escáner
+          </button>
+          <button onClick={handleLogout} className="text-white/40 hover:text-white transition-colors">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="flex-1 max-w-lg mx-auto w-full px-4 py-6 flex flex-col gap-6">
+
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-heading font-black text-white text-xl">Dinámicas</h1>
+            <p className="text-white/40 text-xs font-body mt-0.5">Palabras secretas y premios</p>
+          </div>
+          <button
+            id="create-dynamic-btn"
+            onClick={openCreate}
+            className="flex items-center gap-1.5 bg-brand-lemon text-brand-navy font-heading font-bold text-sm px-4 py-2 rounded-xl hover:brightness-105 transition-all"
+          >
+            <Plus className="w-4 h-4" />Nueva
+          </button>
+        </div>
+
+        {/* Dynamics list */}
+        {dynamics.length === 0 ? (
+          <div className="text-center py-16 text-white/30">
+            <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
+            <p className="font-heading font-bold">Sin dinámicas creadas</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {[...dynamics].reverse().map(d => {
+              const badge = getStatusBadge(d)
+              const stockLeft = d.physical_stock - d.physical_redeemed
+              const stockPct = Math.max(0, (stockLeft / d.physical_stock) * 100)
+
+              return (
+                <div key={d.id} className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col gap-4">
+                  {/* Top row */}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-heading font-black text-brand-lemon text-lg tracking-wider">
+                          {d.keyword}
+                        </span>
+                        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', badge.cls)}>
+                          {badge.label}
+                        </span>
+                      </div>
+                      <p className="text-white/60 text-xs font-body mt-1">{d.prize_label}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => openEdit(d)}
+                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(d.id)}
+                        className={cn(
+                          'w-8 h-8 rounded-xl flex items-center justify-center transition-all',
+                          deleteConfirm === d.id
+                            ? 'bg-red-500 text-white'
+                            : 'bg-white/10 text-white/60 hover:text-red-400 hover:bg-white/20'
+                        )}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Stock bar */}
+                  <div>
+                    <div className="flex items-center justify-between text-xs font-body mb-1.5">
+                      <span className="text-white/50">Stock físico</span>
+                      <span className={cn('font-bold', stockLeft === 0 ? 'text-red-400' : 'text-white/80')}>
+                        {stockLeft}/{d.physical_stock} disponibles
+                      </span>
+                    </div>
+                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className={cn(
+                          'h-full rounded-full transition-all duration-500',
+                          stockLeft === 0 ? 'bg-red-500' : stockPct > 30 ? 'bg-brand-mint' : 'bg-brand-coral'
+                        )}
+                        style={{ width: `${stockPct}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Dates + coupon count */}
+                  <div className="flex items-center gap-4 text-xs text-white/40 font-body flex-wrap">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {formatDate(d.starts_at)} → {formatDate(d.ends_at)}
+                    </span>
+                    <span className="ml-auto flex items-center gap-1 text-brand-lemon/60">
+                      <QrCode className="w-3 h-3" />
+                      {getCouponCount(d.id)} cupones
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Modal */}
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setModal(null)} />
+          <div className="relative bg-brand-cream w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+            {/* Modal header */}
+            <div className="sticky top-0 bg-brand-cream border-b border-brand-navy/10 px-5 py-4 flex items-center justify-between rounded-t-3xl">
+              <h2 className="font-heading font-black text-brand-navy text-lg">
+                {modal === 'create' ? '➕ Nueva Dinámica' : '✏️ Editar Dinámica'}
+              </h2>
+              <button onClick={() => setModal(null)} className="text-brand-navy/40 hover:text-brand-navy transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 flex flex-col gap-4">
+              {/* Keyword */}
+              <div>
+                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+                  Palabra Secreta <span className="text-brand-coral">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.keyword}
+                  onChange={e => setForm(f => ({ ...f, keyword: e.target.value.toUpperCase() }))}
+                  placeholder="Ej. LIMONADA"
+                  className="field-input uppercase font-heading font-black tracking-widest text-lg"
+                  maxLength={30}
+                />
+              </div>
+
+              {/* Prize label */}
+              <div>
+                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+                  Premio / Descripción <span className="text-brand-coral">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.prize_label}
+                  onChange={e => setForm(f => ({ ...f, prize_label: e.target.value }))}
+                  placeholder="🍋 Paleta de Limón Gratis"
+                  className="field-input"
+                />
+              </div>
+
+              {/* Stock */}
+              <div>
+                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+                  Stock Físico (premios disponibles en mostrador)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={form.physical_stock}
+                  onChange={e => setForm(f => ({ ...f, physical_stock: Number(e.target.value) }))}
+                  className="field-input"
+                />
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+                    Inicio <span className="text-brand-coral">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={form.starts_at}
+                    onChange={e => setForm(f => ({ ...f, starts_at: e.target.value }))}
+                    className="field-input text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+                    Fin <span className="text-brand-coral">*</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={form.ends_at}
+                    onChange={e => setForm(f => ({ ...f, ends_at: e.target.value }))}
+                    className="field-input text-sm"
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-600 font-body">{error}</p>
+                </div>
+              )}
+
+              <button
+                id="save-dynamic-btn"
+                onClick={handleSave}
+                disabled={saving}
+                className="btn-coral flex items-center justify-center gap-2 mt-2"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
+                {saving ? 'Guardando...' : modal === 'create' ? 'Crear Dinámica' : 'Guardar Cambios'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

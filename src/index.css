@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 100% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 222 47% 11%;
+    --primary-foreground: 40 100% 98%;
+    --secondary: 15 100% 70%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 40 30% 94%;
+    --muted-foreground: 222 20% 45%;
+    --accent: 51 100% 72%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 15 100% 70%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-brand-cream text-brand-navy font-body antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/60 shadow-lg;
+  }
+
+  /* Gradient button */
+  .btn-coral {
+    @apply bg-brand-coral text-white font-heading font-bold rounded-2xl 
+           px-6 py-3 shadow-lg shadow-brand-coral/30
+           hover:brightness-105 hover:shadow-xl hover:shadow-brand-coral/40 
+           hover:-translate-y-0.5
+           active:scale-95
+           transition-all duration-200;
+  }
+
+  .btn-navy {
+    @apply bg-brand-navy text-white font-heading font-bold rounded-2xl 
+           px-6 py-3 shadow-lg
+           hover:brightness-110 hover:-translate-y-0.5
+           active:scale-95
+           transition-all duration-200;
+  }
+
+  /* Leaderboard row */
+  .lb-row {
+    @apply flex items-center gap-3 p-3 rounded-2xl 
+           hover:bg-brand-navy/5 transition-colors duration-150;
+  }
+
+  /* QR card */
+  .qr-card {
+    @apply bg-white rounded-3xl p-6 shadow-2xl border-4 border-brand-lemon 
+           animate-scale-in;
+  }
+
+  /* Input field */
+  .field-input {
+    @apply w-full bg-white border-2 border-brand-navy/20 rounded-2xl 
+           px-4 py-3 font-body text-brand-navy placeholder:text-brand-navy/40
+           focus:outline-none focus:border-brand-coral focus:ring-2 focus:ring-brand-coral/20
+           transition-all duration-200;
+  }
+
+  /* Scanner overlay */
+  .scan-overlay {
+    @apply fixed inset-0 bg-brand-navy flex flex-col items-center justify-center z-50;
+  }
+
+  /* Badge rank */
+  .rank-badge {
+    @apply w-8 h-8 rounded-full flex items-center justify-center 
+           font-heading font-black text-sm;
+  }
+
+  /* Points chip */
+  .points-chip {
+    @apply inline-flex items-center gap-1 bg-brand-lemon/80 text-brand-navy 
+           font-heading font-black text-xs px-2.5 py-1 rounded-full;
+  }
+
+  /* Shimmer loading */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.6) 50%,
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-brand-coral/40 rounded-full;
+  }
+}
