@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
+import Paleta from '../components/ui/Paleta'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, IceCream2 } from 'lucide-react'
+import { User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, Zap } from 'lucide-react'
 
 type AuthMode = 'login' | 'register'
 
@@ -64,20 +65,20 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-cream">
+    <div className="min-h-screen flex flex-col bg-brand-crema">
       <Navbar />
 
-      <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-4 py-8 pt-24">
+      <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-4 py-8 pt-28">
         {/* Header */}
         <div className="flex flex-col items-center text-center gap-3 mb-8">
-          <div className="w-16 h-16 bg-brand-coral rounded-3xl flex items-center justify-center shadow-xl shadow-brand-coral/30 text-3xl">
-            🍦
+          <div className="flavor-ring">
+            <Paleta className="w-12 h-[4.5rem]" />
           </div>
           <div>
-            <h1 className="font-heading font-black text-brand-navy text-3xl">
+            <h1 className="font-heading text-brand-tinta text-3xl">
               {authMode === 'login' ? 'Bienvenido' : 'Únete'}
             </h1>
-            <p className="text-brand-navy/50 text-sm font-body mt-1">
+            <p className="text-brand-tinta/50 text-sm font-body mt-1">
               {authMode === 'login'
                 ? 'Ingresa para ver tus puntos y cupones'
                 : 'Crea tu cuenta con solo un apodo'}
@@ -86,33 +87,33 @@ export default function Login() {
         </div>
 
         {/* Toggle */}
-        <div className="flex gap-2 p-1 bg-brand-navy/10 rounded-2xl mb-6">
+        <div className="flex gap-2 p-1 bg-brand-tinta/10 rounded-2xl mb-6">
           <button
             onClick={() => { setAuthMode('login'); setError('') }}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-heading font-bold transition-all duration-200',
-              authMode === 'login' ? 'bg-brand-navy text-white shadow' : 'text-brand-navy/60 hover:text-brand-navy'
+              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
+              authMode === 'login' ? 'bg-brand-tinta text-white shadow' : 'text-brand-tinta/60 hover:text-brand-tinta'
             )}
           >
-            <User className="w-4 h-4" /> Iniciar Sesión
+            <User className="w-4 h-4" /> Iniciar sesión
           </button>
           <button
             onClick={() => { setAuthMode('register'); setError('') }}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-heading font-bold transition-all duration-200',
-              authMode === 'register' ? 'bg-brand-coral text-white shadow' : 'text-brand-navy/60 hover:text-brand-navy'
+              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
+              authMode === 'register' ? 'bg-brand-fresa text-white shadow' : 'text-brand-tinta/60 hover:text-brand-tinta'
             )}
           >
-            <UserPlus className="w-4 h-4" /> Crear Cuenta
+            <UserPlus className="w-4 h-4" /> Crear cuenta
           </button>
         </div>
 
         {/* Form */}
-        <div className="glass-card rounded-3xl p-6 flex flex-col gap-4 animate-slide-up">
+        <div className="paper-card rounded-3xl p-6 flex flex-col gap-4 animate-slide-up">
           {/* Username */}
           <div>
-            <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-              {authMode === 'login' ? 'Tu Apodo' : 'Elige tu Apodo'}
+            <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+              {authMode === 'login' ? 'Tu apodo' : 'Elige tu apodo'}
             </label>
             <input
               id="login-username"
@@ -129,10 +130,10 @@ export default function Login() {
 
           {/* Password */}
           <div>
-            <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
+            <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
               Contraseña
               {authMode === 'register' && (
-                <span className="text-brand-navy/40 font-normal"> (mín. 8 caracteres)</span>
+                <span className="text-brand-tinta/40 font-body"> (mín. 8 caracteres)</span>
               )}
             </label>
             <div className="relative">
@@ -149,7 +150,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(s => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-navy/40 hover:text-brand-navy transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-tinta/40 hover:text-brand-tinta transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -160,8 +161,8 @@ export default function Login() {
           {authMode === 'register' && (
             <>
               <div>
-                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                  Confirma Contraseña
+                <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                  Confirma contraseña
                 </label>
                 <input
                   id="login-confirm-password"
@@ -182,15 +183,15 @@ export default function Login() {
                   className={cn(
                     'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
                     termsAccepted
-                      ? 'bg-brand-coral border-brand-coral'
-                      : 'border-brand-navy/30 hover:border-brand-coral'
+                      ? 'bg-brand-fresa border-brand-tinta'
+                      : 'border-brand-tinta/30 hover:border-brand-fresa'
                   )}
                 >
                   {termsAccepted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                 </div>
-                <span className="text-xs text-brand-navy/70 font-body leading-relaxed">
+                <span className="text-xs text-brand-tinta/70 font-body leading-relaxed">
                   Acepto los{' '}
-                  <Link to="/terminos" target="_blank" className="text-brand-coral font-bold underline">
+                  <Link to="/terminos" target="_blank" className="text-brand-fresa font-bold underline">
                     Términos y Condiciones
                   </Link>{' '}
                   de Helados Mados.
@@ -213,8 +214,8 @@ export default function Login() {
             onClick={handleSubmit}
             disabled={loading}
             className={cn(
-              'flex items-center justify-center gap-2 font-heading font-bold rounded-2xl px-6 py-3 shadow-lg transition-all mt-1',
-              authMode === 'login' ? 'btn-navy' : 'btn-coral',
+              authMode === 'login' ? 'btn-tinta' : 'btn-fresa',
+              'mt-1',
               loading && 'opacity-70 cursor-not-allowed'
             )}
           >
@@ -223,25 +224,25 @@ export default function Login() {
               ? 'Verificando...'
               : authMode === 'login'
               ? 'Entrar'
-              : '🚀 Crear mi Cuenta'
+              : 'Crear mi cuenta'
             }
           </button>
         </div>
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-brand-navy/10" />
-          <span className="text-xs text-brand-navy/40 font-body">¿Quieres ganar puntos?</span>
-          <div className="flex-1 h-px bg-brand-navy/10" />
+          <div className="flex-1 h-px bg-brand-tinta/10" />
+          <span className="text-xs text-brand-tinta/40 font-body">¿Quieres ganar puntos?</span>
+          <div className="flex-1 h-px bg-brand-tinta/10" />
         </div>
 
         {/* CTA to redeem */}
         <Link
           to="/canjear"
-          className="btn-coral flex items-center justify-center gap-2 text-center"
+          className="btn-fresa text-center"
         >
-          <IceCream2 className="w-4 h-4" />
-          Canjear Palabra Secreta
+          <Zap className="w-4 h-4" />
+          Canjear palabra secreta
         </Link>
       </div>
 

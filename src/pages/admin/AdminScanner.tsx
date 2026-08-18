@@ -97,9 +97,9 @@ export default function AdminScanner() {
   return (
     <div className={cn(
       'min-h-screen flex flex-col transition-colors duration-500',
-      scanState === 'success' ? 'bg-green-600' :
+      scanState === 'success' ? 'bg-brand-menta' :
       scanState === 'error' ? 'bg-red-600' :
-      'bg-brand-navy'
+      'bg-brand-tinta'
     )}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pt-safe pb-2 pt-8">
@@ -110,23 +110,23 @@ export default function AdminScanner() {
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-body">Dashboard</span>
         </button>
-        <span className="font-heading font-black text-white text-sm">Escáner QR</span>
+        <span className="font-heading text-white text-sm">Escáner QR</span>
         <div className="w-20" />
       </div>
 
-      {/* ── Scanning state ────────────────────────────────────────────────── */}
+      {/* ── Scanning state ──────────────────────────────── */}
       {scanState === 'scanning' && (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-8">
           <div className="flex flex-col items-center gap-2 text-center">
-            <QrCode className="w-8 h-8 text-brand-coral" />
-            <h1 className="font-heading font-black text-white text-xl">Escanear Cupón</h1>
+            <QrCode className="w-8 h-8 text-brand-fresa" />
+            <h1 className="font-heading text-white text-xl">Escanear cupón</h1>
             <p className="text-white/50 text-sm font-body">Apunta la cámara al QR del cliente</p>
           </div>
 
           {cameraError ? (
             <div className="bg-red-500/20 border border-red-400/30 rounded-3xl p-6 text-center max-w-sm w-full">
               <XCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-              <p className="text-white font-heading font-bold text-sm">{cameraError}</p>
+              <p className="text-white font-heading text-sm">{cameraError}</p>
               <p className="text-white/50 text-xs mt-2 font-body">
                 Asegúrate de estar en HTTPS y haber concedido permisos de cámara.
               </p>
@@ -141,7 +141,7 @@ export default function AdminScanner() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60">
                   {['top-0 left-0 border-t-4 border-l-4', 'top-0 right-0 border-t-4 border-r-4',
                     'bottom-0 left-0 border-b-4 border-l-4', 'bottom-0 right-0 border-b-4 border-r-4'].map((cls, i) => (
-                    <div key={i} className={cn('absolute w-8 h-8 border-brand-coral rounded-sm', cls)} />
+                    <div key={i} className={cn('absolute w-8 h-8 border-brand-fresa rounded-sm', cls)} />
                   ))}
                 </div>
               </div>
@@ -158,7 +158,7 @@ export default function AdminScanner() {
                 id="manual-coupon-id"
                 type="text"
                 placeholder="Pega el UUID del cupón"
-                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-xs font-mono outline-none focus:border-brand-coral transition-colors"
+                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-xs font-mono outline-none focus:border-brand-fresa transition-colors"
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !isProcessing.current) {
                     isProcessing.current = true
@@ -171,14 +171,14 @@ export default function AdminScanner() {
         </div>
       )}
 
-      {/* ── Success state ─────────────────────────────────────────────────── */}
+      {/* ── Success state ───────────────────────────────── */}
       {scanState === 'success' && successData && (
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
           <CheckCircle2 className="w-24 h-24 text-white/90 drop-shadow-2xl" strokeWidth={1.5} />
 
           <div className="text-center">
-            <h1 className="font-heading font-black text-white text-5xl mb-2">¡Válido!</h1>
-            <p className="text-white/80 font-heading font-bold text-2xl">{successData.username}</p>
+            <h1 className="font-heading text-white text-5xl mb-2">¡Válido!</h1>
+            <p className="text-white/80 font-heading text-2xl">{successData.username}</p>
           </div>
 
           <div className="w-full bg-white/20 backdrop-blur rounded-3xl p-6 flex flex-col gap-4">
@@ -186,15 +186,15 @@ export default function AdminScanner() {
               <Gift className="w-6 h-6 text-white/80 shrink-0" />
               <div>
                 <p className="text-white/60 text-xs font-body">Premio entregado</p>
-                <p className="font-heading font-black text-white text-lg">{successData.prizeLabel}</p>
+                <p className="font-heading text-white text-lg">{successData.prizeLabel}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 border-t border-white/20 pt-4">
               <Star className="w-6 h-6 text-white/80 fill-white/80 shrink-0" />
               <div>
                 <p className="text-white/60 text-xs font-body">Puntos sumados</p>
-                <p className="font-heading font-black text-white text-lg">
-                  +10 pts → Total: {successData.points}
+                <p className="font-heading text-white text-lg">
+                  +10 pts &rarr; Total: {successData.points}
                 </p>
               </div>
             </div>
@@ -203,21 +203,21 @@ export default function AdminScanner() {
           <button
             id="scanner-reset"
             onClick={handleReset}
-            className="flex items-center gap-2 bg-white text-green-700 font-heading font-black px-8 py-4 rounded-3xl text-lg shadow-xl hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 bg-white text-brand-menta font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-tinta shadow-sticker-cream hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
-            Siguiente Cliente
+            Siguiente cliente
           </button>
         </div>
       )}
 
-      {/* ── Error state ───────────────────────────────────────────────────── */}
+      {/* ── Error state ──────────────────────────────────── */}
       {scanState === 'error' && errorReason && (
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
           <XCircle className="w-24 h-24 text-white/90 drop-shadow-2xl" strokeWidth={1.5} />
 
           <div className="text-center">
-            <h1 className="font-heading font-black text-white text-4xl mb-2">
+            <h1 className="font-heading text-white text-4xl mb-2">
               {ERROR_MESSAGES[errorReason].title}
             </h1>
             <p className="text-white/70 font-body text-base">
@@ -228,10 +228,10 @@ export default function AdminScanner() {
           <button
             id="scanner-error-reset"
             onClick={handleReset}
-            className="flex items-center gap-2 bg-white text-red-700 font-heading font-black px-8 py-4 rounded-3xl text-lg shadow-xl hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 bg-white text-red-700 font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-tinta shadow-sticker-cream hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
-            Escanear Otro
+            Escanear otro
           </button>
         </div>
       )}

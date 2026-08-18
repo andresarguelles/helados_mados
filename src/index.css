@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Karla:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,26 @@
 
 @layer base {
   :root {
-    --background: 40 100% 98%;
-    --foreground: 222 47% 11%;
+    --background: 36 60% 95%;
+    --foreground: 24 35% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 24 35% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 222 47% 11%;
-    --primary-foreground: 40 100% 98%;
-    --secondary: 15 100% 70%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 40 30% 94%;
-    --muted-foreground: 222 20% 45%;
-    --accent: 51 100% 72%;
-    --accent-foreground: 222 47% 11%;
+    --popover-foreground: 24 35% 11%;
+    --primary: 24 35% 11%;
+    --primary-foreground: 36 60% 95%;
+    --secondary: 346 100% 62%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 36 30% 90%;
+    --muted-foreground: 24 20% 40%;
+    --accent: 41 100% 62%;
+    --accent-foreground: 24 35% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 20% 88%;
-    --input: 40 20% 88%;
-    --ring: 15 100% 70%;
-    --radius: 0.75rem;
+    --border: 24 20% 87%;
+    --input: 24 20% 87%;
+    --ring: 346 100% 62%;
+    --radius: 1rem;
   }
 
   * {
@@ -38,7 +38,7 @@
   }
 
   body {
-    @apply bg-brand-cream text-brand-navy font-body antialiased;
+    @apply bg-brand-crema text-brand-tinta font-body antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -48,64 +48,105 @@
 }
 
 @layer components {
-  /* Glass card effect */
-  .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/60 shadow-lg;
+  /* Calm workhorse card — flat paper, hairline ink border, no blur */
+  .paper-card {
+    @apply bg-white border-2 border-brand-tinta/10 rounded-3xl shadow-sm;
   }
 
-  /* Gradient button */
-  .btn-coral {
-    @apply bg-brand-coral text-white font-heading font-bold rounded-2xl 
-           px-6 py-3 shadow-lg shadow-brand-coral/30
-           hover:brightness-105 hover:shadow-xl hover:shadow-brand-coral/40 
-           hover:-translate-y-0.5
-           active:scale-95
-           transition-all duration-200;
+  /* Primary sticker button — presses flat into its own ink shadow */
+  .btn-fresa {
+    @apply inline-flex items-center justify-center gap-2 bg-brand-fresa text-white
+           font-heading text-sm uppercase tracking-wide rounded-2xl
+           px-6 py-3.5 border-2 border-brand-tinta shadow-sticker
+           hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-sticker-lg
+           active:translate-x-1 active:translate-y-1 active:shadow-none
+           transition-all duration-150;
   }
 
-  .btn-navy {
-    @apply bg-brand-navy text-white font-heading font-bold rounded-2xl 
-           px-6 py-3 shadow-lg
-           hover:brightness-110 hover:-translate-y-0.5
-           active:scale-95
-           transition-all duration-200;
+  .btn-tinta {
+    @apply inline-flex items-center justify-center gap-2 bg-brand-tinta text-brand-crema
+           font-heading text-sm uppercase tracking-wide rounded-2xl
+           px-6 py-3.5 border-2 border-brand-tinta shadow-sticker
+           hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-sticker-lg
+           active:translate-x-1 active:translate-y-1 active:shadow-none
+           transition-all duration-150;
   }
 
   /* Leaderboard row */
   .lb-row {
-    @apply flex items-center gap-3 p-3 rounded-2xl 
-           hover:bg-brand-navy/5 transition-colors duration-150;
+    @apply flex items-center gap-3 p-3 rounded-2xl
+           hover:bg-brand-tinta/5 transition-colors duration-150;
   }
 
-  /* QR card */
+  /* Coupon ticket — a wooden paleta stick poking out of a rounded panel */
   .qr-card {
-    @apply bg-white rounded-3xl p-6 shadow-2xl border-4 border-brand-lemon 
-           animate-scale-in;
+    @apply relative bg-white rounded-b-3xl rounded-t-xl pt-9 pb-6 px-6
+           border-2 border-brand-tinta shadow-sticker-lg animate-scale-in;
+  }
+  .qr-card::before {
+    content: '';
+    position: absolute;
+    top: -23px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 34px;
+    background: #E8C48A;
+    border: 2px solid #241A12;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
   }
 
   /* Input field */
   .field-input {
-    @apply w-full bg-white border-2 border-brand-navy/20 rounded-2xl 
-           px-4 py-3 font-body text-brand-navy placeholder:text-brand-navy/40
-           focus:outline-none focus:border-brand-coral focus:ring-2 focus:ring-brand-coral/20
+    @apply w-full bg-white border-2 border-brand-tinta/15 rounded-2xl
+           px-4 py-3 font-body text-brand-tinta placeholder:text-brand-tinta/35
+           focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/15
            transition-all duration-200;
   }
 
   /* Scanner overlay */
   .scan-overlay {
-    @apply fixed inset-0 bg-brand-navy flex flex-col items-center justify-center z-50;
+    @apply fixed inset-0 bg-brand-tinta flex flex-col items-center justify-center z-50;
   }
 
-  /* Badge rank */
+  /* Rank badge */
   .rank-badge {
-    @apply w-8 h-8 rounded-full flex items-center justify-center 
-           font-heading font-black text-sm;
+    @apply w-8 h-8 rounded-full flex items-center justify-center
+           font-heading text-xs border-2 border-brand-tinta/10;
   }
 
   /* Points chip */
   .points-chip {
-    @apply inline-flex items-center gap-1 bg-brand-lemon/80 text-brand-navy 
-           font-heading font-black text-xs px-2.5 py-1 rounded-full;
+    @apply inline-flex items-center gap-1 bg-brand-limon text-brand-tinta
+           font-heading text-[10px] uppercase tracking-wide px-2.5 py-1 rounded-full
+           border border-brand-tinta/15;
+  }
+
+  /* Scalloped drip divider — the paleteria awning edge, cream drips over
+     whatever sits behind it (typically a dark hero section) */
+  .scallop-divider {
+    height: 22px;
+    width: 100%;
+    @apply bg-brand-crema;
+    -webkit-mask-image: radial-gradient(circle at 11px 0, transparent 11px, black 11.5px);
+    mask-image: radial-gradient(circle at 11px 0, transparent 11px, black 11.5px);
+    -webkit-mask-size: 22px 22px;
+    mask-size: 22px 22px;
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+  }
+
+  /* Rainbow flavor-arc badge, used behind the paleta mark */
+  .flavor-ring {
+    @apply relative;
+  }
+  .flavor-ring::before {
+    content: '';
+    position: absolute;
+    inset: -16px;
+    border-radius: 9999px;
+    background: conic-gradient(from -40deg, #FF3D68, #FFC83D, #0FA88F, #7A3FA0, #FF3D68);
   }
 
   /* Shimmer loading */
@@ -134,6 +175,6 @@
     background: transparent;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-brand-coral/40 rounded-full;
+    @apply bg-brand-fresa/40 rounded-full;
   }
 }

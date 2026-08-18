@@ -9,18 +9,19 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['Nunito', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
+        heading: ['Bungee', 'cursive'],
+        body: ['Karla', 'sans-serif'],
+        mono: ['"Space Mono"', 'monospace'],
       },
       colors: {
-        // Brand palette
+        // Brand palette — paleta (popsicle) flavor colors
         brand: {
-          navy:   '#0F172A',
-          coral:  '#FF6B6B',
-          lemon:  '#FFE66D',
-          cream:  '#FFFBF5',
-          mint:   '#4ECDC4',
-          pink:   '#FF8FAB',
+          tinta:  '#241A12', // ink — hand-painted signage black
+          fresa:  '#FF3D68', // strawberry
+          limon:  '#FFC83D', // lemon
+          crema:  '#FFF6E7', // paper / cream
+          menta:  '#0FA88F', // mint
+          mora:   '#7A3FA0', // grape
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -61,6 +62,14 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        sticker: '4px 4px 0 0 #241A12',
+        'sticker-sm': '2px 2px 0 0 #241A12',
+        'sticker-lg': '6px 6px 0 0 #241A12',
+        // For badge buttons sitting on a dark (tinta) background
+        'sticker-cream': '4px 4px 0 0 #FFF6E7',
+        'sticker-cream-lg': '6px 6px 0 0 #FFF6E7',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -98,6 +107,10 @@ const config: Config = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.5' },
         },
+        drip: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(3px)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -108,9 +121,11 @@ const config: Config = {
         'fade-in': 'fade-in 0.3s ease-out',
         'scale-in': 'scale-in 0.3s ease-out',
         shimmer: 'shimmer 2s infinite linear',
+        drip: 'drip 2.4s ease-in-out infinite',
       },
       backgroundImage: {
-        'hero-pattern': "radial-gradient(ellipse at top, #1e3a5f 0%, #0F172A 70%)",
+        // Hand-painted paleteria cart awning — arcing flavor stripes
+        'paleta-arc': "radial-gradient(circle at 50% 130%, #FF3D68 0%, #FF3D68 36%, #FFC83D 36%, #FFC83D 44%, #0FA88F 44%, #0FA88F 52%, #7A3FA0 52%, #7A3FA0 60%, #241A12 60%, #241A12 100%)",
         'card-gradient': "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))",
       },
     },

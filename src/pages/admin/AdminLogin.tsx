@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
-import { IceCream2, Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
+import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
+import Paleta from '../../components/ui/Paleta'
 
 export default function AdminLogin() {
   const { login } = useStore()
@@ -31,21 +32,21 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-navy flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-brand-tinta flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm flex flex-col gap-8 animate-slide-up">
 
         {/* Logo */}
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="w-16 h-16 bg-brand-coral rounded-3xl flex items-center justify-center shadow-xl shadow-brand-coral/40">
-            <IceCream2 className="w-8 h-8 text-white" />
+          <div className="flavor-ring">
+            <Paleta className="w-12 h-[4.5rem]" />
           </div>
           <div>
-            <h1 className="font-heading font-black text-white text-2xl">
-              Helados<span className="text-brand-coral">Mados</span>
+            <h1 className="font-heading text-white text-2xl">
+              Helados<span className="text-brand-fresa">Mados</span>
             </h1>
             <p className="text-white/50 text-sm font-body flex items-center gap-1.5 justify-center mt-1">
               <Shield className="w-3.5 h-3.5" />
-              Panel de Administración
+              Panel de administración
             </p>
           </div>
         </div>
@@ -53,7 +54,7 @@ export default function AdminLogin() {
         {/* Form */}
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
           <div>
-            <label className="font-heading font-bold text-white/70 text-xs mb-1.5 block">Usuario</label>
+            <label className="font-heading text-white/70 text-xs mb-1.5 block">Usuario</label>
             <input
               id="admin-username"
               type="text"
@@ -63,14 +64,14 @@ export default function AdminLogin() {
               className={cn(
                 'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3',
                 'font-body text-white placeholder:text-white/30',
-                'focus:outline-none focus:border-brand-coral focus:ring-2 focus:ring-brand-coral/20 transition-all'
+                'focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/20 transition-all'
               )}
               autoComplete="username"
             />
           </div>
 
           <div>
-            <label className="font-heading font-bold text-white/70 text-xs mb-1.5 block">Contraseña</label>
+            <label className="font-heading text-white/70 text-xs mb-1.5 block">Contraseña</label>
             <div className="relative">
               <input
                 id="admin-password"
@@ -82,7 +83,7 @@ export default function AdminLogin() {
                 className={cn(
                   'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 pr-10',
                   'font-body text-white placeholder:text-white/30',
-                  'focus:outline-none focus:border-brand-coral focus:ring-2 focus:ring-brand-coral/20 transition-all'
+                  'focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/20 transition-all'
                 )}
                 autoComplete="current-password"
               />
@@ -107,7 +108,7 @@ export default function AdminLogin() {
             id="admin-login-btn"
             onClick={handleLogin}
             disabled={loading}
-            className="btn-coral flex items-center justify-center gap-2 mt-1"
+            className="btn-fresa mt-1 shadow-sticker-cream hover:shadow-sticker-cream-lg"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
             {loading ? 'Verificando...' : 'Acceder'}

@@ -5,9 +5,10 @@ import { Dynamic } from '../../lib/types'
 import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import {
-  IceCream2, Plus, LogOut, QrCode, Pencil, Trash2, X,
-  Package, ChevronRight, Loader2, AlertCircle, Clock,
+  Plus, LogOut, QrCode, Pencil, Trash2, X,
+  Package, ChevronRight, Loader2, AlertCircle, Clock, ArrowRight,
 } from 'lucide-react'
+import Paleta from '../../components/ui/Paleta'
 
 type ModalMode = 'create' | 'edit' | null
 
@@ -100,29 +101,27 @@ export default function AdminDashboard() {
   }
 
   const getStatusBadge = (d: Dynamic) => {
-    if (isDynamicActive(d)) return { label: '🟢 Activa', cls: 'bg-green-100 text-green-700' }
-    if (isDynamicExpired(d)) return { label: '⚫ Expirada', cls: 'bg-gray-100 text-gray-500' }
-    if (isDynamicUpcoming(d)) return { label: '🟡 Próxima', cls: 'bg-yellow-100 text-yellow-700' }
-    return { label: 'Desconocido', cls: '' }
+    if (isDynamicActive(d)) return { label: 'Activa', dot: 'bg-brand-menta', cls: 'bg-brand-menta/15 text-brand-menta' }
+    if (isDynamicExpired(d)) return { label: 'Expirada', dot: 'bg-white/30', cls: 'bg-white/10 text-white/50' }
+    if (isDynamicUpcoming(d)) return { label: 'Próxima', dot: 'bg-brand-limon', cls: 'bg-brand-limon/15 text-brand-limon' }
+    return { label: 'Desconocido', dot: 'bg-white/30', cls: '' }
   }
 
   const getCouponCount = (dynamicId: string) =>
     coupons.filter(c => c.dynamic_id === dynamicId).length
 
   return (
-    <div className="min-h-screen bg-brand-navy flex flex-col">
+    <div className="min-h-screen bg-brand-tinta flex flex-col">
       {/* Top bar */}
-      <header className="bg-brand-navy/95 border-b border-white/10 px-4 h-14 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-brand-tinta/95 border-b border-white/10 px-4 h-14 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-brand-coral rounded-lg flex items-center justify-center">
-            <IceCream2 className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-heading font-black text-white">Panel Admin</span>
+          <Paleta className="w-5 h-8" />
+          <span className="font-heading text-white">Panel Admin</span>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/scanner')}
-            className="flex items-center gap-1.5 bg-brand-coral text-white text-xs font-heading font-bold px-3 py-1.5 rounded-xl"
+            className="flex items-center gap-1.5 bg-brand-fresa text-white text-xs font-heading px-3 py-1.5 rounded-xl border-2 border-brand-tinta"
           >
             <QrCode className="w-3.5 h-3.5" />Escáner
           </button>
@@ -138,13 +137,13 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-heading font-black text-white text-xl">Dinámicas</h1>
+            <h1 className="font-heading text-white text-xl">Dinámicas</h1>
             <p className="text-white/40 text-xs font-body mt-0.5">Palabras secretas y premios</p>
           </div>
           <button
             id="create-dynamic-btn"
             onClick={openCreate}
-            className="flex items-center gap-1.5 bg-brand-lemon text-brand-navy font-heading font-bold text-sm px-4 py-2 rounded-xl hover:brightness-105 transition-all"
+            className="flex items-center gap-1.5 bg-brand-limon text-brand-tinta font-heading text-xs uppercase tracking-wide px-4 py-2.5 rounded-xl border-2 border-brand-tinta shadow-sticker-cream hover:shadow-sticker-cream-lg hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
           >
             <Plus className="w-4 h-4" />Nueva
           </button>
@@ -161,7 +160,7 @@ export default function AdminDashboard() {
         {dynamics.length === 0 ? (
           <div className="text-center py-16 text-white/30">
             <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p className="font-heading font-bold">Sin dinámicas creadas</p>
+            <p className="font-heading">Sin dinámicas creadas</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -176,10 +175,11 @@ export default function AdminDashboard() {
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-heading font-black text-brand-lemon text-lg tracking-wider">
+                        <span className="font-heading text-brand-limon text-lg tracking-wider">
                           {d.keyword}
                         </span>
-                        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', badge.cls)}>
+                        <span className={cn('flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full', badge.cls)}>
+                          <span className={cn('w-1.5 h-1.5 rounded-full', badge.dot)} />
                           {badge.label}
                         </span>
                       </div>
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
                       <div
                         className={cn(
                           'h-full rounded-full transition-all duration-500',
-                          stockLeft === 0 ? 'bg-red-500' : stockPct > 30 ? 'bg-brand-mint' : 'bg-brand-coral'
+                          stockLeft === 0 ? 'bg-red-500' : stockPct > 30 ? 'bg-brand-menta' : 'bg-brand-fresa'
                         )}
                         style={{ width: `${stockPct}%` }}
                       />
@@ -229,9 +229,11 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-4 text-xs text-white/40 font-body flex-wrap">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {formatDate(d.starts_at)} → {formatDate(d.ends_at)}
+                      {formatDate(d.starts_at)}
+                      <ArrowRight className="w-3 h-3" />
+                      {formatDate(d.ends_at)}
                     </span>
-                    <span className="ml-auto flex items-center gap-1 text-brand-lemon/60">
+                    <span className="ml-auto flex items-center gap-1 text-brand-limon/60">
                       <QrCode className="w-3 h-3" />
                       {getCouponCount(d.id)} cupones
                     </span>
@@ -247,13 +249,14 @@ export default function AdminDashboard() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-brand-cream w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+          <div className="relative bg-brand-crema w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
             {/* Modal header */}
-            <div className="sticky top-0 bg-brand-cream border-b border-brand-navy/10 px-5 py-4 flex items-center justify-between rounded-t-3xl">
-              <h2 className="font-heading font-black text-brand-navy text-lg">
-                {modal === 'create' ? '➕ Nueva Dinámica' : '✏️ Editar Dinámica'}
+            <div className="sticky top-0 bg-brand-crema border-b border-brand-tinta/10 px-5 py-4 flex items-center justify-between rounded-t-3xl">
+              <h2 className="font-heading text-brand-tinta text-lg flex items-center gap-2">
+                {modal === 'create' ? <Plus className="w-5 h-5 text-brand-fresa" /> : <Pencil className="w-5 h-5 text-brand-fresa" />}
+                {modal === 'create' ? 'Nueva dinámica' : 'Editar dinámica'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-brand-navy/40 hover:text-brand-navy transition-colors">
+              <button onClick={() => setModal(null)} className="text-brand-tinta/40 hover:text-brand-tinta transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -261,37 +264,37 @@ export default function AdminDashboard() {
             <div className="p-5 flex flex-col gap-4">
               {/* Keyword */}
               <div>
-                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                  Palabra Secreta <span className="text-brand-coral">*</span>
+                <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                  Palabra secreta <span className="text-brand-fresa">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.keyword}
                   onChange={e => setForm(f => ({ ...f, keyword: e.target.value.toUpperCase() }))}
                   placeholder="Ej. LIMONADA"
-                  className="field-input uppercase font-heading font-black tracking-widest text-lg"
+                  className="field-input uppercase font-heading tracking-widest text-lg"
                   maxLength={30}
                 />
               </div>
 
               {/* Prize label */}
               <div>
-                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                  Premio / Descripción <span className="text-brand-coral">*</span>
+                <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                  Premio / descripción <span className="text-brand-fresa">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.prize_label}
                   onChange={e => setForm(f => ({ ...f, prize_label: e.target.value }))}
-                  placeholder="🍋 Paleta de Limón Gratis"
+                  placeholder="Paleta de limón gratis"
                   className="field-input"
                 />
               </div>
 
               {/* Stock */}
               <div>
-                <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                  Stock Físico (premios disponibles en mostrador)
+                <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                  Stock físico (premios disponibles en mostrador)
                 </label>
                 <input
                   type="number"
@@ -305,8 +308,8 @@ export default function AdminDashboard() {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                    Inicio <span className="text-brand-coral">*</span>
+                  <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                    Inicio <span className="text-brand-fresa">*</span>
                   </label>
                   <input
                     type="datetime-local"
@@ -316,8 +319,8 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="font-heading font-bold text-brand-navy text-xs mb-1.5 block">
-                    Fin <span className="text-brand-coral">*</span>
+                  <label className="font-heading text-brand-tinta text-xs mb-1.5 block">
+                    Fin <span className="text-brand-fresa">*</span>
                   </label>
                   <input
                     type="datetime-local"
@@ -339,10 +342,10 @@ export default function AdminDashboard() {
                 id="save-dynamic-btn"
                 onClick={handleSave}
                 disabled={saving}
-                className="btn-coral flex items-center justify-center gap-2 mt-2"
+                className="btn-fresa mt-2"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
-                {saving ? 'Guardando...' : modal === 'create' ? 'Crear Dinámica' : 'Guardar Cambios'}
+                {saving ? 'Guardando...' : modal === 'create' ? 'Crear dinámica' : 'Guardar cambios'}
               </button>
             </div>
           </div>
