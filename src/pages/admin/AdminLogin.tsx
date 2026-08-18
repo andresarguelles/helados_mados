@@ -18,12 +18,11 @@ export default function AdminLogin() {
     if (!username || !password) { setError('Completa todos los campos'); return }
 
     setLoading(true)
-    await new Promise(r => setTimeout(r, 500))
 
-    const user = login(username.trim(), password)
+    const result = await login(username.trim(), password)
     setLoading(false)
 
-    if (!user || !user.is_admin) {
+    if (!result.success || !result.user.is_admin) {
       setError('Credenciales incorrectas o acceso no autorizado.')
       return
     }

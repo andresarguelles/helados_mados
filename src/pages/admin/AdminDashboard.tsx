@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
-import { Dynamic } from '../../lib/mock-data'
+import { Dynamic } from '../../lib/types'
 import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import {
@@ -22,13 +22,16 @@ const emptyForm = {
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
-  const { dynamics, addDynamic, updateDynamic, deleteDynamic, logout, coupons } = useStore()
+  const { dynamics, addDynamic, updateDynamic, deleteDynamic, logout, coupons, fetchDynamics } = useStore()
   const [modal, setModal] = useState<ModalMode>(null)
   const [editTarget, setEditTarget] = useState<Dynamic | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [listError, setListError] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+
+  useEffect(() => { fetchDynamics() }, [fetchDynamics])
 
   const openCreate = () => {
     setForm(emptyForm)
@@ -59,7 +62,6 @@ export default function AdminDashboard() {
     if (!form.prize_label.trim()) { setError('Describe el premio'); return }
 
     setSaving(true)
-    await new Promise(r => setTimeout(r, 400))
 
     const data = {
       keyword: form.keyword.trim().toUpperCase(),
@@ -70,28 +72,30 @@ export default function AdminDashboard() {
       prize_label: form.prize_label.trim(),
     }
 
-    if (modal === 'create') {
-      addDynamic(data)
-    } else if (editTarget) {
-      updateDynamic(editTarget.id, data)
-    }
+    const result = modal === 'create'
+      ? await addDynamic(data)
+      : editTarget ? await updateDynamic(editTarget.id, data) : { success: true as const }
 
     setSaving(false)
+
+    if (!result.success) { setError(result.error); return }
     setModal(null)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (deleteConfirm === id) {
-      deleteDynamic(id)
       setDeleteConfirm(null)
+      setListError('')
+      const result = await deleteDynamic(id)
+      if (!result.success) setListError(result.error)
     } else {
       setDeleteConfirm(id)
       setTimeout(() => setDeleteConfirm(null), 3000)
     }
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/admin')
   }
 
@@ -145,6 +149,13 @@ export default function AdminDashboard() {
             <Plus className="w-4 h-4" />Nueva
           </button>
         </div>
+
+        {listError && (
+          <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-2xl px-4 py-3">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-red-300 font-body">{listError}</p>
+          </div>
+        )}
 
         {/* Dynamics list */}
         {dynamics.length === 0 ? (

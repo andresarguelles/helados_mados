@@ -1,24 +1,33 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import CouponCard from '../components/account/CouponCard'
 import { useStore } from '../lib/store'
+import { Coupon } from '../lib/types'
 import { Star, Trophy, Sparkles, ChevronRight } from 'lucide-react'
 
 export default function Account() {
   const navigate = useNavigate()
-  const getCurrentUser = useStore(s => s.getCurrentUser)
+  const profile = useStore(s => s.profile)
+  const authReady = useStore(s => s.authReady)
   const getUserCoupons = useStore(s => s.getUserCoupons)
-  const user = getCurrentUser()
+  const fetchDynamics = useStore(s => s.fetchDynamics)
+  const [allCoupons, setAllCoupons] = useState<Coupon[]>([])
 
   useEffect(() => {
-    if (!user) navigate('/canjear')
-  }, [user, navigate])
+    if (authReady && !profile) navigate('/canjear')
+  }, [authReady, profile, navigate])
 
-  if (!user) return null
+  useEffect(() => {
+    if (profile) {
+      getUserCoupons(profile.id).then(setAllCoupons)
+      fetchDynamics()
+    }
+  }, [profile, getUserCoupons, fetchDynamics])
 
-  const allCoupons = getUserCoupons(user.id)
+  if (!profile) return null
+
   const active   = allCoupons.filter(c => c.status === 'active')
   const history  = allCoupons.filter(c => c.status !== 'active')
 
@@ -33,12 +42,12 @@ export default function Account() {
             🍦
           </div>
           <div>
-            <h1 className="font-heading font-black text-white text-2xl">{user.username}</h1>
+            <h1 className="font-heading font-black text-white text-2xl">{profile.username}</h1>
             <p className="text-white/50 text-sm font-body">Miembro Helados Mados</p>
           </div>
           <div className="flex items-center gap-2 bg-white/10 rounded-2xl px-6 py-3">
             <Star className="w-5 h-5 text-brand-lemon fill-brand-lemon" />
-            <span className="font-heading font-black text-brand-lemon text-3xl">{user.total_points}</span>
+            <span className="font-heading font-black text-brand-lemon text-3xl">{profile.total_points}</span>
             <span className="font-body text-white/60 text-sm">puntos totales</span>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Coupon, Dynamic } from '../../lib/mock-data'
+import { Coupon, Dynamic } from '../../lib/types'
 import { useStore } from '../../lib/store'
 import { formatDate, formatCountdown } from '../../lib/utils'
 import { cn } from '../../lib/utils'

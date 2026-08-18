@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -11,11 +12,20 @@ import { useStore } from './lib/store'
 
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const isAdmin = useStore(s => s.isAdmin)
+  const authReady = useStore(s => s.authReady)
+  if (!authReady) return null
   if (!isAdmin) return <Navigate to="/admin" replace />
   return <>{children}</>
 }
 
 export default function App() {
+  const initAuth = useStore(s => s.initAuth)
+
+  useEffect(() => {
+    const unsubscribe = initAuth()
+    return unsubscribe
+  }, [initAuth])
+
   return (
     <BrowserRouter>
       <Routes>

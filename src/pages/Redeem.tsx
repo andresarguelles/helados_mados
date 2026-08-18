@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import { useStore } from '../lib/store'
-import { getMockIp } from '../lib/utils'
 import { cn } from '../lib/utils'
 import { QRCodeSVG as QRCode } from 'qrcode.react'
 import confetti from 'canvas-confetti'
@@ -36,9 +35,8 @@ export default function Redeem() {
     if (!trimmed) { setError('Ingresa la palabra secreta'); return }
 
     setLoading(true)
-    await new Promise(r => setTimeout(r, 600)) // simulate network
 
-    const dynamic = getActiveDynamic(trimmed)
+    const dynamic = await getActiveDynamic(trimmed)
     if (!dynamic) {
       setError('Palabra incorrecta o vencida. Verifica en el Live.')
       setLoading(false)
@@ -64,36 +62,28 @@ export default function Redeem() {
     }
 
     setLoading(true)
-    await new Promise(r => setTimeout(r, 700))
-
-    let userId: string
 
     if (authMode === 'login') {
-      const user = login(username.trim(), password)
-      if (!user) {
+      const result = await login(username.trim(), password)
+      if (!result.success) {
         setError('Usuario o contraseña incorrectos')
         setLoading(false)
         return
       }
-      userId = user.id
     } else {
-      const result = register(username.trim(), password)
-      if (result === 'username_taken') {
-        setError('Ese apodo ya está en uso. Elige otro.')
+      const result = await register(username.trim(), password)
+      if (!result.success) {
+        setError(result.reason === 'username_taken'
+          ? 'Ese apodo ya está en uso. Elige otro.'
+          : 'Error al crear tu cuenta. Intenta de nuevo.')
         setLoading(false)
         return
       }
-      if (result === 'error') {
-        setError('Error al crear tu cuenta. Intenta de nuevo.')
-        setLoading(false)
-        return
-      }
-      userId = (result as { id: string }).id
     }
 
     // Attempt redemption
     const trimmedKw = keyword.trim().toUpperCase()
-    const result = redeemKeyword(trimmedKw, userId, getMockIp())
+    const result = await redeemKeyword(trimmedKw)
     setLoading(false)
 
     if (!result.success) {
@@ -102,12 +92,13 @@ export default function Redeem() {
         expired: 'Esta dinámica ha expirado.',
         already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por dinámica.',
         ip_limit: 'Se alcanzó el límite de canjes desde tu red. Intenta más tarde.',
+        not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
       }
       setError(messages[result.reason] || 'Error inesperado.')
       return
     }
 
-    const dynamic = getActiveDynamic(trimmedKw)
+    const dynamic = await getActiveDynamic(trimmedKw)
     setPrizeLabel(dynamic?.prize_label ?? '🍦 Premio')
     setCouponId(result.coupon.id)
 

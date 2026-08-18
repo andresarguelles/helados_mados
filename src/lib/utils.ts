@@ -33,11 +33,6 @@ export function formatCountdown(endDate: string | Date): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-export function getMockIp(): string {
-  // In production this would come from the server
-  return '192.168.1.1'
-}
-
 export const EMOJI_MEDALS = ['🥇', '🥈', '🥉']
 export const EMOJI_RANKS = ['👑', '⭐', '🌟', '✨', '🎯', '🎪', '🎠', '🎡']
 

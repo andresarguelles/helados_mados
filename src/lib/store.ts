@@ -1,274 +1,232 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import {
-  User, Dynamic, Coupon, IpLog,
-  INITIAL_USERS, INITIAL_DYNAMICS, INITIAL_COUPONS, IP_LOGS, generateId,
-} from './mock-data'
+import { supabase } from './supabaseClient'
+import { Profile, Dynamic, Coupon } from './types'
+
+// GoTrue rejects RFC 2606/6762 reserved TLDs (.local, .test, .invalid, ...), so this needs to
+// look like a real domain even though it's never used to send or receive mail.
+const EMAIL_DOMAIN = 'accounts.helados-mados.app'
+const usernameToEmail = (username: string) => `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`
+
+interface LeaderboardEntry {
+  user: { id: string; username: string }
+  points: number
+}
+
+type LoginResult =
+  | { success: true; user: Profile }
+  | { success: false; reason: 'invalid_credentials' | 'error' }
+
+type RegisterResult =
+  | { success: true; user: Profile }
+  | { success: false; reason: 'username_taken' | 'error' }
+
+type DynamicWriteResult = { success: true } | { success: false; error: string }
+
+type RedeemResult =
+  | { success: true; coupon: Coupon }
+  | { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'ip_limit' | 'not_authenticated' | 'error' }
+
+type ScanResult =
+  | { success: true; user: Profile; dynamic: Dynamic }
+  | { success: false; reason: 'not_found' | 'already_used' | 'expired' | 'stock_empty' | 'forbidden' | 'error' }
 
 // ─── Store State ──────────────────────────────────────────────────────────────
 
 interface AppState {
-  users: User[]
+  profile: Profile | null
+  isAdmin: boolean
+  authReady: boolean
   dynamics: Dynamic[]
   coupons: Coupon[]
-  ipLogs: IpLog[]
-  currentUserId: string | null
-  isAdmin: boolean
 
   // Auth
-  login: (username: string, password: string) => User | null
-  register: (username: string, password: string) => User | 'username_taken' | 'error'
-  logout: () => void
-  getCurrentUser: () => User | null
+  initAuth: () => () => void
+  login: (username: string, password: string) => Promise<LoginResult>
+  register: (username: string, password: string) => Promise<RegisterResult>
+  logout: () => Promise<void>
+  getCurrentUser: () => Profile | null
 
   // Dynamics
-  addDynamic: (data: Omit<Dynamic, 'id' | 'created_at' | 'physical_redeemed'>) => Dynamic
-  updateDynamic: (id: string, data: Partial<Dynamic>) => void
-  deleteDynamic: (id: string) => void
-  getActiveDynamic: (keyword: string) => Dynamic | null
+  fetchDynamics: () => Promise<void>
+  getActiveDynamic: (keyword: string) => Promise<Dynamic | null>
+  addDynamic: (data: Omit<Dynamic, 'id' | 'created_at' | 'physical_redeemed'>) => Promise<DynamicWriteResult>
+  updateDynamic: (id: string, data: Partial<Dynamic>) => Promise<DynamicWriteResult>
+  deleteDynamic: (id: string) => Promise<DynamicWriteResult>
 
   // Coupons
-  redeemKeyword: (keyword: string, userId: string, ip: string) => 
-    { success: true; coupon: Coupon } | 
-    { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'ip_limit' }
-  scanCoupon: (couponId: string) => 
-    { success: true; user: User; dynamic: Dynamic } | 
-    { success: false; reason: 'not_found' | 'already_used' | 'expired' | 'stock_empty' }
-  getUserCoupons: (userId: string) => Coupon[]
+  redeemKeyword: (keyword: string) => Promise<RedeemResult>
+  scanCoupon: (couponId: string) => Promise<ScanResult>
+  getUserCoupons: (userId: string) => Promise<Coupon[]>
 
   // Leaderboard
-  getLeaderboard: (period: 'day' | 'week' | 'all') => { user: User; points: number }[]
+  getLeaderboard: (period: 'day' | 'week' | 'all') => Promise<LeaderboardEntry[]>
+}
 
-  // Reset to initial data (dev only)
-  reset: () => void
+async function loadProfile(): Promise<Profile | null> {
+  const { data: userData } = await supabase.auth.getUser()
+  if (!userData.user) return null
+  const { data } = await supabase.from('profiles').select('*').eq('id', userData.user.id).single()
+  return data
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
 
-export const useStore = create<AppState>()(
-  persist(
-    (set, get) => ({
-      users: INITIAL_USERS,
-      dynamics: INITIAL_DYNAMICS,
-      coupons: INITIAL_COUPONS,
-      ipLogs: IP_LOGS,
-      currentUserId: null,
-      isAdmin: false,
+export const useStore = create<AppState>()((set, get) => ({
+  profile: null,
+  isAdmin: false,
+  authReady: false,
+  dynamics: [],
+  coupons: [],
 
-      // ── Auth ──────────────────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────────────────
 
-      login: (username, password) => {
-        const user = get().users.find(
-          u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
-        )
-        if (!user) return null
-        set({ currentUserId: user.id, isAdmin: user.is_admin })
-        return user
-      },
+  initAuth: () => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const profile = session ? await loadProfile() : null
+      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
+    })
 
-      register: (username, password) => {
-        const exists = get().users.find(
-          u => u.username.toLowerCase() === username.toLowerCase()
-        )
-        if (exists) return 'username_taken'
-        const newUser: User = {
-          id: generateId(),
-          username,
-          password,
-          total_points: 0,
-          is_admin: false,
-          created_at: new Date().toISOString(),
-        }
-        set(s => ({ users: [...s.users, newUser], currentUserId: newUser.id, isAdmin: false }))
-        return newUser
-      },
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const profile = session ? await loadProfile() : null
+      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
+    })
 
-      logout: () => set({ currentUserId: null, isAdmin: false }),
+    return () => subscription.unsubscribe()
+  },
 
-      getCurrentUser: () => {
-        const { users, currentUserId } = get()
-        return users.find(u => u.id === currentUserId) ?? null
-      },
+  login: async (username, password) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: usernameToEmail(username),
+      password,
+    })
+    if (error) return { success: false, reason: 'invalid_credentials' }
 
-      // ── Dynamics ──────────────────────────────────────────────────────────
+    const profile = await loadProfile()
+    if (!profile) return { success: false, reason: 'error' }
+    set({ profile, isAdmin: profile.is_admin })
+    return { success: true, user: profile }
+  },
 
-      addDynamic: (data) => {
-        const newDynamic: Dynamic = {
-          ...data,
-          id: generateId(),
-          physical_redeemed: 0,
-          created_at: new Date().toISOString(),
-        }
-        set(s => ({ dynamics: [...s.dynamics, newDynamic] }))
-        return newDynamic
-      },
+  register: async (username, password) => {
+    const trimmed = username.trim()
 
-      updateDynamic: (id, data) => {
-        set(s => ({
-          dynamics: s.dynamics.map(d => d.id === id ? { ...d, ...data } : d)
-        }))
-      },
+    const { data: available, error: checkError } = await supabase.rpc('username_available', {
+      p_username: trimmed,
+    })
+    if (checkError) return { success: false, reason: 'error' }
+    if (!available) return { success: false, reason: 'username_taken' }
 
-      deleteDynamic: (id) => {
-        set(s => ({ dynamics: s.dynamics.filter(d => d.id !== id) }))
-      },
+    const { data, error } = await supabase.auth.signUp({
+      email: usernameToEmail(trimmed),
+      password,
+      options: { data: { username: trimmed } },
+    })
+    if (error || !data.user) return { success: false, reason: 'error' }
 
-      getActiveDynamic: (keyword) => {
-        const now = new Date()
-        return get().dynamics.find(d =>
-          d.keyword.toUpperCase() === keyword.toUpperCase() &&
-          new Date(d.starts_at) <= now &&
-          new Date(d.ends_at) > now
-        ) ?? null
-      },
+    const profile = await loadProfile()
+    if (!profile) return { success: false, reason: 'error' }
+    set({ profile, isAdmin: profile.is_admin })
+    return { success: true, user: profile }
+  },
 
-      // ── Coupons ───────────────────────────────────────────────────────────
+  logout: async () => {
+    await supabase.auth.signOut()
+    set({ profile: null, isAdmin: false })
+  },
 
-      redeemKeyword: (keyword, userId, ip) => {
-        const dynamic = get().getActiveDynamic(keyword)
-        if (!dynamic) return { success: false, reason: 'invalid' }
+  getCurrentUser: () => get().profile,
 
-        // Check if user already redeemed this dynamic
-        const existingCoupon = get().coupons.find(
-          c => c.user_id === userId && c.dynamic_id === dynamic.id
-        )
-        if (existingCoupon) return { success: false, reason: 'already_redeemed' }
+  // ── Dynamics ──────────────────────────────────────────────────────────
 
-        // Check IP limit (max 3 per IP per dynamic)
-        const ipLog = get().ipLogs.find(l => l.ip === ip && l.dynamic_id === dynamic.id)
-        if (ipLog && ipLog.count >= 3) return { success: false, reason: 'ip_limit' }
+  fetchDynamics: async () => {
+    const { data } = await supabase.from('dynamics').select('*').order('created_at', { ascending: false })
+    set({ dynamics: data ?? [] })
 
-        // Create coupon + award +1 point
-        const coupon: Coupon = {
-          id: generateId(),
-          user_id: userId,
-          dynamic_id: dynamic.id,
-          status: 'active',
-          digital_awarded: true,
-          physical_awarded: false,
-          redeemed_at: null,
-          created_at: new Date().toISOString(),
-        }
-
-        set(s => {
-          const updatedUsers = s.users.map(u =>
-            u.id === userId ? { ...u, total_points: u.total_points + 1 } : u
-          )
-          const existingIpLog = s.ipLogs.find(l => l.ip === ip && l.dynamic_id === dynamic.id)
-          const updatedIpLogs = existingIpLog
-            ? s.ipLogs.map(l =>
-                l.ip === ip && l.dynamic_id === dynamic.id ? { ...l, count: l.count + 1 } : l
-              )
-            : [...s.ipLogs, { ip, dynamic_id: dynamic.id, count: 1 }]
-
-          return {
-            coupons: [...s.coupons, coupon],
-            users: updatedUsers,
-            ipLogs: updatedIpLogs,
-          }
-        })
-
-        return { success: true, coupon }
-      },
-
-      scanCoupon: (couponId) => {
-        const coupon = get().coupons.find(c => c.id === couponId)
-        if (!coupon) return { success: false, reason: 'not_found' }
-
-        if (coupon.status === 'redeemed' || coupon.physical_awarded) {
-          return { success: false, reason: 'already_used' }
-        }
-
-        const dynamic = get().dynamics.find(d => d.id === coupon.dynamic_id)
-        if (!dynamic) return { success: false, reason: 'not_found' }
-
-        // Check expiry
-        if (new Date(dynamic.ends_at) < new Date()) {
-          set(s => ({
-            coupons: s.coupons.map(c => c.id === couponId ? { ...c, status: 'expired' } : c)
-          }))
-          return { success: false, reason: 'expired' }
-        }
-
-        // Check stock
-        if (dynamic.physical_redeemed >= dynamic.physical_stock) {
-          return { success: false, reason: 'stock_empty' }
-        }
-
-        const user = get().users.find(u => u.id === coupon.user_id)
-        if (!user) return { success: false, reason: 'not_found' }
-
-        // Mark redeemed + award +10 points
-        set(s => ({
-          coupons: s.coupons.map(c =>
-            c.id === couponId
-              ? { ...c, status: 'redeemed', physical_awarded: true, redeemed_at: new Date().toISOString() }
-              : c
-          ),
-          dynamics: s.dynamics.map(d =>
-            d.id === dynamic.id ? { ...d, physical_redeemed: d.physical_redeemed + 1 } : d
-          ),
-          users: s.users.map(u =>
-            u.id === user.id ? { ...u, total_points: u.total_points + 10 } : u
-          ),
-        }))
-
-        return { success: true, user, dynamic }
-      },
-
-      getUserCoupons: (userId) => {
-        return get().coupons.filter(c => c.user_id === userId)
-      },
-
-      // ── Leaderboard ───────────────────────────────────────────────────────
-
-      getLeaderboard: (period) => {
-        const { users, coupons } = get()
-        const now = new Date()
-        const nonAdmins = users.filter(u => !u.is_admin)
-
-        if (period === 'all') {
-          return nonAdmins
-            .sort((a, b) => b.total_points - a.total_points)
-            .map(u => ({ user: u, points: u.total_points }))
-        }
-
-        // For day/week, filter coupons by time period
-        const cutoff = period === 'day'
-          ? new Date(now.getTime() - 24 * 60 * 60 * 1000)
-          : new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-
-        const periodCoupons = coupons.filter(
-          c => new Date(c.created_at) > cutoff
-        )
-
-        const pointsByUser: Record<string, number> = {}
-        periodCoupons.forEach(c => {
-          if (!pointsByUser[c.user_id]) pointsByUser[c.user_id] = 0
-          if (c.digital_awarded) pointsByUser[c.user_id] += 1
-          if (c.physical_awarded) pointsByUser[c.user_id] += 10
-        })
-
-        return nonAdmins
-          .map(u => ({ user: u, points: pointsByUser[u.id] ?? 0 }))
-          .filter(e => e.points > 0)
-          .sort((a, b) => b.points - a.points)
-      },
-
-      // ── Dev Reset ─────────────────────────────────────────────────────────
-
-      reset: () => set({
-        users: INITIAL_USERS,
-        dynamics: INITIAL_DYNAMICS,
-        coupons: INITIAL_COUPONS,
-        ipLogs: IP_LOGS,
-        currentUserId: null,
-        isAdmin: false,
-      }),
-    }),
-    {
-      name: 'helados-mados-store',
-      storage: createJSONStorage(() => localStorage),
+    if (get().isAdmin) {
+      const { data: couponsData } = await supabase.from('coupons').select('*')
+      set({ coupons: (couponsData as Coupon[]) ?? [] })
     }
-  )
-)
+  },
+
+  getActiveDynamic: async (keyword) => {
+    const now = new Date().toISOString()
+    const { data } = await supabase
+      .from('dynamics')
+      .select('*')
+      .eq('keyword', keyword.trim())
+      .lte('starts_at', now)
+      .gt('ends_at', now)
+      .limit(1)
+      .maybeSingle()
+    return data ?? null
+  },
+
+  addDynamic: async (data) => {
+    const { error } = await supabase.from('dynamics').insert(data)
+    if (error) return { success: false, error: error.message }
+    await get().fetchDynamics()
+    return { success: true }
+  },
+
+  updateDynamic: async (id, data) => {
+    const { error } = await supabase.from('dynamics').update(data).eq('id', id)
+    if (error) return { success: false, error: error.message }
+    await get().fetchDynamics()
+    return { success: true }
+  },
+
+  deleteDynamic: async (id) => {
+    const { error } = await supabase.from('dynamics').delete().eq('id', id)
+    if (error) {
+      const message = error.code === '23503'
+        ? 'No se puede eliminar: esta dinámica ya tiene cupones. Ajusta su fecha de fin para desactivarla en su lugar.'
+        : error.message
+      return { success: false, error: message }
+    }
+    await get().fetchDynamics()
+    return { success: true }
+  },
+
+  // ── Coupons ───────────────────────────────────────────────────────────
+
+  redeemKeyword: async (keyword) => {
+    const { data, error } = await supabase.functions.invoke('redeem-keyword', {
+      body: { keyword },
+    })
+    if (error) return { success: false, reason: 'error' }
+    if (!data.success) return { success: false, reason: data.reason }
+
+    const profile = await loadProfile()
+    if (profile) set({ profile })
+
+    return { success: true, coupon: data.coupon as Coupon }
+  },
+
+  scanCoupon: async (couponId) => {
+    const { data, error } = await supabase.rpc('scan_coupon', { p_coupon_id: couponId })
+    if (error || !data) return { success: false, reason: 'error' }
+    const result = data as { success: boolean; reason?: ScanResult extends { success: false } ? ScanResult['reason'] : never; user?: Profile; dynamic?: Dynamic }
+    if (!result.success) return { success: false, reason: result.reason ?? 'error' }
+    return { success: true, user: result.user!, dynamic: result.dynamic! }
+  },
+
+  getUserCoupons: async (userId) => {
+    const { data } = await supabase
+      .from('coupons')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+    return (data as Coupon[]) ?? []
+  },
+
+  // ── Leaderboard ───────────────────────────────────────────────────────
+
+  getLeaderboard: async (period) => {
+    const { data, error } = await supabase.rpc('get_leaderboard', { p_period: period })
+    if (error || !data) return []
+    return data.map(row => ({
+      user: { id: row.user_id, username: row.username },
+      points: row.points,
+    }))
+  },
+}))

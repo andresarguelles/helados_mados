@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
@@ -10,14 +10,14 @@ type AuthMode = 'login' | 'register'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, register, getCurrentUser } = useStore()
+  const { login, register } = useStore()
+  const profile = useStore(s => s.profile)
+  const authReady = useStore(s => s.authReady)
 
-  // If already logged in, redirect immediately
-  const currentUser = getCurrentUser()
-  if (currentUser) {
-    navigate('/cuenta', { replace: true })
-    return null
-  }
+  // If already logged in, redirect once the session has resolved
+  useEffect(() => {
+    if (authReady && profile) navigate('/cuenta', { replace: true })
+  }, [authReady, profile, navigate])
 
   const [authMode, setAuthMode] = useState<AuthMode>('login')
   const [username, setUsername] = useState('')
@@ -27,6 +27,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  if (profile) return null
 
   const handleSubmit = async () => {
     setError('')
@@ -42,18 +44,21 @@ export default function Login() {
     }
 
     setLoading(true)
-    await new Promise(r => setTimeout(r, 600))
 
     if (authMode === 'login') {
-      const user = login(username.trim(), password)
+      const result = await login(username.trim(), password)
       setLoading(false)
-      if (!user) { setError('Usuario o contraseña incorrectos'); return }
-      navigate(user.is_admin ? '/admin/dashboard' : '/cuenta', { replace: true })
+      if (!result.success) { setError('Usuario o contraseña incorrectos'); return }
+      navigate(result.user.is_admin ? '/admin/dashboard' : '/cuenta', { replace: true })
     } else {
-      const result = register(username.trim(), password)
+      const result = await register(username.trim(), password)
       setLoading(false)
-      if (result === 'username_taken') { setError('Ese apodo ya está en uso. Elige otro.'); return }
-      if (result === 'error') { setError('Error al crear tu cuenta. Intenta de nuevo.'); return }
+      if (!result.success) {
+        setError(result.reason === 'username_taken'
+          ? 'Ese apodo ya está en uso. Elige otro.'
+          : 'Error al crear tu cuenta. Intenta de nuevo.')
+        return
+      }
       navigate('/cuenta', { replace: true })
     }
   }

@@ -15,11 +15,13 @@ const TABS: { key: Period; label: string; icon: React.ReactNode }[] = [
 export default function LeaderboardTabs() {
   const [active, setActive] = useState<Period>('all')
   const getLeaderboard = useStore(s => s.getLeaderboard)
-  const currentUserId = useStore(s => s.currentUserId)
-  const [entries, setEntries] = useState(() => getLeaderboard('all'))
+  const currentUserId = useStore(s => s.profile?.id ?? null)
+  const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
 
   useEffect(() => {
-    setEntries(getLeaderboard(active))
+    let cancelled = false
+    getLeaderboard(active).then(data => { if (!cancelled) setEntries(data) })
+    return () => { cancelled = true }
   }, [active, getLeaderboard])
 
   const top3 = entries.slice(0, 3)

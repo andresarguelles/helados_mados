@@ -6,13 +6,15 @@ import { cn } from '../../lib/utils'
 import { ArrowLeft, QrCode, CheckCircle2, XCircle, RotateCcw, Star, Gift } from 'lucide-react'
 
 type ScanState = 'scanning' | 'success' | 'error'
-type ErrorReason = 'not_found' | 'already_used' | 'expired' | 'stock_empty'
+type ErrorReason = 'not_found' | 'already_used' | 'expired' | 'stock_empty' | 'forbidden' | 'error'
 
 const ERROR_MESSAGES: Record<ErrorReason, { title: string; desc: string }> = {
   not_found: { title: 'QR no encontrado', desc: 'Este código QR no existe en el sistema.' },
   already_used: { title: 'Cupón ya canjeado', desc: 'Este cupón ya fue utilizado anteriormente.' },
   expired: { title: 'Cupón expirado', desc: 'La vigencia de esta dinámica ha terminado.' },
   stock_empty: { title: 'Stock agotado', desc: 'No quedan premios físicos disponibles para esta dinámica.' },
+  forbidden: { title: 'Sin permiso', desc: 'Tu sesión no tiene acceso de administrador.' },
+  error: { title: 'Error inesperado', desc: 'Intenta escanear de nuevo.' },
 }
 
 export default function AdminScanner() {
@@ -68,7 +70,7 @@ export default function AdminScanner() {
 
   const handleScan = async (couponId: string) => {
     await stopScanner()
-    const result = scanCoupon(couponId)
+    const result = await scanCoupon(couponId)
 
     if (result.success) {
       setSuccessData({
