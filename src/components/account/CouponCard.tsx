@@ -4,7 +4,7 @@ import { Coupon, Dynamic } from '../../lib/types'
 import { useStore } from '../../lib/store'
 import { formatDate, formatCountdown } from '../../lib/utils'
 import { cn } from '../../lib/utils'
-import { Clock, CheckCircle2, XCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Clock, CheckCircle2, XCircle, ChevronDown, ChevronUp, Gift } from 'lucide-react'
 
 interface CouponCardProps {
   coupon: Coupon
@@ -28,22 +28,22 @@ export default function CouponCard({ coupon }: CouponCardProps) {
 
   const statusConfig = {
     active: {
-      border: 'border-brand-tinta',
-      badge: 'bg-brand-limon text-brand-tinta',
+      border: 'border-brand-sombra',
+      badge: 'bg-brand-amarillo text-brand-sombra',
       badgeText: 'Activo',
-      icon: <Clock className="w-4 h-4 text-brand-fresa" />,
+      icon: <Clock className="w-4 h-4 text-brand-azul" />,
     },
     redeemed: {
-      border: 'border-brand-tinta',
-      badge: 'bg-brand-menta text-white',
+      border: 'border-brand-sombra',
+      badge: 'bg-brand-verde text-brand-sombra',
       badgeText: 'Canjeado',
-      icon: <CheckCircle2 className="w-4 h-4 text-brand-menta" />,
+      icon: <CheckCircle2 className="w-4 h-4 text-brand-verde" />,
     },
     expired: {
-      border: 'border-brand-tinta/15',
-      badge: 'bg-brand-tinta/10 text-brand-tinta/50',
+      border: 'border-brand-sombra/15',
+      badge: 'bg-brand-sombra/10 text-brand-sombra/50',
       badgeText: 'Expirado',
-      icon: <XCircle className="w-4 h-4 text-brand-tinta/30" />,
+      icon: <XCircle className="w-4 h-4 text-brand-sombra/30" />,
     },
   }
 
@@ -61,15 +61,15 @@ export default function CouponCard({ coupon }: CouponCardProps) {
         className="w-full flex items-center gap-3 p-4 text-left"
         onClick={() => setExpanded(e => !e)}
       >
-        <div className="w-10 h-10 bg-brand-tinta/5 rounded-2xl flex items-center justify-center text-xl shrink-0">
-          🍭
+        <div className="w-10 h-10 bg-brand-azul/10 rounded-2xl flex items-center justify-center text-brand-azul shrink-0">
+          <Gift className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading text-brand-tinta text-sm truncate">
+          <p className="font-heading text-brand-sombra text-sm truncate">
             {dynamic.prize_label}
           </p>
-          <p className="font-body text-brand-tinta/50 text-xs">
-            Palabra: <span className="font-bold text-brand-fresa">{dynamic.keyword}</span>
+          <p className="font-body text-brand-sombra/50 text-xs">
+            Palabra: <span className="font-bold text-brand-azul">{dynamic.keyword}</span>
           </p>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
@@ -77,8 +77,8 @@ export default function CouponCard({ coupon }: CouponCardProps) {
             {cfg.badgeText}
           </span>
           {expanded
-            ? <ChevronUp className="w-3.5 h-3.5 text-brand-tinta/30" />
-            : <ChevronDown className="w-3.5 h-3.5 text-brand-tinta/30" />
+            ? <ChevronUp className="w-3.5 h-3.5 text-brand-sombra/30" />
+            : <ChevronDown className="w-3.5 h-3.5 text-brand-sombra/30" />
           }
         </div>
       </button>
@@ -88,32 +88,32 @@ export default function CouponCard({ coupon }: CouponCardProps) {
         'overflow-hidden transition-all duration-300',
         expanded ? 'max-h-[500px]' : 'max-h-0'
       )}>
-        <div className="px-4 pb-5 flex flex-col items-center gap-4 border-t border-brand-tinta/10 pt-4">
+        <div className="px-4 pb-5 flex flex-col items-center gap-4 border-t border-brand-sombra/10 pt-4">
           {coupon.status === 'active' && (
             <>
               {/* Countdown */}
-              <div className="flex items-center gap-2 bg-brand-fresa/10 rounded-2xl px-4 py-2 w-full justify-center">
+              <div className="flex items-center gap-2 bg-brand-azul/10 rounded-2xl px-4 py-2 w-full justify-center">
                 {cfg.icon}
-                <span className="font-mono font-bold text-brand-fresa text-lg tabular-nums">
+                <span className="font-mono font-bold text-brand-azul text-lg tabular-nums">
                   {countdown}
                 </span>
               </div>
 
               {/* QR Code */}
-              <div className="bg-white rounded-2xl p-4 border-2 border-brand-tinta shadow-sticker-sm">
+              <div className="bg-white rounded-2xl p-4 border-2 border-brand-sombra shadow-sticker-sm">
                 <QRCodeSVG
                   value={coupon.id}
                   size={160}
                   level="H"
-                  fgColor="#241A12"
+                  fgColor="#1C2440"
                   bgColor="#FFFFFF"
                 />
               </div>
 
-              <p className="text-xs text-brand-tinta/40 text-center font-body">
-                Muestra este QR en mostrador para canjear tu premio
+              <p className="text-xs text-brand-sombra/40 text-center font-body">
+                Muestra este QR en mostrador para canjear tu medalla
               </p>
-              <p className="text-[10px] text-brand-tinta/30 font-mono break-all text-center">
+              <p className="text-[10px] text-brand-sombra/30 font-mono break-all text-center">
                 ID: {coupon.id}
               </p>
             </>
@@ -121,9 +121,9 @@ export default function CouponCard({ coupon }: CouponCardProps) {
 
           {coupon.status === 'redeemed' && (
             <div className="flex flex-col items-center gap-2 py-2">
-              <CheckCircle2 className="w-14 h-14 text-brand-menta" />
-              <p className="font-heading text-brand-tinta">¡Premio entregado!</p>
-              <p className="text-xs text-brand-tinta/50 font-body">
+              <CheckCircle2 className="w-14 h-14 text-brand-verde" />
+              <p className="font-heading text-brand-sombra">¡Medalla entregada!</p>
+              <p className="text-xs text-brand-sombra/50 font-body">
                 Canjeado el {coupon.redeemed_at ? formatDate(coupon.redeemed_at) : '—'}
               </p>
             </div>
@@ -131,9 +131,9 @@ export default function CouponCard({ coupon }: CouponCardProps) {
 
           {coupon.status === 'expired' && (
             <div className="flex flex-col items-center gap-2 py-2">
-              <XCircle className="w-14 h-14 text-brand-tinta/20" />
-              <p className="font-heading text-brand-tinta/50">Cupón expirado</p>
-              <p className="text-xs text-brand-tinta/30 font-body">
+              <XCircle className="w-14 h-14 text-brand-sombra/20" />
+              <p className="font-heading text-brand-sombra/50">Cupón expirado</p>
+              <p className="text-xs text-brand-sombra/30 font-body">
                 Expiró el {formatDate(dynamic.ends_at)}
               </p>
             </div>

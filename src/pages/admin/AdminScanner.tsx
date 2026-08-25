@@ -11,8 +11,8 @@ type ErrorReason = 'not_found' | 'already_used' | 'expired' | 'stock_empty' | 'f
 const ERROR_MESSAGES: Record<ErrorReason, { title: string; desc: string }> = {
   not_found: { title: 'QR no encontrado', desc: 'Este código QR no existe en el sistema.' },
   already_used: { title: 'Cupón ya canjeado', desc: 'Este cupón ya fue utilizado anteriormente.' },
-  expired: { title: 'Cupón expirado', desc: 'La vigencia de esta dinámica ha terminado.' },
-  stock_empty: { title: 'Stock agotado', desc: 'No quedan premios físicos disponibles para esta dinámica.' },
+  expired: { title: 'Cupón expirado', desc: 'La vigencia de este entrenamiento ha terminado.' },
+  stock_empty: { title: 'Stock agotado', desc: 'No quedan medallas físicas disponibles para este entrenamiento.' },
   forbidden: { title: 'Sin permiso', desc: 'Tu sesión no tiene acceso de administrador.' },
   error: { title: 'Error inesperado', desc: 'Intenta escanear de nuevo.' },
 }
@@ -97,9 +97,9 @@ export default function AdminScanner() {
   return (
     <div className={cn(
       'min-h-screen flex flex-col transition-colors duration-500',
-      scanState === 'success' ? 'bg-brand-menta' :
+      scanState === 'success' ? 'bg-brand-verde' :
       scanState === 'error' ? 'bg-red-600' :
-      'bg-brand-tinta'
+      'bg-brand-azul'
     )}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pt-safe pb-2 pt-8">
@@ -118,9 +118,9 @@ export default function AdminScanner() {
       {scanState === 'scanning' && (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-8">
           <div className="flex flex-col items-center gap-2 text-center">
-            <QrCode className="w-8 h-8 text-brand-fresa" />
+            <QrCode className="w-8 h-8 text-brand-verde" />
             <h1 className="font-heading text-white text-xl">Escanear cupón</h1>
-            <p className="text-white/50 text-sm font-body">Apunta la cámara al QR del cliente</p>
+            <p className="text-white/50 text-sm font-body">Apunta la cámara al QR del cadete</p>
           </div>
 
           {cameraError ? (
@@ -141,7 +141,7 @@ export default function AdminScanner() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60">
                   {['top-0 left-0 border-t-4 border-l-4', 'top-0 right-0 border-t-4 border-r-4',
                     'bottom-0 left-0 border-b-4 border-l-4', 'bottom-0 right-0 border-b-4 border-r-4'].map((cls, i) => (
-                    <div key={i} className={cn('absolute w-8 h-8 border-brand-fresa rounded-sm', cls)} />
+                    <div key={i} className={cn('absolute w-8 h-8 border-brand-verde rounded-sm', cls)} />
                   ))}
                 </div>
               </div>
@@ -158,7 +158,7 @@ export default function AdminScanner() {
                 id="manual-coupon-id"
                 type="text"
                 placeholder="Pega el UUID del cupón"
-                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-xs font-mono outline-none focus:border-brand-fresa transition-colors"
+                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-xs font-mono outline-none focus:border-brand-verde transition-colors"
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !isProcessing.current) {
                     isProcessing.current = true
@@ -185,7 +185,7 @@ export default function AdminScanner() {
             <div className="flex items-center gap-3">
               <Gift className="w-6 h-6 text-white/80 shrink-0" />
               <div>
-                <p className="text-white/60 text-xs font-body">Premio entregado</p>
+                <p className="text-white/60 text-xs font-body">Medalla entregada</p>
                 <p className="font-heading text-white text-lg">{successData.prizeLabel}</p>
               </div>
             </div>
@@ -203,10 +203,10 @@ export default function AdminScanner() {
           <button
             id="scanner-reset"
             onClick={handleReset}
-            className="flex items-center gap-2 bg-white text-brand-menta font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-tinta shadow-sticker-cream hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 bg-white text-brand-verde font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-sombra shadow-sticker-white hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
-            Siguiente cliente
+            Siguiente cadete
           </button>
         </div>
       )}
@@ -228,7 +228,7 @@ export default function AdminScanner() {
           <button
             id="scanner-error-reset"
             onClick={handleReset}
-            className="flex items-center gap-2 bg-white text-red-700 font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-tinta shadow-sticker-cream hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 bg-white text-red-700 font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-sombra shadow-sticker-white hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
             Escanear otro

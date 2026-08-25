@@ -10,18 +10,26 @@ const config: Config = {
     extend: {
       fontFamily: {
         heading: ['Bungee', 'cursive'],
-        body: ['Karla', 'sans-serif'],
+        subheading: ['"Baloo 2"', 'sans-serif'],
+        body: ['"Nunito Sans"', 'sans-serif'],
         mono: ['"Space Mono"', 'monospace'],
       },
       colors: {
-        // Brand palette — paleta (popsicle) flavor colors
+        // Brand palette — agencia espacial Mados
         brand: {
-          tinta:  '#241A12', // ink — hand-painted signage black
-          fresa:  '#FF3D68', // strawberry
-          limon:  '#FFC83D', // lemon
-          crema:  '#FFF6E7', // paper / cream
-          menta:  '#0FA88F', // mint
-          mora:   '#7A3FA0', // grape
+          verde:      '#C8FD5F', // Verde Despegue — contorno de logo, acentos, titulares sobre azul
+          azul:       '#3C5DDC', // Azul Órbita — color base de marca, fondos, botones
+          ingravidez: '#8898D7', // Azul Ingravidez — detalles, texto secundario, líneas
+          blanco:     '#FFFFFF', // Blanco Casco
+          naranja:    '#FF7A3D', // Naranja Reentrada — precios, promos del día
+          rosa:       '#FF4F8B', // Rosa Picafresa — nostalgia dulce
+          amarillo:   '#FFD447', // Amarillo Medalla — premios, insignias, estrellas
+          morado:     '#6B3FA0', // Morado Nebulosa — fondos nocturnos, sabores nuevos
+          noche:      '#23327A', // Azul noche — contraste/fondo oscuro alternativo
+          sombra:     '#1C2440', // Sombra — contornos, sombras duras, texto
+          gris:       '#6B7390', // Gris medio — texto secundario/metadatos
+          grisclaro:  '#CFD4E4', // Gris claro — bordes suaves
+          papel:      '#F4F6FB', // Papel — fondo claro alterno
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -63,12 +71,15 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
-        sticker: '4px 4px 0 0 #241A12',
-        'sticker-sm': '2px 2px 0 0 #241A12',
-        'sticker-lg': '6px 6px 0 0 #241A12',
-        // For badge buttons sitting on a dark (tinta) background
-        'sticker-cream': '4px 4px 0 0 #FFF6E7',
-        'sticker-cream-lg': '6px 6px 0 0 #FFF6E7',
+        // Sombra dura diagonal — plana, sin blur, offset 8-14px (regla de "trazo cómic")
+        sticker: '10px 10px 0 0 #1C2440',
+        'sticker-sm': '6px 6px 0 0 #1C2440',
+        'sticker-lg': '14px 14px 0 0 #1C2440',
+        // Para piezas sobre fondo azul de marca
+        'sticker-white': '10px 10px 0 0 #FFFFFF',
+        'sticker-verde': '10px 10px 0 0 #C8FD5F',
+        // Tarjeta estándar (brand book §4)
+        card: '8px 8px 0 rgba(60,93,220,.22)',
       },
       keyframes: {
         'accordion-down': {
@@ -124,9 +135,13 @@ const config: Config = {
         drip: 'drip 2.4s ease-in-out infinite',
       },
       backgroundImage: {
-        // Hand-painted paleteria cart awning — arcing flavor stripes
-        'paleta-arc': "radial-gradient(circle at 50% 130%, #FF3D68 0%, #FF3D68 36%, #FFC83D 36%, #FFC83D 44%, #0FA88F 44%, #0FA88F 52%, #7A3FA0 52%, #7A3FA0 60%, #241A12 60%, #241A12 100%)",
+        // Trama de puntos — rellena fondos vacíos al ~15% de opacidad
+        'dots-azul': "radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px)",
+        'dots-papel': "radial-gradient(circle, rgba(28,36,64,0.15) 1.5px, transparent 1.5px)",
         'card-gradient': "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))",
+      },
+      backgroundSize: {
+        dots: '18px 18px',
       },
     },
   },

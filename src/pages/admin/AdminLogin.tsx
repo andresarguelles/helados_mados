@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
-import Paleta from '../../components/ui/Paleta'
 
 export default function AdminLogin() {
   const { login } = useStore()
@@ -32,23 +31,16 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-tinta flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-brand-azul bg-dots-azul flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm flex flex-col gap-8 animate-slide-up">
 
         {/* Logo */}
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="flavor-ring">
-            <Paleta className="w-12 h-[4.5rem]" />
-          </div>
-          <div>
-            <h1 className="font-heading text-white text-2xl">
-              Helados<span className="text-brand-fresa">Mados</span>
-            </h1>
-            <p className="text-white/50 text-sm font-body flex items-center gap-1.5 justify-center mt-1">
-              <Shield className="w-3.5 h-3.5" />
-              Panel de administración
-            </p>
-          </div>
+          <img src="/mados-logo-full.svg" alt="Helados Mados" className="h-10 w-auto" />
+          <p className="text-white/50 text-sm font-body flex items-center gap-1.5 justify-center">
+            <Shield className="w-3.5 h-3.5" />
+            Panel de administración
+          </p>
         </div>
 
         {/* Form */}
@@ -64,7 +56,7 @@ export default function AdminLogin() {
               className={cn(
                 'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3',
                 'font-body text-white placeholder:text-white/30',
-                'focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/20 transition-all'
+                'focus:outline-none focus:border-brand-azul focus:ring-2 focus:ring-brand-azul/20 transition-all'
               )}
               autoComplete="username"
             />
@@ -83,7 +75,7 @@ export default function AdminLogin() {
                 className={cn(
                   'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 pr-10',
                   'font-body text-white placeholder:text-white/30',
-                  'focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/20 transition-all'
+                  'focus:outline-none focus:border-brand-azul focus:ring-2 focus:ring-brand-azul/20 transition-all'
                 )}
                 autoComplete="current-password"
               />
@@ -108,7 +100,7 @@ export default function AdminLogin() {
             id="admin-login-btn"
             onClick={handleLogin}
             disabled={loading}
-            className="btn-fresa mt-1 shadow-sticker-cream hover:shadow-sticker-cream-lg"
+            className="btn-fresa mt-1 shadow-sticker-white hover:shadow-sticker-lg"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
             {loading ? 'Verificando...' : 'Acceder'}

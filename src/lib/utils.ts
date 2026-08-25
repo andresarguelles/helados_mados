@@ -46,7 +46,7 @@ export function getRankColors(rank: number): string {
   if (rank === 0) return 'bg-yellow-400 text-yellow-900'
   if (rank === 1) return 'bg-gray-300 text-gray-700'
   if (rank === 2) return 'bg-amber-600 text-amber-100'
-  return 'bg-brand-navy/10 text-brand-navy'
+  return 'bg-brand-azul/10 text-brand-azul'
 }
 
 export function isDynamicActive(dynamic: { starts_at: string; ends_at: string }): boolean {

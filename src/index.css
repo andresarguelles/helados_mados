@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Karla:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@800&family=Nunito+Sans:wght@400;900&family=Space+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,26 @@
 
 @layer base {
   :root {
-    --background: 36 60% 95%;
-    --foreground: 24 35% 11%;
+    --background: 220 43% 97%;
+    --foreground: 230 45% 18%;
     --card: 0 0% 100%;
-    --card-foreground: 24 35% 11%;
+    --card-foreground: 230 45% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 24 35% 11%;
-    --primary: 24 35% 11%;
-    --primary-foreground: 36 60% 95%;
-    --secondary: 346 100% 62%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 36 30% 90%;
-    --muted-foreground: 24 20% 40%;
-    --accent: 41 100% 62%;
-    --accent-foreground: 24 35% 11%;
+    --popover-foreground: 230 45% 18%;
+    --primary: 230 68% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 74 97% 68%;
+    --secondary-foreground: 230 45% 18%;
+    --muted: 225 38% 90%;
+    --muted-foreground: 230 15% 47%;
+    --accent: 19 100% 62%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 24 20% 87%;
-    --input: 24 20% 87%;
-    --ring: 346 100% 62%;
-    --radius: 1rem;
+    --border: 225 38% 85%;
+    --input: 225 38% 85%;
+    --ring: 230 68% 55%;
+    --radius: 1.25rem;
   }
 
   * {
@@ -38,35 +38,40 @@
   }
 
   body {
-    @apply bg-brand-crema text-brand-tinta font-body antialiased;
+    @apply bg-brand-papel text-brand-sombra font-body antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+  h1, h2 {
+    @apply font-heading uppercase;
+  }
+
+  h3, h4, h5, h6 {
+    @apply font-subheading;
   }
 }
 
 @layer components {
-  /* Calm workhorse card — flat paper, hairline ink border, no blur */
+  /* Tarjeta estándar de marca — borde azul grueso + sombra dura offset */
   .paper-card {
-    @apply bg-white border-2 border-brand-tinta/10 rounded-3xl shadow-sm;
+    @apply bg-white border-4 border-brand-azul rounded-3xl shadow-card;
   }
 
-  /* Primary sticker button — presses flat into its own ink shadow */
+  /* Botón primario — fondo azul de marca, sombra dura diagonal */
   .btn-fresa {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-fresa text-white
+    @apply inline-flex items-center justify-center gap-2 bg-brand-azul text-white
            font-heading text-sm uppercase tracking-wide rounded-2xl
-           px-6 py-3.5 border-2 border-brand-tinta shadow-sticker
+           px-6 py-3.5 border-2 border-brand-sombra shadow-sticker
            hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-sticker-lg
            active:translate-x-1 active:translate-y-1 active:shadow-none
            transition-all duration-150;
   }
 
+  /* Botón secundario — fondo oscuro, texto verde para énfasis sobre oscuro */
   .btn-tinta {
-    @apply inline-flex items-center justify-center gap-2 bg-brand-tinta text-brand-crema
+    @apply inline-flex items-center justify-center gap-2 bg-brand-sombra text-brand-verde
            font-heading text-sm uppercase tracking-wide rounded-2xl
-           px-6 py-3.5 border-2 border-brand-tinta shadow-sticker
+           px-6 py-3.5 border-2 border-brand-sombra shadow-sticker
            hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-sticker-lg
            active:translate-x-1 active:translate-y-1 active:shadow-none
            transition-all duration-150;
@@ -75,13 +80,13 @@
   /* Leaderboard row */
   .lb-row {
     @apply flex items-center gap-3 p-3 rounded-2xl
-           hover:bg-brand-tinta/5 transition-colors duration-150;
+           hover:bg-brand-azul/5 transition-colors duration-150;
   }
 
-  /* Coupon ticket — a wooden paleta stick poking out of a rounded panel */
+  /* Coupon ticket — un "stick" amarillo medalla asomando del panel */
   .qr-card {
     @apply relative bg-white rounded-b-3xl rounded-t-xl pt-9 pb-6 px-6
-           border-2 border-brand-tinta shadow-sticker-lg animate-scale-in;
+           border-2 border-brand-sombra shadow-sticker-lg animate-scale-in;
   }
   .qr-card::before {
     content: '';
@@ -91,44 +96,43 @@
     transform: translateX(-50%);
     width: 16px;
     height: 34px;
-    background: #E8C48A;
-    border: 2px solid #241A12;
+    background: #FFD447;
+    border: 2px solid #1C2440;
     border-bottom: none;
     border-radius: 5px 5px 0 0;
   }
 
   /* Input field */
   .field-input {
-    @apply w-full bg-white border-2 border-brand-tinta/15 rounded-2xl
-           px-4 py-3 font-body text-brand-tinta placeholder:text-brand-tinta/35
-           focus:outline-none focus:border-brand-fresa focus:ring-2 focus:ring-brand-fresa/15
+    @apply w-full bg-white border-2 border-brand-sombra/15 rounded-2xl
+           px-4 py-3 font-body text-brand-sombra placeholder:text-brand-sombra/35
+           focus:outline-none focus:border-brand-azul focus:ring-2 focus:ring-brand-azul/15
            transition-all duration-200;
   }
 
-  /* Scanner overlay */
+  /* Scanner overlay — nunca casi-negro, siempre azul de marca */
   .scan-overlay {
-    @apply fixed inset-0 bg-brand-tinta flex flex-col items-center justify-center z-50;
+    @apply fixed inset-0 bg-brand-azul flex flex-col items-center justify-center z-50;
   }
 
   /* Rank badge */
   .rank-badge {
     @apply w-8 h-8 rounded-full flex items-center justify-center
-           font-heading text-xs border-2 border-brand-tinta/10;
+           font-heading text-xs border-2 border-brand-sombra/10;
   }
 
-  /* Points chip */
+  /* Points chip — Amarillo Medalla */
   .points-chip {
-    @apply inline-flex items-center gap-1 bg-brand-limon text-brand-tinta
+    @apply inline-flex items-center gap-1 bg-brand-amarillo text-brand-sombra
            font-heading text-[10px] uppercase tracking-wide px-2.5 py-1 rounded-full
-           border border-brand-tinta/15;
+           border border-brand-sombra/15;
   }
 
-  /* Scalloped drip divider — the paleteria awning edge, cream drips over
-     whatever sits behind it (typically a dark hero section) */
+  /* Scalloped drip divider */
   .scallop-divider {
     height: 22px;
     width: 100%;
-    @apply bg-brand-crema;
+    @apply bg-brand-papel;
     -webkit-mask-image: radial-gradient(circle at 11px 0, transparent 11px, black 11.5px);
     mask-image: radial-gradient(circle at 11px 0, transparent 11px, black 11.5px);
     -webkit-mask-size: 22px 22px;
@@ -137,16 +141,32 @@
     mask-repeat: repeat-x;
   }
 
-  /* Rainbow flavor-arc badge, used behind the paleta mark */
-  .flavor-ring {
-    @apply relative;
+  /* Trama de puntos — rellena fondos vacíos (regla "trazo cómic" §4.3) */
+  .bg-dots-azul {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
   }
-  .flavor-ring::before {
-    content: '';
-    position: absolute;
-    inset: -16px;
-    border-radius: 9999px;
-    background: conic-gradient(from -40deg, #FF3D68, #FFC83D, #0FA88F, #7A3FA0, #FF3D68);
+  .bg-dots-papel {
+    background-image: radial-gradient(circle, rgba(28,36,64,0.15) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
+  }
+
+  /* Etiqueta ladeada — pastilla "sticker pegado a mano" (regla §4.4) */
+  .badge-tilt {
+    @apply inline-flex items-center gap-1.5 rounded-full border-[3px] border-brand-sombra
+           bg-white px-3 py-1 font-mono text-xs uppercase tracking-wide shadow-sticker-sm;
+    transform: rotate(-3deg);
+  }
+  .badge-tilt-alt {
+    transform: rotate(2deg);
+  }
+
+  /* Tarjeta comic estándar (§4) */
+  .card-comic {
+    @apply bg-white border-4 border-brand-azul rounded-[20px] shadow-card;
+  }
+  .card-comic-dark {
+    @apply border-4 border-brand-sombra shadow-sticker;
   }
 
   /* Shimmer loading */
@@ -175,6 +195,6 @@
     background: transparent;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-brand-fresa/40 rounded-full;
+    @apply bg-brand-azul/40 rounded-full;
   }
 }

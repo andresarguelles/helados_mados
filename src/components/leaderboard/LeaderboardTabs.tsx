@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
-import { getRankEmoji, getRankColors } from '../../lib/utils'
-import { Trophy, TrendingUp, Clock, Star } from 'lucide-react'
+import { getRankColors } from '../../lib/utils'
+import { Trophy, TrendingUp, Clock, Star, Medal } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 type Period = 'day' | 'week' | 'all'
@@ -30,7 +30,7 @@ export default function LeaderboardTabs() {
   return (
     <div className="flex flex-col gap-4">
       {/* Tab bar */}
-      <div className="flex gap-1 p-1 bg-brand-tinta/10 rounded-2xl">
+      <div className="flex gap-1 p-1 bg-brand-sombra/10 rounded-2xl">
         {TABS.map(tab => (
           <button
             key={tab.key}
@@ -38,8 +38,8 @@ export default function LeaderboardTabs() {
             className={cn(
               'flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-heading transition-all duration-200',
               active === tab.key
-                ? 'bg-brand-tinta text-white shadow-md'
-                : 'text-brand-tinta/60 hover:text-brand-tinta'
+                ? 'bg-brand-sombra text-white shadow-md'
+                : 'text-brand-sombra/60 hover:text-brand-sombra'
             )}
           >
             {tab.icon}
@@ -49,7 +49,7 @@ export default function LeaderboardTabs() {
       </div>
 
       {entries.length === 0 ? (
-        <div className="text-center py-10 text-brand-tinta/40">
+        <div className="text-center py-10 text-brand-sombra/40">
           <Star className="w-10 h-10 mx-auto mb-2 opacity-30" />
           <p className="font-heading text-sm">Sin actividad aún</p>
           <p className="text-xs mt-1 font-body">¡Sé el primero en el tablero!</p>
@@ -80,17 +80,17 @@ export default function LeaderboardTabs() {
                   key={entry.user.id}
                   className={cn(
                     'lb-row',
-                    entry.user.id === currentUserId && 'bg-brand-fresa/10 border border-brand-fresa/30'
+                    entry.user.id === currentUserId && 'bg-brand-azul/10 border border-brand-azul/30'
                   )}
                 >
                   <div className={cn('rank-badge text-xs', getRankColors(i + 3))}>
                     {i + 4}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-heading text-brand-tinta text-sm truncate">
+                    <p className="font-heading text-brand-sombra text-sm truncate">
                       {entry.user.username}
                       {entry.user.id === currentUserId && (
-                        <span className="text-brand-fresa text-xs ml-1 font-body">(Tú)</span>
+                        <span className="text-brand-azul text-xs ml-1 font-body">(Tú)</span>
                       )}
                     </p>
                   </div>
@@ -113,38 +113,38 @@ function PodiumCard({
   height: string
   isMe: boolean
 }) {
-  const blockColors = ['bg-brand-limon', 'bg-white', 'bg-[#D19A5C]']
+  const blockColors = ['bg-brand-amarillo', 'bg-white', 'bg-brand-ingravidez']
 
   return (
     <div className="flex flex-col items-center gap-1.5 flex-1">
       {/* Avatar circle */}
       <div className={cn(
-        'w-12 h-12 rounded-2xl flex items-center justify-center font-heading text-xl',
-        'border-2 border-brand-tinta shadow-sticker-sm',
+        'w-12 h-12 rounded-2xl flex items-center justify-center',
+        'border-2 border-brand-sombra shadow-sticker-sm',
         blockColors[rank],
-        rank === 0 && 'w-14 h-14 text-2xl animate-float'
+        rank === 0 && 'w-14 h-14 animate-float'
       )}>
-        {getRankEmoji(rank)}
+        <Medal className={cn('text-brand-sombra', rank === 0 ? 'w-7 h-7' : 'w-6 h-6')} />
       </div>
 
       {/* Name + points */}
       <div className="text-center">
         <p className={cn(
-          'font-heading text-brand-tinta truncate max-w-[80px]',
+          'font-heading text-brand-sombra truncate max-w-[80px]',
           rank === 0 ? 'text-sm' : 'text-xs'
         )}>
           {entry.user.username}
         </p>
-        {isMe && <span className="block text-brand-fresa text-[10px] font-body">Tú</span>}
+        {isMe && <span className="block text-brand-azul text-[10px] font-body">Tú</span>}
         <span className="points-chip mt-0.5">{entry.points}</span>
       </div>
 
       {/* Podium block */}
       <div className={cn(
-        `w-full ${height} rounded-t-2xl border-2 border-brand-tinta flex items-center justify-center`,
+        `w-full ${height} rounded-t-2xl border-2 border-brand-sombra flex items-center justify-center`,
         blockColors[rank]
       )}>
-        <span className="font-heading text-2xl text-brand-tinta/20">
+        <span className="font-heading text-2xl text-brand-sombra/20">
           {rank + 1}
         </span>
       </div>

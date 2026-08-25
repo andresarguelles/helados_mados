@@ -1,15 +1,19 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useStore } from '../../lib/store'
-import { User, LogOut, Settings, Menu, X } from 'lucide-react'
+import { User, LogOut, Settings, Menu, X, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../lib/utils'
-import Paleta from '../ui/Paleta'
+
+const AUTH_ROUTES = ['/login', '/canjear']
 
 export default function Navbar() {
   const { getCurrentUser, logout, isAdmin } = useStore()
   const user = getCurrentUser()
   const navigate = useNavigate()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const showAuthCta = !user && !AUTH_ROUTES.includes(location.pathname)
 
   const handleLogout = async () => {
     await logout()
@@ -18,14 +22,11 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-brand-tinta/95 backdrop-blur-md border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-brand-azul/95 backdrop-blur-md border-b border-white/10">
       <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-1.5 group">
-          <Paleta className="w-5 h-8 group-hover:-rotate-6 transition-transform" />
-          <span className="font-heading text-white text-lg leading-none">
-            Helados<span className="text-brand-fresa">Mados</span>
-          </span>
+        <Link to="/" className="flex items-center">
+          <img src="/mados-logo-full.svg" alt="Helados Mados" className="h-9 w-auto" />
         </Link>
 
         {/* Desktop actions */}
@@ -43,40 +44,43 @@ export default function Navbar() {
               {isAdmin && (
                 <Link
                   to="/admin/dashboard"
-                  className="text-white/60 hover:text-brand-limon transition-colors"
+                  className="text-white/60 hover:text-brand-verde transition-colors"
                 >
                   <Settings className="w-4 h-4" />
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="text-white/60 hover:text-brand-fresa transition-colors"
+                className="text-white/60 hover:text-brand-rosa transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </>
-          ) : (
+          ) : showAuthCta ? (
             <Link
               to="/login"
-              className="text-sm font-heading text-white/80 hover:text-white border border-white/20 hover:border-white/50 px-3 py-1.5 rounded-xl transition-all"
+              className="flex items-center gap-1.5 text-sm font-bold text-white/80 hover:text-brand-verde transition-colors"
             >
               Iniciar sesión
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-          )}
+          ) : null}
         </div>
 
         {/* Mobile menu toggle */}
-        <button
-          className="sm:hidden text-white/80 hover:text-white p-1"
-          onClick={() => setMenuOpen(o => !o)}
-        >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        {(user || showAuthCta) && (
+          <button
+            className="sm:hidden text-white/80 hover:text-white p-1"
+            onClick={() => setMenuOpen(o => !o)}
+          >
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        )}
       </div>
 
       {/* Mobile menu */}
       <div className={cn(
-        'sm:hidden overflow-hidden transition-all duration-300 bg-brand-tinta border-t border-white/10',
+        'sm:hidden overflow-hidden transition-all duration-300 bg-brand-azul border-t border-white/10',
         menuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
       )}>
         <div className="max-w-lg mx-auto px-4 py-4 flex flex-col gap-3">
@@ -98,26 +102,26 @@ export default function Navbar() {
                   className="flex items-center gap-2 text-white/60 font-body py-2"
                 >
                   <Settings className="w-4 h-4" />
-                  <span>Panel Admin</span>
+                  <span>Panel Comandante</span>
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-brand-fresa font-body py-2"
+                className="flex items-center gap-2 text-brand-rosa font-body py-2"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Cerrar sesión</span>
               </button>
             </>
-          ) : (
+          ) : showAuthCta ? (
             <Link
               to="/login"
               onClick={() => setMenuOpen(false)}
-              className="btn-fresa text-center shadow-sticker-cream hover:shadow-sticker-cream-lg"
+              className="btn-fresa text-center shadow-sticker-white hover:shadow-sticker-lg"
             >
               Iniciar sesión
             </Link>
-          )}
+          ) : null}
         </div>
       </div>
     </nav>
