@@ -15,6 +15,7 @@ type AuthMode = 'login' | 'register'
 export default function Redeem() {
   const navigate = useNavigate()
   const { getActiveDynamic, login, register, redeemKeyword } = useStore()
+  const profile = useStore(s => s.profile)
 
   const [step, setStep] = useState<Step>('keyword')
   const [authMode, setAuthMode] = useState<AuthMode>('login')
@@ -30,6 +31,37 @@ export default function Redeem() {
   const [couponId, setCouponId] = useState('')
   const [prizeLabel, setPrizeLabel] = useState('')
 
+  // ─── Redeem a validated keyword for the current session ────
+  const attemptRedeem = async (trimmedKw: string) => {
+    const result = await redeemKeyword(trimmedKw)
+    setLoading(false)
+
+    if (!result.success) {
+      const messages: Record<string, string> = {
+        invalid: 'La palabra ya no está activa.',
+        expired: 'Este entrenamiento ha expirado.',
+        already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por entrenamiento.',
+        ip_limit: 'Se alcanzó el límite de canjes desde tu red. Intenta más tarde.',
+        not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
+      }
+      setError(messages[result.reason] || 'Error inesperado.')
+      return
+    }
+
+    const dynamic = await getActiveDynamic(trimmedKw)
+    setPrizeLabel(dynamic?.prize_label ?? 'Medalla')
+    setCouponId(result.coupon.id)
+
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#C8FD5F', '#3C5DDC', '#FFD447', '#FF4F8B'],
+    })
+
+    setStep('success')
+  }
+
   // ─── Step 1: Validate keyword ──────────────────────────────
   const handleKeyword = async () => {
     setError('')
@@ -42,6 +74,12 @@ export default function Redeem() {
     if (!dynamic) {
       setError('Palabra incorrecta o vencida. Verifica en el Live.')
       setLoading(false)
+      return
+    }
+
+    // Already logged in: redeem right away, no need to log in again
+    if (profile) {
+      await attemptRedeem(trimmed)
       return
     }
 
@@ -90,35 +128,7 @@ export default function Redeem() {
       return
     }
 
-    // Attempt redemption
-    const trimmedKw = keyword.trim().toUpperCase()
-    const result = await redeemKeyword(trimmedKw)
-    setLoading(false)
-
-    if (!result.success) {
-      const messages: Record<string, string> = {
-        invalid: 'La palabra ya no está activa.',
-        expired: 'Este entrenamiento ha expirado.',
-        already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por entrenamiento.',
-        ip_limit: 'Se alcanzó el límite de canjes desde tu red. Intenta más tarde.',
-        not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
-      }
-      setError(messages[result.reason] || 'Error inesperado.')
-      return
-    }
-
-    const dynamic = await getActiveDynamic(trimmedKw)
-    setPrizeLabel(dynamic?.prize_label ?? 'Medalla')
-    setCouponId(result.coupon.id)
-
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ['#C8FD5F', '#3C5DDC', '#FFD447', '#FF4F8B'],
-    })
-
-    setStep('success')
+    await attemptRedeem(keyword.trim().toUpperCase())
   }
 
   return (
@@ -182,15 +192,21 @@ export default function Redeem() {
             </div>
 
             <div className="text-center">
-              <p className="text-xs text-brand-gris font-body">
-                ¿Ya tienes cuenta?{' '}
-                <button
-                  onClick={() => { setKeyword(''); setError(''); setSkipRedeem(true); setAuthMode('login'); setStep('auth') }}
-                  className="text-brand-azul font-bold"
-                >
-                  Inicia sesión primero
-                </button>
-              </p>
+              {profile ? (
+                <p className="text-xs text-brand-gris font-body">
+                  Canjearás como <span className="font-bold text-brand-azul">{profile.username}</span>
+                </p>
+              ) : (
+                <p className="text-xs text-brand-gris font-body">
+                  ¿Ya tienes cuenta?{' '}
+                  <button
+                    onClick={() => { setKeyword(''); setError(''); setSkipRedeem(true); setAuthMode('login'); setStep('auth') }}
+                    className="text-brand-azul font-bold"
+                  >
+                    Inicia sesión primero
+                  </button>
+                </p>
+              )}
             </div>
           </div>
         )}
