@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
-import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming } from '../../lib/utils'
+import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming, toDatetimeLocalValue } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import {
   Plus, LogOut, QrCode, Pencil, Trash2, X,
@@ -11,7 +11,14 @@ import {
 
 type ModalMode = 'create' | 'edit' | null
 
-const emptyForm = {
+const emptyForm: {
+  keyword: string
+  physical_stock: number | ''
+  starts_at: string
+  ends_at: string
+  description: string
+  prize_label: string
+} = {
   keyword: '',
   physical_stock: 30,
   starts_at: '',
@@ -35,7 +42,13 @@ export default function AdminDashboard() {
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
 
   const openCreate = () => {
-    setForm(emptyForm)
+    const now = new Date()
+    const sixHoursLater = new Date(now.getTime() + 6 * 60 * 60 * 1000)
+    setForm({
+      ...emptyForm,
+      starts_at: toDatetimeLocalValue(now),
+      ends_at: toDatetimeLocalValue(sixHoursLater),
+    })
     setEditTarget(null)
     setError('')
     setModal('create')
@@ -58,7 +71,12 @@ export default function AdminDashboard() {
   const handleSave = async () => {
     setError('')
     if (!form.keyword.trim()) { setError('La palabra secreta es requerida'); return }
+    if (form.physical_stock === '' || Number(form.physical_stock) < 1) { setError('Indica el stock físico (mínimo 1)'); return }
     if (!form.starts_at || !form.ends_at) { setError('Configura las fechas de vigencia'); return }
+    if (modal === 'create' && form.starts_at.slice(0, 10) < toDatetimeLocalValue(new Date()).slice(0, 10)) {
+      setError('La fecha de inicio no puede ser anterior a hoy')
+      return
+    }
     if (new Date(form.starts_at) >= new Date(form.ends_at)) { setError('La fecha de fin debe ser posterior a la de inicio'); return }
     if (!form.prize_label.trim()) { setError('Describe el premio'); return }
 
@@ -309,7 +327,7 @@ export default function AdminDashboard() {
                   type="number"
                   min={1}
                   value={form.physical_stock}
-                  onChange={e => setForm(f => ({ ...f, physical_stock: Number(e.target.value) }))}
+                  onChange={e => setForm(f => ({ ...f, physical_stock: e.target.value === '' ? '' : Number(e.target.value) }))}
                   className="field-input"
                 />
               </div>
@@ -323,7 +341,16 @@ export default function AdminDashboard() {
                   <input
                     type="datetime-local"
                     value={form.starts_at}
-                    onChange={e => setForm(f => ({ ...f, starts_at: e.target.value }))}
+                    onChange={e => {
+                      const value = e.target.value
+                      setForm(f => ({ ...f, starts_at: value }))
+                      if (modal === 'create' && value.slice(0, 10) < toDatetimeLocalValue(new Date()).slice(0, 10)) {
+                        setError('La fecha de inicio no puede ser anterior a hoy')
+                      } else {
+                        setError('')
+                      }
+                    }}
+                    min={modal === 'create' ? `${toDatetimeLocalValue(new Date()).slice(0, 10)}T00:00` : undefined}
                     className="field-input text-sm"
                   />
                 </div>

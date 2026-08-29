@@ -17,7 +17,7 @@ export default function Footer() {
             Términos y Condiciones
           </Link>
           <a
-            href="https://tiktok.com"
+            href="https://www.tiktok.com/@heladosmados"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-brand-rosa transition-colors flex items-center gap-1"

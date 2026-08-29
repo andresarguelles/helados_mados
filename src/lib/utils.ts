@@ -11,6 +11,10 @@ export function formatDate(date: string | Date) {
   return format(new Date(date), "d 'de' MMM, HH:mm", { locale: es })
 }
 
+export function toDatetimeLocalValue(date: Date) {
+  return format(date, "yyyy-MM-dd'T'HH:mm")
+}
+
 export function timeAgo(date: string | Date) {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: es })
 }
