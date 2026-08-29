@@ -35,3 +35,8 @@ Thumbs.db
 
 # Claude Code local (personal) settings
 .claude/settings.local.json
+
+# Installed skill packages — reproducible via skills-lock.json
+# (`npx skills experimental_install` restores them from the lockfile)
+.claude/skills/
+.agents/skills/
