@@ -6,10 +6,11 @@ import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming, toDat
 import { cn } from '../../lib/utils'
 import {
   Plus, LogOut, QrCode, Pencil, Trash2, X, Home, Menu,
-  Package, ChevronRight, Loader2, AlertCircle, Clock, ArrowRight,
+  Package, ChevronRight, ChevronDown, Loader2, AlertCircle, Clock, ArrowRight,
 } from 'lucide-react'
 
 type ModalMode = 'create' | 'edit' | null
+type StatusGroupKey = 'active' | 'upcoming' | 'expired'
 
 const emptyForm: {
   keyword: string
@@ -40,6 +41,7 @@ export default function AdminDashboard() {
   const [deleting, setDeleting] = useState(false)
   const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [statusFilter, setStatusFilter] = useState<'all' | StatusGroupKey>('all')
 
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
 
@@ -127,6 +129,97 @@ export default function AdminDashboard() {
 
   const getCouponCount = (dynamicId: string) =>
     coupons.filter(c => c.dynamic_id === dynamicId).length
+
+  // Activas primero, luego próximas, luego expiradas; dentro de cada grupo,
+  // las más recientes primero (dynamics ya llega ordenado así desde fetchDynamics).
+  const getStatusGroup = (d: Dynamic): StatusGroupKey => {
+    if (isDynamicActive(d)) return 'active'
+    if (isDynamicUpcoming(d)) return 'upcoming'
+    return 'expired'
+  }
+  const dynamicGroups: { key: StatusGroupKey; label: string; dot: string; items: Dynamic[] }[] = [
+    { key: 'active', label: 'Activas', dot: 'bg-brand-verde', items: dynamics.filter(d => getStatusGroup(d) === 'active') },
+    { key: 'upcoming', label: 'Próximas', dot: 'bg-brand-amarillo', items: dynamics.filter(d => getStatusGroup(d) === 'upcoming') },
+    { key: 'expired', label: 'Expiradas', dot: 'bg-white/30', items: dynamics.filter(d => getStatusGroup(d) === 'expired') },
+  ]
+  const visibleDynamicGroups = dynamicGroups.filter(g =>
+    (statusFilter === 'all' || statusFilter === g.key) && g.items.length > 0
+  )
+
+  const renderDynamicCard = (d: Dynamic) => {
+    const badge = getStatusBadge(d)
+    const stockLeft = d.physical_stock - d.physical_redeemed
+    const stockPct = Math.max(0, (stockLeft / d.physical_stock) * 100)
+
+    return (
+      <div key={d.id} className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col gap-4">
+        {/* Top row */}
+        <div className="flex items-start gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-heading text-brand-amarillo text-lg tracking-wider">
+                {d.keyword}
+              </span>
+              <span className={cn('flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full', badge.cls)}>
+                <span className={cn('w-1.5 h-1.5 rounded-full', badge.dot)} />
+                {badge.label}
+              </span>
+            </div>
+            <p className="text-white/85 text-xs font-body mt-1">{d.prize_label}</p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => openEdit(d)}
+              aria-label={`Editar ${d.keyword}`}
+              className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-white hover:bg-white/20 transition-all"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setDeleteTarget(d)}
+              aria-label={`Eliminar ${d.keyword}`}
+              className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-red-400 hover:bg-white/20 transition-all"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Stock bar */}
+        <div>
+          <div className="flex items-center justify-between text-xs font-body mb-1.5">
+            <span className="text-white/80">Stock físico</span>
+            <span className={cn('font-bold', stockLeft === 0 ? 'text-red-400' : 'text-white/80')}>
+              {stockLeft}/{d.physical_stock} disponibles
+            </span>
+          </div>
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className={cn(
+                'h-full rounded-full transition-all duration-500',
+                stockLeft === 0 ? 'bg-red-500' : stockPct > 30 ? 'bg-brand-verde' : 'bg-brand-azul'
+              )}
+              style={{ width: `${stockPct}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Dates + coupon count */}
+        <div className="flex items-center gap-4 text-xs text-white/75 font-body flex-wrap">
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {formatDate(d.starts_at)}
+            <ArrowRight className="w-3 h-3" />
+            {formatDate(d.ends_at)}
+          </span>
+          <span className="ml-auto flex items-center gap-1 text-brand-amarillo/70">
+            <QrCode className="w-3 h-3" />
+            {getCouponCount(d.id)} cupones
+          </span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
@@ -230,81 +323,47 @@ export default function AdminDashboard() {
             <p className="font-heading">Sin entrenamientos creados</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
-            {[...dynamics].reverse().map(d => {
-              const badge = getStatusBadge(d)
-              const stockLeft = d.physical_stock - d.physical_redeemed
-              const stockPct = Math.max(0, (stockLeft / d.physical_stock) * 100)
+          <div className="flex flex-col gap-4">
+            {/* Status filter */}
+            <div className="relative">
+              <select
+                id="status-filter"
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value as 'all' | StatusGroupKey)}
+                className="field-input-dark appearance-none pr-10 cursor-pointer"
+              >
+                <option value="all">Todas</option>
+                {dynamicGroups.map(group => (
+                  <option key={group.key} value={group.key}>
+                    {group.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-white/60 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
 
-              return (
-                <div key={d.id} className="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col gap-4">
-                  {/* Top row */}
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-heading text-brand-amarillo text-lg tracking-wider">
-                          {d.keyword}
-                        </span>
-                        <span className={cn('flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full', badge.cls)}>
-                          <span className={cn('w-1.5 h-1.5 rounded-full', badge.dot)} />
-                          {badge.label}
-                        </span>
-                      </div>
-                      <p className="text-white/85 text-xs font-body mt-1">{d.prize_label}</p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        onClick={() => openEdit(d)}
-                        aria-label={`Editar ${d.keyword}`}
-                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-white hover:bg-white/20 transition-all"
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(d)}
-                        aria-label={`Eliminar ${d.keyword}`}
-                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-red-400 hover:bg-white/20 transition-all"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+            {visibleDynamicGroups.length === 0 ? (
+              <div className="text-center py-16 text-white/75">
+                <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                <p className="font-heading">
+                  {statusFilter === 'all'
+                    ? 'Ninguna dinámica coincide con el filtro'
+                    : `No hay dinámicas ${dynamicGroups.find(g => g.key === statusFilter)?.label.toLowerCase()}`}
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-6">
+                {visibleDynamicGroups.map(group => (
+                  <div key={group.key} className="flex flex-col gap-3">
+                    <h2 className="flex items-center gap-2 font-heading text-xs uppercase tracking-wide text-white/70">
+                      <span className={cn('w-1.5 h-1.5 rounded-full', group.dot)} />
+                      {group.label}
+                    </h2>
+                    {group.items.map(renderDynamicCard)}
                   </div>
-
-                  {/* Stock bar */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs font-body mb-1.5">
-                      <span className="text-white/80">Stock físico</span>
-                      <span className={cn('font-bold', stockLeft === 0 ? 'text-red-400' : 'text-white/80')}>
-                        {stockLeft}/{d.physical_stock} disponibles
-                      </span>
-                    </div>
-                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className={cn(
-                          'h-full rounded-full transition-all duration-500',
-                          stockLeft === 0 ? 'bg-red-500' : stockPct > 30 ? 'bg-brand-verde' : 'bg-brand-azul'
-                        )}
-                        style={{ width: `${stockPct}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Dates + coupon count */}
-                  <div className="flex items-center gap-4 text-xs text-white/75 font-body flex-wrap">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {formatDate(d.starts_at)}
-                      <ArrowRight className="w-3 h-3" />
-                      {formatDate(d.ends_at)}
-                    </span>
-                    <span className="ml-auto flex items-center gap-1 text-brand-amarillo/70">
-                      <QrCode className="w-3 h-3" />
-                      {getCouponCount(d.id)} cupones
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
