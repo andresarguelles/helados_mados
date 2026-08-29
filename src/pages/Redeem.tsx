@@ -18,6 +18,7 @@ export default function Redeem() {
 
   const [step, setStep] = useState<Step>('keyword')
   const [authMode, setAuthMode] = useState<AuthMode>('login')
+  const [skipRedeem, setSkipRedeem] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -45,6 +46,7 @@ export default function Redeem() {
     }
 
     setLoading(false)
+    setSkipRedeem(false)
     setStep('auth')
   }
 
@@ -80,6 +82,12 @@ export default function Redeem() {
         setLoading(false)
         return
       }
+    }
+
+    if (skipRedeem) {
+      setLoading(false)
+      navigate('/cuenta', { replace: true })
+      return
     }
 
     // Attempt redemption
@@ -126,7 +134,7 @@ export default function Redeem() {
             className="flex items-center gap-1.5 text-brand-gris hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {step === 'keyword' ? 'Inicio' : 'Cambiar palabra'}
+            {step === 'keyword' ? 'Inicio' : skipRedeem ? 'Atrás' : 'Cambiar palabra'}
           </button>
         )}
 
@@ -176,7 +184,10 @@ export default function Redeem() {
             <div className="text-center">
               <p className="text-xs text-brand-gris font-body">
                 ¿Ya tienes cuenta?{' '}
-                <button onClick={() => { setStep('auth'); setAuthMode('login') }} className="text-brand-azul font-bold">
+                <button
+                  onClick={() => { setKeyword(''); setError(''); setSkipRedeem(true); setAuthMode('login'); setStep('auth') }}
+                  className="text-brand-azul font-bold"
+                >
                   Inicia sesión primero
                 </button>
               </p>
@@ -188,18 +199,22 @@ export default function Redeem() {
         {step === 'auth' && (
           <div className="animate-slide-up flex flex-col gap-6">
             <div>
-              <div className="flex items-center gap-1.5 mb-1">
-                <span className="flex items-center gap-1.5 text-brand-amarillo font-heading text-xs bg-brand-sombra px-3 py-1.5 rounded-full">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> {keyword}
-                </span>
-              </div>
+              {!skipRedeem && (
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="flex items-center gap-1.5 text-brand-amarillo font-heading text-xs bg-brand-sombra px-3 py-1.5 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> {keyword}
+                  </span>
+                </div>
+              )}
               <h1 className="font-heading text-brand-sombra text-3xl mt-2">
                 {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
               </h1>
               <p className="font-body text-brand-gris text-sm mt-1">
-                {authMode === 'login'
-                  ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
-                  : 'Solo necesitas un apodo. Sin datos personales.'}
+                {skipRedeem
+                  ? (authMode === 'login' ? 'Ingresa para ver tus puntos y cupones.' : 'Crea tu cuenta con solo un apodo.')
+                  : (authMode === 'login'
+                    ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
+                    : 'Solo necesitas un apodo. Sin datos personales.')}
               </p>
             </div>
 
@@ -323,7 +338,11 @@ export default function Redeem() {
                 )}
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                {loading ? 'Procesando...' : authMode === 'login' ? 'Canjear +1 punto' : 'Registrarme y canjear'}
+                {loading
+                  ? 'Procesando...'
+                  : skipRedeem
+                  ? (authMode === 'login' ? 'Entrar' : 'Crear mi cuenta')
+                  : (authMode === 'login' ? 'Canjear +1 punto' : 'Registrarme y canjear')}
               </button>
             </div>
           </div>
