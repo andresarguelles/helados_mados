@@ -35,7 +35,7 @@ export default function Navbar() {
             <>
               <Link
                 to="/cuenta"
-                className="flex items-center gap-1.5 text-white/80 hover:text-white font-body text-sm transition-colors"
+                className="flex items-center gap-1.5 text-white/90 hover:text-white font-body text-sm transition-colors"
               >
                 <User className="w-4 h-4" />
                 <span className="font-semibold">{user.username}</span>
@@ -44,14 +44,16 @@ export default function Navbar() {
               {isAdmin && (
                 <Link
                   to="/admin/dashboard"
-                  className="text-white/60 hover:text-brand-verde transition-colors"
+                  aria-label="Panel Comandante"
+                  className="text-white/75 hover:text-brand-verde transition-colors"
                 >
                   <Settings className="w-4 h-4" />
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="text-white/60 hover:text-brand-rosa transition-colors"
+                aria-label="Cerrar sesión"
+                className="text-white/75 hover:text-brand-rosa transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -59,7 +61,7 @@ export default function Navbar() {
           ) : showAuthCta ? (
             <Link
               to="/login"
-              className="flex items-center gap-1.5 text-sm font-bold text-white/80 hover:text-brand-verde transition-colors"
+              className="flex items-center gap-1.5 text-sm font-bold text-white/90 hover:text-brand-verde transition-colors"
             >
               Iniciar sesión
               <ArrowRight className="w-3.5 h-3.5" />
@@ -70,8 +72,10 @@ export default function Navbar() {
         {/* Mobile menu toggle */}
         {(user || showAuthCta) && (
           <button
-            className="sm:hidden text-white/80 hover:text-white p-1"
+            className="sm:hidden text-white/90 hover:text-white p-1"
             onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={menuOpen}
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -89,7 +93,7 @@ export default function Navbar() {
               <Link
                 to="/cuenta"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 text-white/80 font-body py-2"
+                className="flex items-center gap-2 text-white/90 font-body py-2"
               >
                 <User className="w-4 h-4" />
                 <span className="font-semibold">{user.username}</span>
@@ -99,7 +103,7 @@ export default function Navbar() {
                 <Link
                   to="/admin/dashboard"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 text-white/60 font-body py-2"
+                  className="flex items-center gap-2 text-white/80 font-body py-2"
                 >
                   <Settings className="w-4 h-4" />
                   <span>Panel Comandante</span>

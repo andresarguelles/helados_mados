@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
-import { cn } from '../../lib/utils'
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 
 export default function AdminLogin() {
@@ -37,7 +36,7 @@ export default function AdminLogin() {
         {/* Logo */}
         <div className="flex flex-col items-center gap-3 text-center">
           <img src="/mados-logo-full.svg" alt="Helados Mados" className="h-10 w-auto" />
-          <p className="text-white/50 text-sm font-body flex items-center gap-1.5 justify-center">
+          <p className="text-white/85 text-sm font-body flex items-center gap-1.5 justify-center">
             <Shield className="w-3.5 h-3.5" />
             Panel de administración
           </p>
@@ -46,24 +45,20 @@ export default function AdminLogin() {
         {/* Form */}
         <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
           <div>
-            <label className="font-heading text-white/70 text-xs mb-1.5 block">Usuario</label>
+            <label className="font-heading text-white/85 text-xs mb-1.5 block">Usuario</label>
             <input
               id="admin-username"
               type="text"
               value={username}
               onChange={e => { setUsername(e.target.value); setError('') }}
               placeholder="admin"
-              className={cn(
-                'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3',
-                'font-body text-white placeholder:text-white/30',
-                'focus:outline-none focus:border-brand-azul focus:ring-2 focus:ring-brand-azul/20 transition-all'
-              )}
+              className="field-input-dark"
               autoComplete="username"
             />
           </div>
 
           <div>
-            <label className="font-heading text-white/70 text-xs mb-1.5 block">Contraseña</label>
+            <label className="font-heading text-white/85 text-xs mb-1.5 block">Contraseña</label>
             <div className="relative">
               <input
                 id="admin-password"
@@ -72,17 +67,14 @@ export default function AdminLogin() {
                 onChange={e => { setPassword(e.target.value); setError('') }}
                 onKeyDown={e => e.key === 'Enter' && handleLogin()}
                 placeholder="••••••••"
-                className={cn(
-                  'w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 pr-10',
-                  'font-body text-white placeholder:text-white/30',
-                  'focus:outline-none focus:border-brand-azul focus:ring-2 focus:ring-brand-azul/20 transition-all'
-                )}
+                className="field-input-dark pr-10"
                 autoComplete="current-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPw(s => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                aria-label={showPw ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/75 hover:text-white transition-colors"
               >
                 {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -107,7 +99,7 @@ export default function AdminLogin() {
           </button>
         </div>
 
-        <p className="text-center text-white/20 text-xs font-body">
+        <p className="text-center text-white/70 text-xs font-body">
           Acceso restringido al personal autorizado
         </p>
       </div>

@@ -30,8 +30,9 @@ export default function AdminDashboard() {
   const [error, setError] = useState('')
   const [listError, setListError] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
 
-  useEffect(() => { fetchDynamics() }, [fetchDynamics])
+  useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
 
   const openCreate = () => {
     setForm(emptyForm)
@@ -101,7 +102,7 @@ export default function AdminDashboard() {
 
   const getStatusBadge = (d: Dynamic) => {
     if (isDynamicActive(d)) return { label: 'Activa', dot: 'bg-brand-verde', cls: 'bg-brand-verde/15 text-brand-verde' }
-    if (isDynamicExpired(d)) return { label: 'Expirada', dot: 'bg-white/30', cls: 'bg-white/10 text-white/50' }
+    if (isDynamicExpired(d)) return { label: 'Expirada', dot: 'bg-white/30', cls: 'bg-white/10 text-white/80' }
     if (isDynamicUpcoming(d)) return { label: 'Próxima', dot: 'bg-brand-amarillo', cls: 'bg-brand-amarillo/15 text-brand-amarillo' }
     return { label: 'Desconocido', dot: 'bg-white/30', cls: '' }
   }
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
           >
             <QrCode className="w-3.5 h-3.5" />Escáner
           </button>
-          <button onClick={handleLogout} className="text-white/40 hover:text-white transition-colors">
+          <button onClick={handleLogout} aria-label="Cerrar sesión" className="text-white/75 hover:text-white transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -136,7 +137,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-heading text-white text-xl uppercase">Entrenamientos</h1>
-            <p className="text-white/65 text-xs font-body mt-0.5">Palabras secretas y medallas</p>
+            <p className="text-white/85 text-xs font-body mt-0.5">Palabras secretas y medallas</p>
           </div>
           <button
             id="create-dynamic-btn"
@@ -155,9 +156,17 @@ export default function AdminDashboard() {
         )}
 
         {/* Dynamics list */}
-        {dynamics.length === 0 ? (
-          <div className="text-center py-16 text-white/30">
-            <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
+        {!dynamicsLoaded ? (
+          <div className="flex flex-col gap-3">
+            {[0, 1].map(i => (
+              <div key={i} className="relative overflow-hidden bg-white/5 border border-white/10 rounded-3xl h-32">
+                <div className="absolute inset-0 shimmer opacity-20" />
+              </div>
+            ))}
+          </div>
+        ) : dynamics.length === 0 ? (
+          <div className="text-center py-16 text-white/75">
+            <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
             <p className="font-heading">Sin entrenamientos creados</p>
           </div>
         ) : (
@@ -181,22 +190,24 @@ export default function AdminDashboard() {
                           {badge.label}
                         </span>
                       </div>
-                      <p className="text-white/60 text-xs font-body mt-1">{d.prize_label}</p>
+                      <p className="text-white/85 text-xs font-body mt-1">{d.prize_label}</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => openEdit(d)}
-                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
+                        aria-label={`Editar ${d.keyword}`}
+                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-white hover:bg-white/20 transition-all"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(d.id)}
+                        aria-label={deleteConfirm === d.id ? `Confirmar eliminar ${d.keyword}` : `Eliminar ${d.keyword}`}
                         className={cn(
                           'w-8 h-8 rounded-xl flex items-center justify-center transition-all',
                           deleteConfirm === d.id
                             ? 'bg-red-500 text-white'
-                            : 'bg-white/10 text-white/60 hover:text-red-400 hover:bg-white/20'
+                            : 'bg-white/10 text-white/75 hover:text-red-400 hover:bg-white/20'
                         )}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -207,7 +218,7 @@ export default function AdminDashboard() {
                   {/* Stock bar */}
                   <div>
                     <div className="flex items-center justify-between text-xs font-body mb-1.5">
-                      <span className="text-white/50">Stock físico</span>
+                      <span className="text-white/80">Stock físico</span>
                       <span className={cn('font-bold', stockLeft === 0 ? 'text-red-400' : 'text-white/80')}>
                         {stockLeft}/{d.physical_stock} disponibles
                       </span>
@@ -224,7 +235,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Dates + coupon count */}
-                  <div className="flex items-center gap-4 text-xs text-white/40 font-body flex-wrap">
+                  <div className="flex items-center gap-4 text-xs text-white/75 font-body flex-wrap">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {formatDate(d.starts_at)}
@@ -254,7 +265,7 @@ export default function AdminDashboard() {
                 {modal === 'create' ? <Plus className="w-5 h-5 text-brand-azul" /> : <Pencil className="w-5 h-5 text-brand-azul" />}
                 {modal === 'create' ? 'Nuevo entrenamiento' : 'Editar entrenamiento'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-brand-sombra/40 hover:text-brand-sombra transition-colors">
+              <button onClick={() => setModal(null)} aria-label="Cerrar" className="text-brand-gris hover:text-brand-sombra transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>

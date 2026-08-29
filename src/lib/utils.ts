@@ -33,22 +33,6 @@ export function formatCountdown(endDate: string | Date): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-export const EMOJI_MEDALS = ['🥇', '🥈', '🥉']
-export const EMOJI_RANKS = ['👑', '⭐', '🌟', '✨', '🎯', '🎪', '🎠', '🎡']
-
-export function getRankEmoji(rank: number): string {
-  if (rank < 3) return EMOJI_MEDALS[rank]
-  if (rank < 8) return EMOJI_RANKS[rank]
-  return `#${rank + 1}`
-}
-
-export function getRankColors(rank: number): string {
-  if (rank === 0) return 'bg-yellow-400 text-yellow-900'
-  if (rank === 1) return 'bg-gray-300 text-gray-700'
-  if (rank === 2) return 'bg-amber-600 text-amber-100'
-  return 'bg-brand-azul/10 text-brand-azul'
-}
-
 export function isDynamicActive(dynamic: { starts_at: string; ends_at: string }): boolean {
   const now = new Date()
   return new Date(dynamic.starts_at) <= now && new Date(dynamic.ends_at) > now

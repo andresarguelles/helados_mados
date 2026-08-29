@@ -38,7 +38,7 @@ export default function Terminos() {
             </ul>
           </Section>
 
-          <p className="text-xs text-brand-sombra/40 text-center font-body">
+          <p className="text-xs text-brand-gris text-center font-body">
             Última actualización: agosto 2026. Uso de la plataforma implica aceptación de estos términos.
           </p>
         </div>
@@ -56,7 +56,7 @@ function Section({ icon, title, children }: { icon: React.ReactNode; title: stri
         <span className="text-brand-azul">{icon}</span>
         <h2 className="font-heading text-brand-sombra text-base">{title}</h2>
       </div>
-      <div className="font-body text-brand-sombra/70 text-sm leading-relaxed">{children}</div>
+      <div className="font-body text-brand-gris text-sm leading-relaxed">{children}</div>
     </div>
   )
 }

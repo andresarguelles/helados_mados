@@ -20,7 +20,7 @@ export default function Home() {
               Gana medallas
               <span className="block text-brand-verde">despega por un helado</span>
             </h1>
-            <p className="text-white/60 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
+            <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
               Únete al TikTok Live, ingresa la palabra secreta
               y canjea tu medalla en tu estación. ¡Compite por ser Comandante!
             </p>
@@ -84,7 +84,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="font-heading text-brand-sombra text-sm uppercase">{step.title}</p>
-                <p className="font-body text-brand-sombra/60 text-xs mt-0.5 leading-relaxed">{step.desc}</p>
+                <p className="font-body text-brand-gris text-xs mt-0.5 leading-relaxed">{step.desc}</p>
               </div>
             </div>
           ))}

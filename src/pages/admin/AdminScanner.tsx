@@ -102,10 +102,10 @@ export default function AdminScanner() {
       'bg-brand-azul'
     )}>
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 pt-safe pb-2 pt-8">
+      <div className="flex items-center justify-between px-4 pb-2 pt-[max(2rem,env(safe-area-inset-top))]">
         <button
           onClick={() => navigate('/admin/dashboard')}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-white/85 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-body">Dashboard</span>
@@ -120,14 +120,14 @@ export default function AdminScanner() {
           <div className="flex flex-col items-center gap-2 text-center">
             <QrCode className="w-8 h-8 text-brand-verde" />
             <h1 className="font-heading text-white text-xl">Escanear cupón</h1>
-            <p className="text-white/50 text-sm font-body">Apunta la cámara al QR del cadete</p>
+            <p className="text-white/90 text-sm font-body">Apunta la cámara al QR del cadete</p>
           </div>
 
           {cameraError ? (
             <div className="bg-red-500/20 border border-red-400/30 rounded-3xl p-6 text-center max-w-sm w-full">
               <XCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
               <p className="text-white font-heading text-sm">{cameraError}</p>
-              <p className="text-white/50 text-xs mt-2 font-body">
+              <p className="text-white/90 text-xs mt-2 font-body">
                 Asegúrate de estar en HTTPS y haber concedido permisos de cámara.
               </p>
             </div>
@@ -150,13 +150,14 @@ export default function AdminScanner() {
 
           {/* Manual test input (dev helper) */}
           <details className="w-full max-w-xs">
-            <summary className="text-white/30 text-xs text-center cursor-pointer hover:text-white/60 transition-colors font-body">
+            <summary className="text-white/70 text-xs text-center cursor-pointer hover:text-white transition-colors font-body">
               Ingresar ID manual (dev)
             </summary>
             <div className="mt-3 flex gap-2">
               <input
                 id="manual-coupon-id"
                 type="text"
+                aria-label="ID del cupón"
                 placeholder="Pega el UUID del cupón"
                 className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-xs font-mono outline-none focus:border-brand-verde transition-colors"
                 onKeyDown={e => {
@@ -174,26 +175,26 @@ export default function AdminScanner() {
       {/* ── Success state ───────────────────────────────── */}
       {scanState === 'success' && successData && (
         <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
-          <CheckCircle2 className="w-24 h-24 text-white/90 drop-shadow-2xl" strokeWidth={1.5} />
+          <CheckCircle2 className="w-24 h-24 text-brand-sombra" strokeWidth={1.5} />
 
           <div className="text-center">
-            <h1 className="font-heading text-white text-5xl mb-2">¡Válido!</h1>
-            <p className="text-white/80 font-heading text-2xl">{successData.username}</p>
+            <h1 className="font-heading text-brand-sombra text-5xl mb-2">¡Válido!</h1>
+            <p className="text-brand-sombra/80 font-heading text-2xl">{successData.username}</p>
           </div>
 
-          <div className="w-full bg-white/20 backdrop-blur rounded-3xl p-6 flex flex-col gap-4">
+          <div className="w-full bg-white rounded-3xl p-6 flex flex-col gap-4 border-2 border-brand-sombra shadow-sticker-lg">
             <div className="flex items-center gap-3">
-              <Gift className="w-6 h-6 text-white/80 shrink-0" />
+              <Gift className="w-6 h-6 text-brand-azul shrink-0" />
               <div>
-                <p className="text-white/60 text-xs font-body">Medalla entregada</p>
-                <p className="font-heading text-white text-lg">{successData.prizeLabel}</p>
+                <p className="text-brand-gris text-xs font-body">Medalla entregada</p>
+                <p className="font-heading text-brand-sombra text-lg">{successData.prizeLabel}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 border-t border-white/20 pt-4">
-              <Star className="w-6 h-6 text-white/80 fill-white/80 shrink-0" />
+            <div className="flex items-center gap-3 border-t border-brand-sombra/10 pt-4">
+              <Star className="w-6 h-6 text-brand-azul fill-brand-azul shrink-0" />
               <div>
-                <p className="text-white/60 text-xs font-body">Puntos sumados</p>
-                <p className="font-heading text-white text-lg">
+                <p className="text-brand-gris text-xs font-body">Puntos sumados</p>
+                <p className="font-heading text-brand-sombra text-lg">
                   +10 pts &rarr; Total: {successData.points}
                 </p>
               </div>
@@ -203,7 +204,7 @@ export default function AdminScanner() {
           <button
             id="scanner-reset"
             onClick={handleReset}
-            className="flex items-center gap-2 bg-white text-brand-verde font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-sombra shadow-sticker-white hover:scale-105 active:scale-95 transition-all"
+            className="flex items-center gap-2 bg-white text-brand-sombra font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-sombra shadow-sticker-white hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
             Siguiente cadete
@@ -220,7 +221,7 @@ export default function AdminScanner() {
             <h1 className="font-heading text-white text-4xl mb-2">
               {ERROR_MESSAGES[errorReason].title}
             </h1>
-            <p className="text-white/70 font-body text-base">
+            <p className="text-white/95 font-body text-base">
               {ERROR_MESSAGES[errorReason].desc}
             </p>
           </div>

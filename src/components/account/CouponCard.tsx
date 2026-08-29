@@ -37,7 +37,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
       border: 'border-brand-sombra',
       badge: 'bg-brand-verde text-brand-sombra',
       badgeText: 'Canjeado',
-      icon: <CheckCircle2 className="w-4 h-4 text-brand-verde" />,
+      icon: <CheckCircle2 className="w-4 h-4 text-brand-sombra" />,
     },
     expired: {
       border: 'border-brand-sombra/15',
@@ -68,7 +68,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
           <p className="font-heading text-brand-sombra text-sm truncate">
             {dynamic.prize_label}
           </p>
-          <p className="font-body text-brand-sombra/50 text-xs">
+          <p className="font-body text-brand-gris text-xs">
             Palabra: <span className="font-bold text-brand-azul">{dynamic.keyword}</span>
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
                 />
               </div>
 
-              <p className="text-xs text-brand-sombra/40 text-center font-body">
+              <p className="text-xs text-brand-gris text-center font-body">
                 Muestra este QR en mostrador para canjear tu medalla
               </p>
               <p className="text-[10px] text-brand-sombra/30 font-mono break-all text-center">
@@ -121,9 +121,9 @@ export default function CouponCard({ coupon }: CouponCardProps) {
 
           {coupon.status === 'redeemed' && (
             <div className="flex flex-col items-center gap-2 py-2">
-              <CheckCircle2 className="w-14 h-14 text-brand-verde" />
+              <CheckCircle2 className="w-14 h-14 text-brand-sombra" />
               <p className="font-heading text-brand-sombra">¡Medalla entregada!</p>
-              <p className="text-xs text-brand-sombra/50 font-body">
+              <p className="text-xs text-brand-gris font-body">
                 Canjeado el {coupon.redeemed_at ? formatDate(coupon.redeemed_at) : '—'}
               </p>
             </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
-import { getRankColors } from '../../lib/utils'
 import { Trophy, TrendingUp, Clock, Star, Medal } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -17,10 +16,12 @@ export default function LeaderboardTabs() {
   const getLeaderboard = useStore(s => s.getLeaderboard)
   const currentUserId = useStore(s => s.profile?.id ?? null)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     let cancelled = false
-    getLeaderboard(active).then(data => { if (!cancelled) setEntries(data) })
+    setLoaded(false)
+    getLeaderboard(active).then(data => { if (!cancelled) { setEntries(data); setLoaded(true) } })
     return () => { cancelled = true }
   }, [active, getLeaderboard])
 
@@ -39,7 +40,7 @@ export default function LeaderboardTabs() {
               'flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-heading transition-all duration-200',
               active === tab.key
                 ? 'bg-brand-sombra text-white shadow-md'
-                : 'text-brand-sombra/60 hover:text-brand-sombra'
+                : 'text-brand-gris hover:text-brand-sombra'
             )}
           >
             {tab.icon}
@@ -48,8 +49,17 @@ export default function LeaderboardTabs() {
         ))}
       </div>
 
-      {entries.length === 0 ? (
-        <div className="text-center py-10 text-brand-sombra/40">
+      {!loaded ? (
+        <div className="flex flex-col items-center gap-2 py-10">
+          <div className="relative overflow-hidden w-40 h-4 rounded-full bg-brand-sombra/10">
+            <div className="absolute inset-0 shimmer" />
+          </div>
+          <div className="relative overflow-hidden w-28 h-3 rounded-full bg-brand-sombra/10">
+            <div className="absolute inset-0 shimmer" />
+          </div>
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="text-center py-10 text-brand-gris">
           <Star className="w-10 h-10 mx-auto mb-2 opacity-30" />
           <p className="font-heading text-sm">Sin actividad aún</p>
           <p className="text-xs mt-1 font-body">¡Sé el primero en el tablero!</p>
@@ -83,7 +93,7 @@ export default function LeaderboardTabs() {
                     entry.user.id === currentUserId && 'bg-brand-azul/10 border border-brand-azul/30'
                   )}
                 >
-                  <div className={cn('rank-badge text-xs', getRankColors(i + 3))}>
+                  <div className="rank-badge text-xs bg-brand-azul/10 text-brand-azul">
                     {i + 4}
                   </div>
                   <div className="flex-1 min-w-0">

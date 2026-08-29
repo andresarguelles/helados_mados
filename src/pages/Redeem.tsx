@@ -6,7 +6,8 @@ import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
 import { QRCodeSVG as QRCode } from 'qrcode.react'
 import confetti from 'canvas-confetti'
-import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
+import ErrorAlert from '../components/ui/ErrorAlert'
 
 type Step = 'keyword' | 'auth' | 'success'
 type AuthMode = 'login' | 'register'
@@ -122,7 +123,7 @@ export default function Redeem() {
         {step !== 'success' && (
           <button
             onClick={() => step === 'keyword' ? navigate('/') : setStep('keyword')}
-            className="flex items-center gap-1.5 text-brand-sombra/50 hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
+            className="flex items-center gap-1.5 text-brand-gris hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {step === 'keyword' ? 'Inicio' : 'Cambiar palabra'}
@@ -137,7 +138,7 @@ export default function Redeem() {
                 Ingresa la
                 <span className="block text-brand-azul">palabra secreta</span>
               </h1>
-              <p className="font-body text-brand-sombra/60 text-sm mt-2">
+              <p className="font-body text-brand-gris text-sm mt-2">
                 La palabra se revela durante el TikTok Live de Helados Mados.
               </p>
             </div>
@@ -173,7 +174,7 @@ export default function Redeem() {
             </div>
 
             <div className="text-center">
-              <p className="text-xs text-brand-sombra/40 font-body">
+              <p className="text-xs text-brand-gris font-body">
                 ¿Ya tienes cuenta?{' '}
                 <button onClick={() => { setStep('auth'); setAuthMode('login') }} className="text-brand-azul font-bold">
                   Inicia sesión primero
@@ -195,7 +196,7 @@ export default function Redeem() {
               <h1 className="font-heading text-brand-sombra text-3xl mt-2">
                 {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
               </h1>
-              <p className="font-body text-brand-sombra/60 text-sm mt-1">
+              <p className="font-body text-brand-gris text-sm mt-1">
                 {authMode === 'login'
                   ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
                   : 'Solo necesitas un apodo. Sin datos personales.'}
@@ -208,7 +209,7 @@ export default function Redeem() {
                 onClick={() => { setAuthMode('login'); setError('') }}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all',
-                  authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-sombra/60 hover:text-brand-sombra'
+                  authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
                 )}
               >
                 <User className="w-4 h-4" />Soy cadete
@@ -217,7 +218,7 @@ export default function Redeem() {
                 onClick={() => { setAuthMode('register'); setError('') }}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all',
-                  authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-sombra/60 hover:text-brand-sombra'
+                  authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
                 )}
               >
                 <UserPlus className="w-4 h-4" />Soy nuevo cadete
@@ -246,7 +247,7 @@ export default function Redeem() {
               <div>
                 <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
                   {authMode === 'login' ? 'Contraseña' : 'Crea contraseña'}
-                  {authMode === 'register' && <span className="text-brand-sombra/40 font-body"> (mín. 8 caracteres)</span>}
+                  {authMode === 'register' && <span className="text-brand-gris font-body"> (mín. 8 caracteres)</span>}
                 </label>
                 <div className="relative">
                   <input
@@ -261,7 +262,8 @@ export default function Redeem() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(s => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-sombra/40 hover:text-brand-sombra transition-colors"
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-gris hover:text-brand-sombra transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -298,7 +300,7 @@ export default function Redeem() {
                     >
                       {termsAccepted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                     </div>
-                    <span className="text-xs text-brand-sombra/70 font-body leading-relaxed">
+                    <span className="text-xs text-brand-gris font-body leading-relaxed">
                       Acepto los{' '}
                       <a href="/terminos" target="_blank" className="text-brand-azul font-bold underline">
                         Términos y Condiciones
@@ -337,7 +339,7 @@ export default function Redeem() {
                   ¡+1 punto!
                 </h1>
               </div>
-              <p className="font-body text-brand-sombra/60 text-sm mt-2">
+              <p className="font-body text-brand-gris text-sm mt-2">
                 Tu cupón está listo. Preséntalo en mostrador para recibir tu medalla.
               </p>
             </div>
@@ -345,7 +347,7 @@ export default function Redeem() {
             {/* Prize banner */}
             <div className="w-full bg-brand-amarillo/25 border-2 border-brand-sombra rounded-3xl px-5 py-4 text-center">
               <p className="font-heading text-brand-sombra text-xl">{prizeLabel}</p>
-              <p className="text-xs text-brand-sombra/50 mt-1 font-body">Medalla canjeable con este QR</p>
+              <p className="text-xs text-brand-gris mt-1 font-body">Medalla canjeable con este QR</p>
             </div>
 
             {/* QR Ticket */}
@@ -370,11 +372,11 @@ export default function Redeem() {
             {/* Points info */}
             <div className="w-full flex flex-col gap-2">
               <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-brand-sombra/10">
-                <span className="font-body text-sm text-brand-sombra/70">Puntos digitales obtenidos</span>
+                <span className="font-body text-sm text-brand-gris">Puntos digitales obtenidos</span>
                 <span className="points-chip">+1 pt</span>
               </div>
               <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-brand-sombra/10">
-                <span className="font-body text-sm text-brand-sombra/70">Al canjear en tu estación</span>
+                <span className="font-body text-sm text-brand-gris">Al canjear en tu estación</span>
                 <span className="points-chip">+10 pts</span>
               </div>
             </div>
@@ -392,15 +394,6 @@ export default function Redeem() {
       </div>
 
       <Footer />
-    </div>
-  )
-}
-
-function ErrorAlert({ msg }: { msg: string }) {
-  return (
-    <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-2xl px-4 py-3 animate-fade-in">
-      <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-      <p className="text-xs text-red-600 font-body leading-relaxed">{msg}</p>
     </div>
   )
 }

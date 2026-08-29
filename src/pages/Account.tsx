@@ -14,6 +14,7 @@ export default function Account() {
   const getUserCoupons = useStore(s => s.getUserCoupons)
   const fetchDynamics = useStore(s => s.fetchDynamics)
   const [allCoupons, setAllCoupons] = useState<Coupon[]>([])
+  const [couponsLoaded, setCouponsLoaded] = useState(false)
 
   useEffect(() => {
     if (authReady && !profile) navigate('/canjear')
@@ -21,7 +22,7 @@ export default function Account() {
 
   useEffect(() => {
     if (profile) {
-      getUserCoupons(profile.id).then(setAllCoupons)
+      getUserCoupons(profile.id).then(coupons => { setAllCoupons(coupons); setCouponsLoaded(true) })
       fetchDynamics()
     }
   }, [profile, getUserCoupons, fetchDynamics])
@@ -40,12 +41,12 @@ export default function Account() {
         <div className="max-w-lg mx-auto flex flex-col items-center text-center gap-4">
           <div>
             <h1 className="font-heading text-white text-2xl">{profile.username}</h1>
-            <p className="text-white/50 text-sm font-body">Cadete Mados</p>
+            <p className="text-white/85 text-sm font-body">Cadete Mados</p>
           </div>
           <div className="flex items-center gap-2 bg-white/10 rounded-2xl px-6 py-3">
             <Star className="w-5 h-5 text-brand-verde fill-brand-verde" />
             <span className="font-heading text-brand-verde text-3xl">{profile.total_points}</span>
-            <span className="font-body text-white/60 text-sm">puntos totales</span>
+            <span className="font-body text-white/90 text-sm">puntos totales</span>
           </div>
         </div>
 
@@ -66,10 +67,19 @@ export default function Account() {
             )}
           </div>
 
-          {active.length === 0 ? (
+          {!couponsLoaded ? (
+            <div className="paper-card rounded-3xl p-8 flex flex-col items-center gap-2">
+              <div className="relative overflow-hidden w-32 h-4 rounded-full bg-brand-sombra/10">
+                <div className="absolute inset-0 shimmer" />
+              </div>
+              <div className="relative overflow-hidden w-44 h-3 rounded-full bg-brand-sombra/10">
+                <div className="absolute inset-0 shimmer" />
+              </div>
+            </div>
+          ) : active.length === 0 ? (
             <div className="paper-card rounded-3xl p-8 text-center">
-              <p className="font-heading text-brand-sombra/60 text-sm">Sin cupones activos</p>
-              <p className="text-xs text-brand-sombra/40 mt-1 font-body">Canjea una palabra secreta del Live</p>
+              <p className="font-heading text-brand-gris text-sm">Sin cupones activos</p>
+              <p className="text-xs text-brand-gris mt-1 font-body">Canjea una palabra secreta del Live</p>
               <button
                 onClick={() => navigate('/canjear')}
                 className="btn-fresa mt-4 text-xs px-6 py-2.5"
@@ -99,7 +109,7 @@ export default function Account() {
           <Sparkles className="w-9 h-9 text-brand-verde shrink-0" />
           <div className="flex-1">
             <p className="font-heading text-white text-sm">Pronto habrá nuevas cosas</p>
-            <p className="font-body text-white/60 text-xs mt-0.5">Avatares, wallet digital y más sorpresas</p>
+            <p className="font-body text-white/85 text-xs mt-0.5">Avatares, wallet digital y más sorpresas</p>
           </div>
           <ChevronRight className="w-4 h-4 text-white/40 shrink-0" />
         </div>

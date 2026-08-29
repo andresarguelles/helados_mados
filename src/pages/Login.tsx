@@ -4,7 +4,8 @@ import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { User, UserPlus, Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, Zap } from 'lucide-react'
+import { User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2, Zap } from 'lucide-react'
+import ErrorAlert from '../components/ui/ErrorAlert'
 
 type AuthMode = 'login' | 'register'
 
@@ -78,7 +79,7 @@ export default function Login() {
             <h1 className="font-heading text-brand-sombra text-3xl">
               {authMode === 'login' ? 'Bienvenido' : 'Únete'}
             </h1>
-            <p className="text-brand-sombra/50 text-sm font-body mt-1">
+            <p className="text-brand-gris text-sm font-body mt-1">
               {authMode === 'login'
                 ? 'Ingresa para ver tus puntos y cupones'
                 : 'Crea tu cuenta con solo un apodo'}
@@ -92,7 +93,7 @@ export default function Login() {
             onClick={() => { setAuthMode('login'); setError('') }}
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
-              authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-sombra/60 hover:text-brand-sombra'
+              authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
             )}
           >
             <User className="w-4 h-4" /> Iniciar sesión
@@ -101,7 +102,7 @@ export default function Login() {
             onClick={() => { setAuthMode('register'); setError('') }}
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
-              authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-sombra/60 hover:text-brand-sombra'
+              authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
             )}
           >
             <UserPlus className="w-4 h-4" /> Crear cuenta
@@ -133,7 +134,7 @@ export default function Login() {
             <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
               Contraseña
               {authMode === 'register' && (
-                <span className="text-brand-sombra/40 font-body"> (mín. 8 caracteres)</span>
+                <span className="text-brand-gris font-body"> (mín. 8 caracteres)</span>
               )}
             </label>
             <div className="relative">
@@ -150,7 +151,8 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(s => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-sombra/40 hover:text-brand-sombra transition-colors"
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-gris hover:text-brand-sombra transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -189,7 +191,7 @@ export default function Login() {
                 >
                   {termsAccepted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                 </div>
-                <span className="text-xs text-brand-sombra/70 font-body leading-relaxed">
+                <span className="text-xs text-brand-gris font-body leading-relaxed">
                   Acepto los{' '}
                   <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
                     Términos y Condiciones
@@ -201,12 +203,7 @@ export default function Login() {
           )}
 
           {/* Error */}
-          {error && (
-            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-2xl px-4 py-3 animate-fade-in">
-              <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-600 font-body leading-relaxed">{error}</p>
-            </div>
-          )}
+          {error && <ErrorAlert msg={error} />}
 
           {/* Submit */}
           <button
@@ -232,7 +229,7 @@ export default function Login() {
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-brand-sombra/10" />
-          <span className="text-xs text-brand-sombra/40 font-body">¿Quieres ganar puntos?</span>
+          <span className="text-xs text-brand-gris font-body">¿Quieres ganar puntos?</span>
           <div className="flex-1 h-px bg-brand-sombra/10" />
         </div>
 
