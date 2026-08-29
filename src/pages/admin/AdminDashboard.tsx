@@ -36,7 +36,8 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [listError, setListError] = useState('')
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<Dynamic | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
 
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
@@ -101,16 +102,14 @@ export default function AdminDashboard() {
     setModal(null)
   }
 
-  const handleDelete = async (id: string) => {
-    if (deleteConfirm === id) {
-      setDeleteConfirm(null)
-      setListError('')
-      const result = await deleteDynamic(id)
-      if (!result.success) setListError(result.error)
-    } else {
-      setDeleteConfirm(id)
-      setTimeout(() => setDeleteConfirm(null), 3000)
-    }
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
+    setListError('')
+    const result = await deleteDynamic(deleteTarget.id)
+    setDeleting(false)
+    if (!result.success) setListError(result.error)
+    setDeleteTarget(null)
   }
 
   const handleLogout = async () => {
@@ -219,14 +218,9 @@ export default function AdminDashboard() {
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(d.id)}
-                        aria-label={deleteConfirm === d.id ? `Confirmar eliminar ${d.keyword}` : `Eliminar ${d.keyword}`}
-                        className={cn(
-                          'w-8 h-8 rounded-xl flex items-center justify-center transition-all',
-                          deleteConfirm === d.id
-                            ? 'bg-red-500 text-white'
-                            : 'bg-white/10 text-white/75 hover:text-red-400 hover:bg-white/20'
-                        )}
+                        onClick={() => setDeleteTarget(d)}
+                        aria-label={`Eliminar ${d.keyword}`}
+                        className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/75 hover:text-red-400 hover:bg-white/20 transition-all"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -382,6 +376,43 @@ export default function AdminDashboard() {
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
                 {saving ? 'Guardando...' : modal === 'create' ? 'Crear entrenamiento' : 'Guardar cambios'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setDeleteTarget(null)} />
+          <div className="relative bg-brand-papel w-full max-w-sm rounded-3xl border-2 border-brand-sombra shadow-sticker-lg p-6 flex flex-col items-center gap-4 text-center animate-scale-in">
+            <div className="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center">
+              <Trash2 className="w-6 h-6 text-red-500" />
+            </div>
+            <div>
+              <h2 className="font-heading text-brand-sombra text-lg">¿Eliminar esta dinámica?</h2>
+              <p className="text-brand-gris text-sm font-body mt-1">
+                Vas a eliminar <span className="font-bold text-brand-azul">{deleteTarget.keyword}</span>
+                {isDynamicActive(deleteTarget) && ' — esta dinámica está activa ahora mismo'}. Esta acción no se puede deshacer.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full mt-1">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={deleting}
+                className="flex-1 font-heading text-xs uppercase tracking-wide text-brand-sombra bg-brand-sombra/10 rounded-2xl py-3 hover:bg-brand-sombra/15 transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                id="confirm-delete-btn"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="flex-1 flex items-center justify-center gap-1.5 font-heading text-xs uppercase tracking-wide text-white bg-red-500 rounded-2xl py-3 border-2 border-brand-sombra hover:bg-red-600 transition-all disabled:opacity-70"
+              >
+                {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                {deleting ? 'Eliminando...' : 'Eliminar'}
               </button>
             </div>
           </div>

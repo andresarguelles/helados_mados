@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { PostgrestError } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 import { Profile, Dynamic, Coupon } from './types'
 
@@ -6,6 +7,15 @@ import { Profile, Dynamic, Coupon } from './types'
 // look like a real domain even though it's never used to send or receive mail.
 const EMAIL_DOMAIN = 'accounts.helados-mados.app'
 const usernameToEmail = (username: string) => `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`
+
+// Postgres SQLSTATE 23P01 = exclusion_violation, thrown by dynamics_no_overlapping_keyword
+// when the same keyword is active during an overlapping date range.
+function dynamicErrorMessage(error: PostgrestError): string {
+  if (error.code === '23P01') {
+    return 'Ya existe otra dinámica con esta palabra secreta activa en un periodo que se cruza con las fechas elegidas. Usa otra palabra o ajusta las fechas para que no se traslapen.'
+  }
+  return error.message
+}
 
 interface LeaderboardEntry {
   user: { id: string; username: string }
@@ -163,14 +173,14 @@ export const useStore = create<AppState>()((set, get) => ({
 
   addDynamic: async (data) => {
     const { error } = await supabase.from('dynamics').insert(data)
-    if (error) return { success: false, error: error.message }
+    if (error) return { success: false, error: dynamicErrorMessage(error) }
     await get().fetchDynamics()
     return { success: true }
   },
 
   updateDynamic: async (id, data) => {
     const { error } = await supabase.from('dynamics').update(data).eq('id', id)
-    if (error) return { success: false, error: error.message }
+    if (error) return { success: false, error: dynamicErrorMessage(error) }
     await get().fetchDynamics()
     return { success: true }
   },
