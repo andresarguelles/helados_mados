@@ -42,6 +42,7 @@ export default function AdminDashboard() {
   const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<'all' | StatusGroupKey>('all')
+  const [filterOpen, setFilterOpen] = useState(false)
 
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
 
@@ -145,6 +146,11 @@ export default function AdminDashboard() {
   const visibleDynamicGroups = dynamicGroups.filter(g =>
     (statusFilter === 'all' || statusFilter === g.key) && g.items.length > 0
   )
+  const filterOptions: { key: 'all' | StatusGroupKey; label: string }[] = [
+    { key: 'all', label: 'Todas' },
+    ...dynamicGroups.map(g => ({ key: g.key, label: g.label })),
+  ]
+  const currentFilterLabel = filterOptions.find(o => o.key === statusFilter)?.label ?? 'Todas'
 
   const renderDynamicCard = (d: Dynamic) => {
     const badge = getStatusBadge(d)
@@ -326,20 +332,43 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-4">
             {/* Status filter */}
             <div className="relative">
-              <select
+              <button
+                type="button"
                 id="status-filter"
-                value={statusFilter}
-                onChange={e => setStatusFilter(e.target.value as 'all' | StatusGroupKey)}
-                className="field-input-dark appearance-none pr-10 cursor-pointer"
+                onClick={() => setFilterOpen(o => !o)}
+                aria-haspopup="listbox"
+                aria-expanded={filterOpen}
+                className="field-input-dark flex items-center justify-between cursor-pointer"
               >
-                <option value="all">Todas</option>
-                {dynamicGroups.map(group => (
-                  <option key={group.key} value={group.key}>
-                    {group.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-white/60 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <span>{currentFilterLabel}</span>
+                <ChevronDown className={cn('w-4 h-4 text-white/60 transition-transform', filterOpen && 'rotate-180')} />
+              </button>
+
+              {filterOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setFilterOpen(false)} />
+                  <div
+                    role="listbox"
+                    className="absolute left-0 right-0 mt-2 z-20 bg-brand-azul border-2 border-white/20 rounded-2xl shadow-sticker-sm overflow-hidden"
+                  >
+                    {filterOptions.map(option => (
+                      <button
+                        key={option.key}
+                        type="button"
+                        role="option"
+                        aria-selected={statusFilter === option.key}
+                        onClick={() => { setStatusFilter(option.key); setFilterOpen(false) }}
+                        className={cn(
+                          'w-full text-left px-4 py-2.5 text-sm font-body transition-colors',
+                          statusFilter === option.key ? 'bg-white/15 text-white font-bold' : 'text-white/85 hover:bg-white/10'
+                        )}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             {visibleDynamicGroups.length === 0 ? (
