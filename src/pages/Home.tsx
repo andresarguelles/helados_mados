@@ -2,10 +2,13 @@ import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import LeaderboardTabs from '../components/leaderboard/LeaderboardTabs'
 import { useNavigate } from 'react-router-dom'
-import { Zap, Gift, Trophy, Sparkles, Rocket } from 'lucide-react'
+import { useStore } from '../lib/store'
+import { Zap, Gift, Trophy, Sparkles, Rocket, User } from 'lucide-react'
 
 export default function Home() {
   const navigate = useNavigate()
+  const { getCurrentUser } = useStore()
+  const user = getCurrentUser()
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-papel">
@@ -26,15 +29,28 @@ export default function Home() {
             </p>
           </div>
 
-          {/* CTA Button */}
-          <button
-            id="cta-redeem"
-            onClick={() => navigate('/canjear')}
-            className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
-          >
-            <Zap className="w-4 h-4" />
-            Canjear palabra secreta
-          </button>
+          {/* CTA Buttons */}
+          <div className="flex flex-col items-center gap-2.5">
+            <button
+              id="cta-redeem"
+              onClick={() => navigate('/canjear')}
+              className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
+            >
+              <Zap className="w-4 h-4" />
+              Canjear palabra secreta
+            </button>
+
+            {!user && (
+              <button
+                id="cta-login"
+                onClick={() => navigate('/login')}
+                className="btn-tinta"
+              >
+                <User className="w-4 h-4" />
+                Iniciar sesión
+              </button>
+            )}
+          </div>
 
           {/* Trust pills */}
           <div className="flex flex-wrap justify-center gap-2">
