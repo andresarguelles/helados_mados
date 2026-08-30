@@ -9,7 +9,7 @@ import confetti from 'canvas-confetti'
 import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
-type Step = 'keyword' | 'auth' | 'success'
+type Step = 'keyword' | 'choice' | 'auth' | 'success'
 type AuthMode = 'login' | 'register'
 
 export default function Redeem() {
@@ -18,7 +18,7 @@ export default function Redeem() {
   const profile = useStore(s => s.profile)
 
   const [step, setStep] = useState<Step>('keyword')
-  const [authMode, setAuthMode] = useState<AuthMode>('login')
+  const [authMode, setAuthMode] = useState<AuthMode>('register')
   const [skipRedeem, setSkipRedeem] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [username, setUsername] = useState('')
@@ -85,7 +85,15 @@ export default function Redeem() {
 
     setLoading(false)
     setSkipRedeem(false)
-    setStep('auth')
+
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.4 },
+      colors: ['#C8FD5F', '#3C5DDC', '#FFD447', '#FF4F8B'],
+    })
+
+    setStep('choice')
   }
 
   // ─── Step 2: Auth + Redeem ──────────────────────────────────
@@ -140,11 +148,15 @@ export default function Redeem() {
         {/* Back button */}
         {step !== 'success' && (
           <button
-            onClick={() => step === 'keyword' ? navigate('/') : setStep('keyword')}
+            onClick={() => {
+              if (step === 'keyword') { navigate('/'); return }
+              if (step === 'choice') { setStep('keyword'); return }
+              setStep(skipRedeem ? 'keyword' : 'choice')
+            }}
             className="flex items-center gap-1.5 text-brand-gris hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {step === 'keyword' ? 'Inicio' : skipRedeem ? 'Atrás' : 'Cambiar palabra'}
+            {step === 'keyword' ? 'Inicio' : step === 'choice' ? 'Cambiar palabra' : skipRedeem ? 'Atrás' : 'Cambiar opción'}
           </button>
         )}
 
@@ -211,18 +223,80 @@ export default function Redeem() {
           </div>
         )}
 
-        {/* ── Step 2: Auth ────────────────────────────────── */}
+        {/* ── Step 2: Choice ──────────────────────────────── */}
+        {step === 'choice' && (
+          <div className="animate-slide-up flex flex-col gap-6">
+            <div>
+              <div className="flex items-center gap-1.5 mb-1 animate-scale-in">
+                <span className="flex items-center gap-1.5 text-brand-amarillo font-heading text-xs bg-brand-sombra px-3 py-1.5 rounded-full">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> {keyword}
+                </span>
+              </div>
+              <h1 className="font-heading text-brand-sombra text-3xl mt-2">
+                ¡Acertaste!
+              </h1>
+              <p className="font-body text-brand-gris text-sm mt-1">
+                Ahora solo inicia sesión. ¡Estás cerca de tu punto!
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setAuthMode('login')}
+                className={cn(
+                  'flex items-center gap-4 p-4 rounded-3xl border-2 text-left transition-all',
+                  authMode === 'login'
+                    ? 'border-brand-sombra bg-brand-sombra/5 shadow-card'
+                    : 'border-brand-sombra/10 hover:border-brand-sombra/30'
+                )}
+              >
+                <div className={cn(
+                  'w-11 h-11 rounded-2xl flex items-center justify-center shrink-0',
+                  authMode === 'login' ? 'bg-brand-sombra text-white' : 'bg-brand-sombra/10 text-brand-sombra'
+                )}>
+                  <User className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy cadete</p>
+                  <p className="font-body text-brand-gris text-xs mt-0.5">Ya tengo apodo y contraseña</p>
+                </div>
+                {authMode === 'login' && <CheckCircle2 className="w-5 h-5 text-brand-sombra shrink-0" />}
+              </button>
+
+              <button
+                onClick={() => setAuthMode('register')}
+                className={cn(
+                  'flex items-center gap-4 p-4 rounded-3xl border-2 text-left transition-all',
+                  authMode === 'register'
+                    ? 'border-brand-azul bg-brand-azul/5 shadow-card'
+                    : 'border-brand-sombra/10 hover:border-brand-sombra/30'
+                )}
+              >
+                <div className={cn(
+                  'w-11 h-11 rounded-2xl flex items-center justify-center shrink-0',
+                  authMode === 'register' ? 'bg-brand-azul text-white' : 'bg-brand-sombra/10 text-brand-sombra'
+                )}>
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy nuevo cadete</p>
+                  <p className="font-body text-brand-gris text-xs mt-0.5">Es mi primera vez</p>
+                </div>
+                {authMode === 'register' && <CheckCircle2 className="w-5 h-5 text-brand-azul shrink-0" />}
+              </button>
+            </div>
+
+            <button onClick={() => setStep('auth')} className="btn-fresa">
+              Siguiente
+            </button>
+          </div>
+        )}
+
+        {/* ── Step 3: Auth ───────────────────────────────── */}
         {step === 'auth' && (
           <div className="animate-slide-up flex flex-col gap-6">
             <div>
-              {!skipRedeem && (
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="flex items-center gap-1.5 text-brand-amarillo font-heading text-xs bg-brand-sombra px-3 py-1.5 rounded-full">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> {keyword}
-                  </span>
-                </div>
-              )}
-              <h1 className="font-heading text-brand-sombra text-3xl mt-2">
+              <h1 className="font-heading text-brand-sombra text-3xl">
                 {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
               </h1>
               <p className="font-body text-brand-gris text-sm mt-1">
@@ -232,28 +306,6 @@ export default function Redeem() {
                     ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
                     : 'Solo necesitas un apodo.')}
               </p>
-            </div>
-
-            {/* Toggle */}
-            <div className="flex gap-2 p-1 bg-brand-sombra/10 rounded-2xl">
-              <button
-                onClick={() => { setAuthMode('login'); setError('') }}
-                className={cn(
-                  'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all',
-                  authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
-                )}
-              >
-                <User className="w-4 h-4" />Soy cadete
-              </button>
-              <button
-                onClick={() => { setAuthMode('register'); setError('') }}
-                className={cn(
-                  'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all',
-                  authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
-                )}
-              >
-                <UserPlus className="w-4 h-4" />Soy nuevo cadete
-              </button>
             </div>
 
             <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
@@ -364,7 +416,7 @@ export default function Redeem() {
           </div>
         )}
 
-        {/* ── Step 3: Success ─────────────────────────────── */}
+        {/* ── Step 4: Success ─────────────────────────────── */}
         {step === 'success' && (
           <div className="animate-scale-in flex flex-col items-center gap-6 pt-4">
             <div className="text-center">
