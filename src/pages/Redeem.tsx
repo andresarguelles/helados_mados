@@ -230,7 +230,7 @@ export default function Redeem() {
                   ? (authMode === 'login' ? 'Ingresa para ver tus puntos y cupones.' : 'Crea tu cuenta con solo un apodo.')
                   : (authMode === 'login'
                     ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
-                    : 'Solo necesitas un apodo. Sin datos personales.')}
+                    : 'Solo necesitas un apodo.')}
               </p>
             </div>
 

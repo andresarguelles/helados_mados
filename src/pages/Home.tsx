@@ -2,7 +2,7 @@ import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import LeaderboardTabs from '../components/leaderboard/LeaderboardTabs'
 import { useNavigate } from 'react-router-dom'
-import { Zap, Gift, Trophy, ShieldCheck, Sparkles } from 'lucide-react'
+import { Zap, Gift, Trophy, Sparkles, Rocket } from 'lucide-react'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -39,7 +39,7 @@ export default function Home() {
           {/* Trust pills */}
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { icon: <ShieldCheck className="w-3.5 h-3.5" />, text: 'Sin datos personales' },
+              { icon: <Rocket className="w-3.5 h-3.5" />, text: 'Sé parte de la tripulación' },
               { icon: <Zap className="w-3.5 h-3.5" />, text: 'Puntos al instante' },
               { icon: <Trophy className="w-3.5 h-3.5" />, text: 'Compite en el ranking' },
             ].map((pill, i) => (
@@ -76,7 +76,7 @@ export default function Home() {
             { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
             { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y canjea la palabra para obtener +1 punto digital.' },
             { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe tu medalla. ¡Suma +10 puntos!' },
-            { icon: <ShieldCheck className="w-5 h-5" />, title: 'Privacidad total', desc: 'Solo usamos tu apodo. Sin correos ni datos personales.' },
+            { icon: <Trophy className="w-5 h-5" />, title: 'Compite y gana', desc: 'Sube en la tabla de líderes y compite por el primer lugar.' },
           ].map((step, i) => (
             <div key={i} className="flex items-start gap-3 paper-card rounded-2xl p-4">
               <div className="w-10 h-10 bg-brand-azul/10 rounded-xl flex items-center justify-center text-brand-azul shrink-0">

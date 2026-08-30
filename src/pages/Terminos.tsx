@@ -44,13 +44,10 @@ export default function Terminos() {
 
           <Section icon={<Users className="w-5 h-5" />} title="Creación de cuenta, privacidad y datos">
             <p className="mb-2">
-              Esta plataforma está diseñada bajo un principio de minimización de datos. No recopilamos correos electrónicos, números telefónicos, nombres reales ni ningún otro dato personal sensible.
+              <span className="font-semibold">Identidad del usuario:</span> actualmente, la identidad del usuario en la plataforma se basa en un Nombre de Usuario (Apodo / Gamer Tag) y contraseña, creados de manera voluntaria por el propio usuario. Helados Mados podrá solicitar datos adicionales en el futuro para mejorar los Servicios, en cuyo caso estos Términos y Condiciones serán actualizados para reflejarlo.
             </p>
             <p className="mb-2">
-              <span className="font-semibold">Identidad del usuario:</span> la única identidad del usuario en la plataforma es su Nombre de Usuario (Apodo / Gamer Tag) y contraseña, creados de manera voluntaria por el propio usuario.
-            </p>
-            <p className="mb-2">
-              <span className="font-semibold">Uso de la información:</span> Helados Mados no vende, comparte ni cede esta información a terceros.
+              <span className="font-semibold">Uso de la información:</span> Helados Mados no vende, comparte ni cede la información de sus usuarios a terceros.
             </p>
             <p>
               <span className="font-semibold">Prevención de fraude:</span> con el fin de evitar abusos y garantizar la equidad en nuestras promociones, el sistema implementa controles técnicos dinámicos. Esto incluye la recolección temporal de direcciones IP, las cuales son procesadas a través de algoritmos criptográficos (hash) de forma inmediata. No almacenamos su dirección IP original, pero utilizamos este identificador encriptado para limitar el número de cuentas o canjes que pueden realizarse desde una misma red, ajustando estos límites según sea necesario para prevenir fraudes.
