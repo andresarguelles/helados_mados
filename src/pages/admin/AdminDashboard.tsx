@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
 import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming, toDatetimeLocalValue } from '../../lib/utils'
 import { cn } from '../../lib/utils'
+import AdminHeader from '../../components/admin/AdminHeader'
 import {
-  Plus, LogOut, QrCode, Pencil, Trash2, X, Home, Menu,
+  Plus, QrCode, Pencil, Trash2, X,
   Package, ChevronRight, ChevronDown, Loader2, AlertCircle, Clock, ArrowRight,
 } from 'lucide-react'
 
@@ -29,8 +29,7 @@ const emptyForm: {
 }
 
 export default function AdminDashboard() {
-  const navigate = useNavigate()
-  const { dynamics, addDynamic, updateDynamic, deleteDynamic, logout, coupons, fetchDynamics } = useStore()
+  const { dynamics, addDynamic, updateDynamic, deleteDynamic, coupons, fetchDynamics } = useStore()
   const [modal, setModal] = useState<ModalMode>(null)
   const [editTarget, setEditTarget] = useState<Dynamic | null>(null)
   const [form, setForm] = useState(emptyForm)
@@ -40,7 +39,6 @@ export default function AdminDashboard() {
   const [deleteTarget, setDeleteTarget] = useState<Dynamic | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<'all' | StatusGroupKey>('all')
   const [filterOpen, setFilterOpen] = useState(false)
 
@@ -114,11 +112,6 @@ export default function AdminDashboard() {
     setDeleting(false)
     if (!result.success) setListError(result.error)
     setDeleteTarget(null)
-  }
-
-  const handleLogout = async () => {
-    await logout()
-    navigate('/admin')
   }
 
   const getStatusBadge = (d: Dynamic) => {
@@ -229,65 +222,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
-      {/* Top bar */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-brand-azul/95 backdrop-blur-md border-b border-white/10">
-        <div className="px-4 h-14 flex items-center justify-between">
-          <span className="font-heading text-white uppercase">Panel Comandante</span>
-
-          {/* Desktop actions */}
-          <div className="hidden sm:flex items-center gap-3">
-            <button
-              onClick={() => navigate('/admin/scanner')}
-              className="flex items-center gap-1.5 bg-brand-rosa text-white text-xs font-heading px-3 py-1.5 rounded-xl border-2 border-brand-sombra"
-            >
-              <QrCode className="w-3.5 h-3.5" />Escáner
-            </button>
-            <Link to="/" aria-label="Ver app pública" className="text-white/75 hover:text-white transition-colors">
-              <Home className="w-4 h-4" />
-            </Link>
-            <button onClick={handleLogout} aria-label="Cerrar sesión" className="text-white/75 hover:text-white transition-colors">
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Mobile menu toggle */}
-          <button
-            className="sm:hidden text-white/90 hover:text-white p-1"
-            onClick={() => setMenuOpen(o => !o)}
-            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-
-        {/* Mobile menu */}
-        <div className={cn(
-          'sm:hidden overflow-hidden transition-all duration-300 bg-brand-azul border-t border-white/10',
-          menuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-        )}>
-          <div className="px-4 py-4 flex flex-col gap-1">
-            <button
-              onClick={() => { setMenuOpen(false); navigate('/admin/scanner') }}
-              className="flex items-center gap-2 text-white font-body py-2"
-            >
-              <QrCode className="w-4 h-4 text-brand-rosa" />
-              <span>Escáner</span>
-            </button>
-            <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-white/90 font-body py-2">
-              <Home className="w-4 h-4" />
-              <span>Ver app pública</span>
-            </Link>
-            <button
-              onClick={() => { setMenuOpen(false); handleLogout() }}
-              className="flex items-center gap-2 text-brand-rosa font-body py-2"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <AdminHeader title="Panel Comandante" />
 
       {/* Content */}
       <div className="flex-1 max-w-lg mx-auto w-full px-4 pt-20 pb-6 flex flex-col gap-6">
