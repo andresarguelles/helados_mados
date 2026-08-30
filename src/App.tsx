@@ -1,15 +1,25 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Redeem from './pages/Redeem'
 import Account from './pages/Account'
 import Terminos from './pages/Terminos'
-import AdminLogin from './pages/admin/AdminLogin'
-import AdminDashboard from './pages/admin/AdminDashboard'
-import AdminScanner from './pages/admin/AdminScanner'
-import AdminUsers from './pages/admin/AdminUsers'
 import { useStore } from './lib/store'
+
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminScanner = lazy(() => import('./pages/admin/AdminScanner'))
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'))
+
+function AdminFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-brand-azul">
+      <Loader2 className="w-8 h-8 animate-spin text-white" />
+    </div>
+  )
+}
 
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const isAdmin = useStore(s => s.isAdmin)
@@ -35,15 +45,23 @@ export default function App() {
         <Route path="/canjear" element={<Redeem />} />
         <Route path="/cuenta" element={<Account />} />
         <Route path="/terminos" element={<Terminos />} />
-        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin" element={
+          <Suspense fallback={<AdminFallback />}><AdminLogin /></Suspense>
+        } />
         <Route path="/admin/dashboard" element={
-          <ProtectedAdmin><AdminDashboard /></ProtectedAdmin>
+          <Suspense fallback={<AdminFallback />}>
+            <ProtectedAdmin><AdminDashboard /></ProtectedAdmin>
+          </Suspense>
         } />
         <Route path="/admin/scanner" element={
-          <ProtectedAdmin><AdminScanner /></ProtectedAdmin>
+          <Suspense fallback={<AdminFallback />}>
+            <ProtectedAdmin><AdminScanner /></ProtectedAdmin>
+          </Suspense>
         } />
         <Route path="/admin/users" element={
-          <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
+          <Suspense fallback={<AdminFallback />}>
+            <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
+          </Suspense>
         } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
