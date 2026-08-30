@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Redeem from './pages/Redeem'
 import Account from './pages/Account'
 import Terminos from './pages/Terminos'
+import NotFound from './pages/NotFound'
 import { useStore } from './lib/store'
 
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
@@ -63,7 +64,7 @@ export default function App() {
             <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
           </Suspense>
         } />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
