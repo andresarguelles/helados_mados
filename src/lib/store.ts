@@ -48,6 +48,7 @@ interface AppState {
   authReady: boolean
   dynamics: Dynamic[]
   coupons: Coupon[]
+  profiles: Profile[]
 
   // Auth
   initAuth: () => () => void
@@ -55,6 +56,9 @@ interface AppState {
   register: (username: string, password: string) => Promise<RegisterResult>
   logout: () => Promise<void>
   getCurrentUser: () => Profile | null
+
+  // Admin: customers
+  fetchAllProfiles: () => Promise<void>
 
   // Dynamics
   fetchDynamics: () => Promise<void>
@@ -87,6 +91,7 @@ export const useStore = create<AppState>()((set, get) => ({
   authReady: false,
   dynamics: [],
   coupons: [],
+  profiles: [],
 
   // ── Auth ──────────────────────────────────────────────────────────────
 
@@ -145,6 +150,13 @@ export const useStore = create<AppState>()((set, get) => ({
   },
 
   getCurrentUser: () => get().profile,
+
+  // ── Admin: customers ──────────────────────────────────────────────────
+
+  fetchAllProfiles: async () => {
+    const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false })
+    set({ profiles: data ?? [] })
+  },
 
   // ── Dynamics ──────────────────────────────────────────────────────────
 

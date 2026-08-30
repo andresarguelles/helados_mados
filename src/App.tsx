@@ -8,6 +8,7 @@ import Terminos from './pages/Terminos'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminScanner from './pages/admin/AdminScanner'
+import AdminUsers from './pages/admin/AdminUsers'
 import { useStore } from './lib/store'
 
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,9 @@ export default function App() {
         } />
         <Route path="/admin/scanner" element={
           <ProtectedAdmin><AdminScanner /></ProtectedAdmin>
+        } />
+        <Route path="/admin/users" element={
+          <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
         } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
