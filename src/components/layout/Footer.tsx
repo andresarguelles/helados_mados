@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { Heart } from 'lucide-react'
 import type { SVGProps } from 'react'
 
 function TikTokIcon(props: SVGProps<SVGSVGElement>) {
@@ -54,9 +53,10 @@ export default function Footer() {
           Términos y Condiciones
         </Link>
 
-        <p className="text-xs text-white/70 flex items-center gap-1 font-body">
-          Hecho con <Heart className="w-3 h-3 text-brand-rosa fill-brand-rosa" /> en México · 2026
-        </p>
+        <div className="flex flex-col items-center gap-0.5 text-xs text-white/50 font-body">
+          <p>Helados Mados · Todos los derechos reservados · 2026</p>
+          <p>Developed by Piniada</p>
+        </div>
       </div>
     </footer>
   )
