@@ -9,7 +9,7 @@ export default function NotFound() {
       <img
         src="/astronauta_mados_nuevo.svg"
         alt=""
-        className="w-32 h-auto animate-bounce"
+        className="w-32 h-auto animate-float"
       />
 
       <div className="flex flex-col gap-2">

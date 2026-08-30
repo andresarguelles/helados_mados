@@ -53,7 +53,7 @@ export default function Footer() {
           Términos y Condiciones
         </Link>
 
-        <div className="flex flex-col items-center gap-0.5 text-xs text-white/50 font-body">
+        <div className="flex flex-col items-center gap-0.5 text-xs text-white/70 font-body">
           <p>Helados Mados · Todos los derechos reservados · 2026</p>
           <p>Developed by Piniada</p>
         </div>
