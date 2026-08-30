@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import { LayoutGrid, Users, QrCode, Home, LogOut, Menu, X } from 'lucide-react'
+import ConfirmDialog from '../ui/ConfirmDialog'
 
 const NAV_ITEMS = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutGrid },
@@ -15,10 +16,12 @@ export default function AdminHeader({ title }: { title: string }) {
   const location = useLocation()
   const logout = useStore(s => s.logout)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   const handleLogout = async () => {
     await logout()
     navigate('/admin')
+    setConfirmOpen(false)
   }
 
   return (
@@ -47,7 +50,7 @@ export default function AdminHeader({ title }: { title: string }) {
           <Link to="/" aria-label="Ver app pública" className="text-white/75 hover:text-white transition-colors">
             <Home className="w-4 h-4" />
           </Link>
-          <button onClick={handleLogout} aria-label="Cerrar sesión" className="text-white/75 hover:text-white transition-colors">
+          <button onClick={() => setConfirmOpen(true)} aria-label="Cerrar sesión" className="text-white/75 hover:text-white transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -91,7 +94,7 @@ export default function AdminHeader({ title }: { title: string }) {
             <span>Ver app pública</span>
           </Link>
           <button
-            onClick={() => { setMenuOpen(false); handleLogout() }}
+            onClick={() => { setMenuOpen(false); setConfirmOpen(true) }}
             className="flex items-center gap-2 text-brand-rosa font-body py-2"
           >
             <LogOut className="w-4 h-4" />
@@ -99,6 +102,16 @@ export default function AdminHeader({ title }: { title: string }) {
           </button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        icon={<LogOut className="w-5 h-5 text-brand-rosa" />}
+        title="¿Cerrar sesión?"
+        description="Vas a salir del panel de administración."
+        confirmLabel="Cerrar sesión"
+        onConfirm={handleLogout}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </header>
   )
 }

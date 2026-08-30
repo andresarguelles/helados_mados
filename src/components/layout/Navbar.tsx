@@ -3,6 +3,7 @@ import { useStore } from '../../lib/store'
 import { User, LogOut, Settings, Menu, X, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../lib/utils'
+import ConfirmDialog from '../ui/ConfirmDialog'
 
 const AUTH_ROUTES = ['/login', '/canjear']
 
@@ -12,6 +13,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   const showAuthCta = !user && !AUTH_ROUTES.includes(location.pathname)
 
@@ -19,6 +21,7 @@ export default function Navbar() {
     await logout()
     navigate('/')
     setMenuOpen(false)
+    setConfirmOpen(false)
   }
 
   return (
@@ -51,7 +54,7 @@ export default function Navbar() {
                 </Link>
               )}
               <button
-                onClick={handleLogout}
+                onClick={() => setConfirmOpen(true)}
                 aria-label="Cerrar sesión"
                 className="text-white/75 hover:text-brand-rosa transition-colors"
               >
@@ -110,7 +113,7 @@ export default function Navbar() {
                 </Link>
               )}
               <button
-                onClick={handleLogout}
+                onClick={() => setConfirmOpen(true)}
                 className="flex items-center gap-2 text-brand-rosa font-body py-2"
               >
                 <LogOut className="w-4 h-4" />
@@ -128,6 +131,16 @@ export default function Navbar() {
           ) : null}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        icon={<LogOut className="w-5 h-5 text-brand-rosa" />}
+        title="¿Cerrar sesión?"
+        description="Vas a salir de tu cuenta. Puedes volver a iniciar sesión cuando quieras."
+        confirmLabel="Cerrar sesión"
+        onConfirm={handleLogout}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </nav>
   )
 }
