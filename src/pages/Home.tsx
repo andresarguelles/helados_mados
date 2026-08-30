@@ -1,8 +1,10 @@
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import LeaderboardTabs from '../components/leaderboard/LeaderboardTabs'
+import HallOfFame from '../components/leaderboard/HallOfFame'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
+import { cn } from '../lib/utils'
 import { Zap, Gift, Trophy, Sparkles, Rocket, User } from 'lucide-react'
 
 export default function Home() {
@@ -11,7 +13,7 @@ export default function Home() {
   const user = getCurrentUser()
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-papel">
+    <div className={cn('min-h-screen flex flex-col bg-brand-papel', user && 'pb-16')}>
       <Navbar />
 
       {/* Hero — la nave nodriza */}
@@ -74,13 +76,17 @@ export default function Home() {
       </section>
 
       {/* Leaderboard section */}
-      <section className="flex-1 px-4 pt-6 pb-6 max-w-lg mx-auto w-full">
-        <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-5 h-5 text-brand-azul" />
-          <h2 className="font-heading text-brand-sombra text-xl">Tabla de líderes</h2>
-        </div>
-        <div className="paper-card rounded-3xl p-4">
-          <LeaderboardTabs />
+      <section className="flex-1 px-4 pt-6 pb-6 max-w-lg mx-auto w-full flex flex-col gap-6">
+        <HallOfFame />
+
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <Trophy className="w-5 h-5 text-brand-azul" />
+            <h2 className="font-heading text-brand-sombra text-xl">Tabla de líderes</h2>
+          </div>
+          <div className="paper-card rounded-3xl p-4">
+            <LeaderboardTabs />
+          </div>
         </div>
       </section>
 

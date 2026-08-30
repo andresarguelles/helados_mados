@@ -73,7 +73,7 @@ interface AppState {
   getUserCoupons: (userId: string) => Promise<Coupon[]>
 
   // Leaderboard
-  getLeaderboard: (period: 'day' | 'week' | 'all') => Promise<LeaderboardEntry[]>
+  getLeaderboard: (period: 'day' | 'week' | 'month' | 'all') => Promise<LeaderboardEntry[]>
 }
 
 async function loadProfile(): Promise<Profile | null> {

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
-import { Trophy, TrendingUp, Clock, Star, Medal } from 'lucide-react'
+import { Trophy, TrendingUp, Clock, Calendar, Star, Medal } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
-type Period = 'day' | 'week' | 'all'
+type Period = 'day' | 'week' | 'month' | 'all'
 
 const TABS: { key: Period; label: string; icon: React.ReactNode }[] = [
-  { key: 'day',  label: 'Hoy',      icon: <Clock className="w-3.5 h-3.5" /> },
-  { key: 'week', label: 'Semana',   icon: <TrendingUp className="w-3.5 h-3.5" /> },
-  { key: 'all',  label: 'Histórico', icon: <Trophy className="w-3.5 h-3.5" /> },
+  { key: 'day',   label: 'Hoy',      icon: <Clock className="w-3.5 h-3.5" /> },
+  { key: 'week',  label: 'Semana',   icon: <TrendingUp className="w-3.5 h-3.5" /> },
+  { key: 'month', label: 'Mes',      icon: <Calendar className="w-3.5 h-3.5" /> },
+  { key: 'all',   label: 'Histórico', icon: <Trophy className="w-3.5 h-3.5" /> },
 ]
 
 // Fondo y medalla por lugar — oro/plata/bronce; del 4º lugar en adelante se usa el badge azul estándar.
@@ -24,6 +25,9 @@ export default function LeaderboardTabs() {
   const currentUserId = useStore(s => s.profile?.id ?? null)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
   const [loaded, setLoaded] = useState(false)
+
+  const myIndex = entries.findIndex(e => e.user.id === currentUserId)
+  const myEntry = myIndex >= 0 ? { rank: myIndex + 1, points: entries[myIndex].points } : null
 
   useEffect(() => {
     let cancelled = false
@@ -70,7 +74,7 @@ export default function LeaderboardTabs() {
         </div>
       ) : (
         <div className="flex flex-col gap-1">
-          {entries.map((entry, i) => {
+          {entries.slice(0, 30).map((entry, i) => {
             const rank = i + 1
             const medal = MEDAL_STYLES[rank]
             const isMe = entry.user.id === currentUserId
@@ -98,6 +102,30 @@ export default function LeaderboardTabs() {
             )
           })}
         </div>
+      )}
+
+      {currentUserId && (
+        <>
+          <div className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-brand-azul bg-brand-sombra shadow-sticker">
+            <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
+              {myEntry ? (
+                <>
+                  <div className="rank-badge text-xs bg-brand-verde text-brand-sombra border-brand-verde shrink-0">
+                    {myEntry.rank}
+                  </div>
+                  <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">
+                    Tu posición
+                  </p>
+                  <span className="points-chip">{myEntry.points} pts</span>
+                </>
+              ) : (
+                <p className="flex-1 font-body text-white/70 text-xs text-center">
+                  Aún no sumas puntos en este período
+                </p>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
