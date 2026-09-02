@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
-import { Shield, AlertTriangle, Clock, Users, Ban, Copyright, RefreshCw, Scale, Mail } from 'lucide-react'
+import { Shield, AlertTriangle, Clock, Users, Ban, Copyright, RefreshCw, Scale, Mail, BarChart3 } from 'lucide-react'
 
 export default function Terminos() {
   return (
@@ -47,10 +47,22 @@ export default function Terminos() {
               <span className="font-semibold">Identidad del usuario:</span> actualmente, la identidad del usuario en la plataforma se basa en un Nombre de Usuario (Apodo / Gamer Tag) y contraseña, creados de manera voluntaria por el propio usuario. Helados Mados podrá solicitar datos adicionales en el futuro para mejorar los Servicios, en cuyo caso estos Términos y Condiciones serán actualizados para reflejarlo.
             </p>
             <p className="mb-2">
-              <span className="font-semibold">Uso de la información:</span> Helados Mados no vende, comparte ni cede la información de sus usuarios a terceros.
+              <span className="font-semibold">Uso de la información:</span> Helados Mados no vende su información. Sí podemos compartir datos de uso con proveedores de servicios (como herramientas de analítica web, descritas en la siguiente sección) que los procesan en nuestro nombre y bajo sus propias políticas de privacidad.
             </p>
             <p>
-              <span className="font-semibold">Prevención de fraude:</span> con el fin de evitar abusos y garantizar la equidad en nuestras promociones, el sistema implementa controles técnicos dinámicos. Esto incluye la recolección temporal de direcciones IP, las cuales son procesadas a través de algoritmos criptográficos (hash) de forma inmediata. No almacenamos su dirección IP original, pero utilizamos este identificador encriptado para limitar el número de cuentas o canjes que pueden realizarse desde una misma red, ajustando estos límites según sea necesario para prevenir fraudes.
+              <span className="font-semibold">Prevención de fraude:</span> con el fin de evitar abusos y garantizar la equidad en nuestras promociones, el sistema implementa controles técnicos dinámicos. Esto incluye la recolección de direcciones IP, que para efectos de estos controles se procesan mediante algoritmos criptográficos (hash) de forma inmediata para limitar el número de cuentas o canjes que pueden realizarse desde una misma red. Esto no excluye que, de forma directa o indirecta —por ejemplo, a través de herramientas y proveedores externos que utilicemos, incluyendo servicios de analítica web— se puedan registrar o retener direcciones IP conforme a sus propias políticas. Si el manejo de esta información cambia de forma sustancial, actualizaremos estos Términos y Condiciones.
+            </p>
+          </Section>
+
+          <Section icon={<BarChart3 className="w-5 h-5" />} title="Cookies y herramientas de análisis">
+            <p className="mb-2">
+              Utilizamos Google Analytics, un servicio de analítica web de Google LLC, para entender cómo se usa el Sitio y mejorarlo. Google Analytics utiliza cookies y tecnologías similares para recolectar datos de navegación, como las páginas visitadas, el tiempo de permanencia, el tipo de dispositivo y navegador, y una ubicación aproximada derivada de la dirección IP (no una dirección exacta).
+            </p>
+            <p className="mb-2">
+              Esta información se procesa de forma agregada y estadística, y puede transferirse y almacenarse en servidores de Google fuera de México, conforme a la política de privacidad de Google (policies.google.com/privacy).
+            </p>
+            <p>
+              Usted puede configurar su navegador para bloquear cookies o utilizar el complemento de inhabilitación de Google Analytics para navegadores. Bloquear estas cookies puede afectar algunas funciones del Sitio.
             </p>
           </Section>
 
@@ -112,7 +124,7 @@ export default function Terminos() {
           </Section>
 
           <p className="text-xs text-brand-gris text-center font-body">
-            Última actualización: agosto 2026. Uso de la plataforma implica aceptación de estos términos.
+            Última actualización: septiembre 2026. Uso de la plataforma implica aceptación de estos términos.
           </p>
         </div>
       </div>
