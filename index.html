@@ -18,15 +18,23 @@
     <meta property="og:description" content="Únete al TikTok Live, canjea la palabra secreta y gana medallas en la estación más cercana." />
     <meta property="og:type" content="website" />
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"></script>
+    <!-- Google tag (gtag.js) — no se carga en localhost, ni siquiera el script remoto,
+         para que Enhanced Measurement (scroll, clics salientes, etc.) tampoco dispare
+         hits en desarrollo. page_view se envía manualmente desde src/lib/analytics.ts
+         en cada cambio de ruta (SPA sin recargas completas). -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      // page_view se envía manualmente desde src/lib/analytics.ts en cada cambio de ruta
-      // (SPA sin recargas completas), en vez de dejar que gtag lo haga solo una vez aquí.
-      gtag('config', '%VITE_GA_MEASUREMENT_ID%', { send_page_view: false });
+      (function () {
+        if (['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', '%VITE_GA_MEASUREMENT_ID%', { send_page_view: false });
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%';
+        document.head.appendChild(s);
+      })();
     </script>
   </head>
   <body>

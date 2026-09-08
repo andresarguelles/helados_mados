@@ -5,7 +5,7 @@ import HallOfFame from '../components/leaderboard/HallOfFame'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { Zap, Gift, Trophy, Sparkles, Rocket, User } from 'lucide-react'
+import { Zap, Gift, Trophy, Sparkles, Rocket, User, MapPin, Navigation } from 'lucide-react'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -110,6 +110,46 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Location */}
+      <section className="px-4 pb-8 max-w-lg mx-auto w-full">
+        <div className="flex items-center gap-2 mb-4">
+          <MapPin className="w-5 h-5 text-brand-azul" />
+          <h2 className="font-heading text-brand-sombra text-xl">Nuestra estación</h2>
+        </div>
+
+        <div className="paper-card rounded-3xl p-5 relative">
+          <span className="badge-tilt absolute -top-4 left-5 z-10">
+            <Rocket className="w-3.5 h-3.5" /> Aquí aterrizamos
+          </span>
+
+          <div className="rounded-2xl overflow-hidden border-2 border-brand-sombra">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.26441043479386!2d-99.2322540358465!3d19.35916671342604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d20129e128dee9%3A0x61b458884230a946!2sHelados%20Mados!5e0!3m2!1ses!2smx!4v1788845906381!5m2!1ses!2smx"
+              title="Ubicación de Helados Mados en Google Maps"
+              className="w-full h-56 sm:h-64 border-0"
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+
+          <address className="font-body text-brand-gris text-sm leading-relaxed mt-4 not-italic">
+            Angel Reyes 7, Lomas de Puerta Grande<br />
+            Álvaro Obregón, CDMX, C.P. 01630
+          </address>
+
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=Helados+Mados%2C+Angel+Reyes+7%2C+Lomas+de+Puerta+Grande%2C+%C3%81lvaro+Obreg%C3%B3n%2C+CDMX"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-tinta text-xs px-6 py-2.5 mt-4"
+          >
+            <Navigation className="w-3.5 h-3.5" />
+            Cómo llegar
+          </a>
         </div>
       </section>
 
