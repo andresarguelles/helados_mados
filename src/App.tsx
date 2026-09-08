@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -8,6 +8,7 @@ import Account from './pages/Account'
 import Terminos from './pages/Terminos'
 import NotFound from './pages/NotFound'
 import { useStore } from './lib/store'
+import { trackPageview } from './lib/analytics'
 
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
@@ -20,6 +21,16 @@ function AdminFallback() {
       <Loader2 className="w-8 h-8 animate-spin text-white" />
     </div>
   )
+}
+
+function RouteTracker() {
+  const location = useLocation()
+
+  useEffect(() => {
+    trackPageview(location.pathname + location.search)
+  }, [location.pathname, location.search])
+
+  return null
 }
 
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
@@ -40,6 +51,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <RouteTracker />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
