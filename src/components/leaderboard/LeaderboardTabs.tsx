@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
-import { Trophy, TrendingUp, Clock, Calendar, Star, Medal } from 'lucide-react'
+import { Star, Medal } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 type Period = 'day' | 'week' | 'month' | 'all'
 
-const TABS: { key: Period; label: string; icon: React.ReactNode }[] = [
-  { key: 'day',   label: 'Hoy',      icon: <Clock className="w-3.5 h-3.5" /> },
-  { key: 'week',  label: 'Semana',   icon: <TrendingUp className="w-3.5 h-3.5" /> },
-  { key: 'month', label: 'Mes',      icon: <Calendar className="w-3.5 h-3.5" /> },
-  { key: 'all',   label: 'Histórico', icon: <Trophy className="w-3.5 h-3.5" /> },
+const TABS: { key: Period; label: string }[] = [
+  { key: 'day',   label: 'Hoy' },
+  { key: 'week',  label: 'Semana' },
+  { key: 'month', label: 'Mes' },
+  { key: 'all',   label: 'Histórico' },
 ]
 
 // Fondo y medalla por lugar — oro/plata/bronce; del 4º lugar en adelante se usa el badge azul estándar.
@@ -39,20 +39,19 @@ export default function LeaderboardTabs() {
   return (
     <div className="flex flex-col gap-4">
       {/* Tab bar */}
-      <div className="flex gap-1 p-1 bg-brand-sombra/10 rounded-2xl">
+      <div className="flex items-center justify-between gap-1 p-1 bg-brand-sombra/10 rounded-2xl overflow-hidden">
         {TABS.map(tab => (
           <button
             key={tab.key}
             onClick={() => setActive(tab.key)}
             className={cn(
-              'flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-heading transition-all duration-200',
+              'min-w-0 flex items-center justify-center py-2 px-2 rounded-xl text-xs font-heading whitespace-nowrap transition-all duration-200',
               active === tab.key
                 ? 'bg-brand-sombra text-white shadow-md'
                 : 'text-brand-gris hover:text-brand-sombra'
             )}
           >
-            {tab.icon}
-            {tab.label}
+            <span className="truncate">{tab.label}</span>
           </button>
         ))}
       </div>
