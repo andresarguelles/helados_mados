@@ -17,7 +17,7 @@ export default function Login() {
 
   // If already logged in, redirect once the session has resolved
   useEffect(() => {
-    if (authReady && profile) navigate('/cuenta', { replace: true })
+    if (authReady && profile) navigate('/perfil', { replace: true })
   }, [authReady, profile, navigate])
 
   const [authMode, setAuthMode] = useState<AuthMode>('login')
@@ -50,7 +50,7 @@ export default function Login() {
       const result = await login(username.trim(), password)
       setLoading(false)
       if (!result.success) { setError('Usuario o contraseña incorrectos'); return }
-      navigate(result.user.is_admin ? '/admin/dashboard' : '/cuenta', { replace: true })
+      navigate(result.user.is_admin ? '/admin/dashboard' : '/perfil', { replace: true })
     } else {
       const result = await register(username.trim(), password)
       setLoading(false)
@@ -60,7 +60,7 @@ export default function Login() {
           : 'Error al crear tu cuenta. Intenta de nuevo.')
         return
       }
-      navigate('/cuenta', { replace: true })
+      navigate('/perfil', { replace: true })
     }
   }
 

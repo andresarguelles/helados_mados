@@ -225,7 +225,7 @@ export default function AdminDashboard() {
       <AdminHeader title="Panel Comandante" />
 
       {/* Content */}
-      <div className="flex-1 max-w-lg mx-auto w-full px-4 pt-20 pb-6 flex flex-col gap-6">
+      <div className="flex-1 max-w-lg mx-auto w-full px-4 pt-20 pb-24 flex flex-col gap-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">

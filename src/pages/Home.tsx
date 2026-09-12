@@ -5,15 +5,17 @@ import HallOfFame from '../components/leaderboard/HallOfFame'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
+import { useBottomNavVisible } from '../components/layout/BottomNav'
 import { Zap, Gift, Trophy, Sparkles, Rocket, User, MapPin, Navigation } from 'lucide-react'
 
 export default function Home() {
   const navigate = useNavigate()
   const { getCurrentUser } = useStore()
   const user = getCurrentUser()
+  const navVisible = useBottomNavVisible()
 
   return (
-    <div className={cn('min-h-screen flex flex-col bg-brand-papel', user && 'pb-16')}>
+    <div className={cn('min-h-screen flex flex-col bg-brand-papel', navVisible && 'pb-24')}>
       <Navbar />
 
       {/* Hero — la nave nodriza */}

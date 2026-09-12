@@ -2,10 +2,14 @@ import React from 'react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import { Shield, AlertTriangle, Clock, Users, Ban, Copyright, RefreshCw, Scale, Mail, BarChart3 } from 'lucide-react'
+import { cn } from '../lib/utils'
+import { useBottomNavVisible } from '../components/layout/BottomNav'
 
 export default function Terminos() {
+  const navVisible = useBottomNavVisible()
+
   return (
-    <div className="min-h-screen flex flex-col bg-brand-papel">
+    <div className={cn('min-h-screen flex flex-col bg-brand-papel', navVisible && 'pb-24')}>
       <Navbar />
 
       <div className="flex-1 max-w-lg mx-auto px-4 pt-20 pb-8">

@@ -96,7 +96,7 @@ export default function AdminScanner() {
 
   return (
     <div className={cn(
-      'min-h-screen flex flex-col transition-colors duration-500',
+      'min-h-screen flex flex-col pb-24 transition-colors duration-500',
       scanState === 'success' ? 'bg-brand-verde' :
       scanState === 'error' ? 'bg-red-600' :
       'bg-brand-azul'
@@ -108,7 +108,7 @@ export default function AdminScanner() {
           className="flex items-center gap-1.5 text-white/85 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-body">Dashboard</span>
+          <span className="text-sm font-body">Entrenamientos</span>
         </button>
         <span className="font-heading text-white text-sm">Escáner QR</span>
         <div className="w-20" />

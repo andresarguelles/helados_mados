@@ -71,6 +71,29 @@ export default function LeaderboardTabs() {
         </div>
       </div>
 
+      {/* Tu posición — antes vivía en una barra fija al pie; ahora la navegación ocupa ese espacio. */}
+      {currentUserId && loaded && (
+        <div className="flex items-center gap-3 bg-brand-sombra rounded-2xl px-4 py-3">
+          {myEntry ? (
+            <>
+              <div className="rank-badge text-xs bg-brand-verde text-brand-sombra border-brand-verde shrink-0">
+                {myEntry.rank}
+              </div>
+              <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">
+                Tu posición
+              </p>
+              <span className="points-chip">{myEntry.points} pts</span>
+            </>
+          ) : (
+            <p className="flex-1 font-body text-white/70 text-xs text-center">
+              {isAdmin
+                ? 'Los administradores no participan en el ranking'
+                : 'Aún no sumas puntos en este período'}
+            </p>
+          )}
+        </div>
+      )}
+
       {!loaded ? (
         <div className="flex flex-col items-center gap-2 py-10">
           <div className="relative overflow-hidden w-40 h-4 rounded-full bg-brand-sombra/10">
@@ -125,32 +148,6 @@ export default function LeaderboardTabs() {
             </div>
           )}
         </div>
-      )}
-
-      {currentUserId && (
-        <>
-          <div className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-brand-azul bg-brand-sombra shadow-sticker">
-            <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
-              {myEntry ? (
-                <>
-                  <div className="rank-badge text-xs bg-brand-verde text-brand-sombra border-brand-verde shrink-0">
-                    {myEntry.rank}
-                  </div>
-                  <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">
-                    Tu posición
-                  </p>
-                  <span className="points-chip">{myEntry.points} pts</span>
-                </>
-              ) : (
-                <p className="flex-1 font-body text-white/70 text-xs text-center">
-                  {isAdmin
-                    ? 'Los administradores no participan en el ranking'
-                    : 'Aún no sumas puntos en este período'}
-                </p>
-              )}
-            </div>
-          </div>
-        </>
       )}
     </div>
   )

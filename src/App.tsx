@@ -4,9 +4,13 @@ import { Loader2 } from 'lucide-react'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Redeem from './pages/Redeem'
-import Account from './pages/Account'
+import Perfil from './pages/Perfil'
+import Cupones from './pages/Cupones'
+import Ranking from './pages/Ranking'
+import Misiones from './pages/Misiones'
 import Terminos from './pages/Terminos'
 import NotFound from './pages/NotFound'
+import BottomNav from './components/layout/BottomNav'
 import { useStore } from './lib/store'
 import { trackPageview } from './lib/analytics'
 
@@ -41,6 +45,14 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function ProtectedMember({ children }: { children: React.ReactNode }) {
+  const profile = useStore(s => s.profile)
+  const authReady = useStore(s => s.authReady)
+  if (!authReady) return null
+  if (!profile) return <Navigate to="/login" replace />
+  return <>{children}</>
+}
+
 export default function App() {
   const initAuth = useStore(s => s.initAuth)
 
@@ -56,7 +68,12 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/canjear" element={<Redeem />} />
-        <Route path="/cuenta" element={<Account />} />
+        <Route path="/perfil" element={<ProtectedMember><Perfil /></ProtectedMember>} />
+        <Route path="/cupones" element={<ProtectedMember><Cupones /></ProtectedMember>} />
+        <Route path="/ranking" element={<ProtectedMember><Ranking /></ProtectedMember>} />
+        <Route path="/misiones" element={<ProtectedMember><Misiones /></ProtectedMember>} />
+        {/* Ruta histórica: /cuenta se dividió en /perfil y /cupones */}
+        <Route path="/cuenta" element={<Navigate to="/perfil" replace />} />
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/admin" element={
           <Suspense fallback={<AdminFallback />}><AdminLogin /></Suspense>
@@ -78,6 +95,7 @@ export default function App() {
         } />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <BottomNav />
     </BrowserRouter>
   )
 }
