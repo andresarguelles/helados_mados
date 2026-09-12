@@ -22,27 +22,36 @@ export default function Modal({
   children: ReactNode
 }) {
   const dialogRef = useRef<HTMLDivElement>(null)
-  const previouslyFocused = useRef<HTMLElement | null>(null)
 
+  // Foco y bloqueo de scroll: solo al abrir y al cerrar. Si este efecto dependiera
+  // de `loading` u `onClose`, cada cambio de esos volvería a capturar el foco —que
+  // para entonces ya está dentro del diálogo— y al cerrar lo devolvería al propio
+  // diálogo en vez de al botón que lo abrió.
   useEffect(() => {
     if (!open) return
 
-    previouslyFocused.current = document.activeElement as HTMLElement | null
+    const trigger = document.activeElement as HTMLElement | null
     dialogRef.current?.focus()
 
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      trigger?.focus?.()
+    }
+  }, [open])
+
+  // El listener sí necesita el valor vigente de `loading` y `onClose`.
+  useEffect(() => {
+    if (!open) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !loading) onClose()
     }
     document.addEventListener('keydown', handleKeyDown)
 
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', handleKeyDown)
-      previouslyFocused.current?.focus?.()
-    }
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [open, loading, onClose])
 
   if (!open) return null
