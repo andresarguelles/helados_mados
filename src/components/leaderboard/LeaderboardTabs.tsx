@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
-import { Star, Medal } from 'lucide-react'
+import { Star, Medal, Calendar, Rocket } from 'lucide-react'
 import { cn, formatDateRange } from '../../lib/utils'
 
 type Period = 'day' | 'week' | 'month' | 'all'
@@ -48,27 +48,28 @@ export default function LeaderboardTabs() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Tab bar */}
-      <div className="flex items-center justify-between gap-1 p-1 bg-brand-sombra/10 rounded-2xl overflow-hidden">
-        {TABS.map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setActive(tab.key)}
-            className={cn(
-              'min-w-0 flex items-center justify-center py-2 px-2 rounded-xl text-xs font-heading whitespace-nowrap transition-all duration-200',
-              active === tab.key
-                ? 'bg-brand-sombra text-white shadow-md'
-                : 'text-brand-gris hover:text-brand-sombra'
-            )}
-          >
-            <span className="truncate">{tab.label}</span>
-          </button>
-        ))}
+      <div className="rounded-2xl border border-brand-grisclaro/60 overflow-hidden">
+        <div className="flex items-center justify-between gap-1 p-1 bg-brand-sombra/10">
+          {TABS.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActive(tab.key)}
+              className={cn(
+                'min-w-0 flex items-center justify-center py-2 px-2 rounded-xl text-xs font-heading whitespace-nowrap transition-all duration-200',
+                active === tab.key
+                  ? 'bg-brand-sombra text-white shadow-md'
+                  : 'text-brand-gris hover:text-brand-sombra'
+              )}
+            >
+              <span className="truncate">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center justify-center gap-1.5 py-1.5 bg-brand-papel border-t border-brand-grisclaro/40 text-brand-gris text-[11px] font-body">
+          <Calendar className="w-3 h-3 shrink-0" />
+          <span>{active === 'all' ? 'Todo el tiempo' : range ? formatDateRange(range.start, range.end) : ' '}</span>
+        </div>
       </div>
-
-      <p className="text-center text-xs text-brand-gris font-body -mt-2.5">
-        {active === 'all' ? 'Todo el tiempo' : range ? formatDateRange(range.start, range.end) : ' '}
-      </p>
 
       {!loaded ? (
         <div className="flex flex-col items-center gap-2 py-10">
@@ -114,6 +115,15 @@ export default function LeaderboardTabs() {
               </div>
             )
           })}
+
+          {entries.length > 30 && (
+            <div className="flex flex-col items-center gap-1 pt-3">
+              <span className="badge-tilt">
+                <Rocket className="w-3.5 h-3.5" /> Tripulación Top 30
+              </span>
+              <p className="text-xs text-brand-gris font-body">Hay más compitiendo por su lugar</p>
+            </div>
+          )}
         </div>
       )}
 
