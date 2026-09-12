@@ -19,6 +19,25 @@ export function timeAgo(date: string | Date) {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: es })
 }
 
+// Parses a 'YYYY-MM-DD' date as a local calendar date, avoiding the UTC-midnight
+// shift that `new Date('YYYY-MM-DD')` causes in negative-offset timezones.
+function parseLocalDate(isoDate: string): Date {
+  const [year, month, day] = isoDate.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+export function formatDateRange(startISO: string, endISO: string) {
+  const start = parseLocalDate(startISO)
+  const end = parseLocalDate(endISO)
+
+  if (startISO === endISO) return format(end, "d MMM yyyy", { locale: es })
+
+  const sameYear = start.getFullYear() === end.getFullYear()
+  const startFmt = format(start, sameYear ? 'd MMM' : 'd MMM yyyy', { locale: es })
+  const endFmt = format(end, 'd MMM yyyy', { locale: es })
+  return `${startFmt} – ${endFmt}`
+}
+
 export function formatCountdown(endDate: string | Date): string {
   const end = new Date(endDate)
   const now = new Date()

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../../lib/store'
 import { Star, Medal } from 'lucide-react'
-import { cn } from '../../lib/utils'
+import { cn, formatDateRange } from '../../lib/utils'
 
 type Period = 'day' | 'week' | 'month' | 'all'
 
@@ -22,10 +22,12 @@ const MEDAL_STYLES: Record<number, { row: string; badge: string }> = {
 export default function LeaderboardTabs() {
   const [active, setActive] = useState<Period>('all')
   const getLeaderboard = useStore(s => s.getLeaderboard)
+  const getLeaderboardRange = useStore(s => s.getLeaderboardRange)
   const currentUserId = useStore(s => s.profile?.id ?? null)
   const isAdmin = useStore(s => s.isAdmin)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
   const [loaded, setLoaded] = useState(false)
+  const [range, setRange] = useState<Awaited<ReturnType<typeof getLeaderboardRange>>>(null)
 
   const myIndex = entries.findIndex(e => e.user.id === currentUserId)
   const myEntry = myIndex >= 0 ? { rank: myIndex + 1, points: entries[myIndex].points } : null
@@ -34,8 +36,15 @@ export default function LeaderboardTabs() {
     let cancelled = false
     setLoaded(false)
     getLeaderboard(active).then(data => { if (!cancelled) { setEntries(data); setLoaded(true) } })
+
+    if (active === 'all') {
+      setRange(null)
+    } else {
+      getLeaderboardRange(active).then(data => { if (!cancelled) setRange(data) })
+    }
+
     return () => { cancelled = true }
-  }, [active, getLeaderboard])
+  }, [active, getLeaderboard, getLeaderboardRange])
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,6 +65,10 @@ export default function LeaderboardTabs() {
           </button>
         ))}
       </div>
+
+      <p className="text-center text-xs text-brand-gris font-body -mt-2.5">
+        {active === 'all' ? 'Todo el tiempo' : range ? formatDateRange(range.start, range.end) : ' '}
+      </p>
 
       {!loaded ? (
         <div className="flex flex-col items-center gap-2 py-10">

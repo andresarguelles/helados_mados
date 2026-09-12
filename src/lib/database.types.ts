@@ -167,6 +167,13 @@ export type Database = {
           username: string
         }[]
       }
+      get_leaderboard_range: {
+        Args: { p_period: string }
+        Returns: {
+          range_end: string
+          range_start: string
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       redeem_keyword: {
         Args: { p_ip_hash: string; p_keyword: string }

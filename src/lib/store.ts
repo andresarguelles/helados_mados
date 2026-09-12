@@ -22,6 +22,11 @@ interface LeaderboardEntry {
   points: number
 }
 
+interface LeaderboardRange {
+  start: string
+  end: string
+}
+
 type LoginResult =
   | { success: true; user: Profile }
   | { success: false; reason: 'invalid_credentials' | 'error' }
@@ -74,6 +79,7 @@ interface AppState {
 
   // Leaderboard
   getLeaderboard: (period: 'day' | 'week' | 'month' | 'all') => Promise<LeaderboardEntry[]>
+  getLeaderboardRange: (period: 'day' | 'week' | 'month') => Promise<LeaderboardRange | null>
 }
 
 async function loadProfile(): Promise<Profile | null> {
@@ -250,5 +256,12 @@ export const useStore = create<AppState>()((set, get) => ({
       user: { id: row.user_id, username: row.username },
       points: row.points,
     }))
+  },
+
+  getLeaderboardRange: async (period) => {
+    const { data, error } = await supabase.rpc('get_leaderboard_range', { p_period: period })
+    const row = data?.[0]
+    if (error || !row || !row.range_start || !row.range_end) return null
+    return { start: row.range_start, end: row.range_end }
   },
 }))
