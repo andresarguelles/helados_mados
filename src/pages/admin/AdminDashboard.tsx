@@ -4,6 +4,8 @@ import { Dynamic } from '../../lib/types'
 import { formatDate, isDynamicActive, isDynamicExpired, isDynamicUpcoming, toDatetimeLocalValue } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import AdminHeader from '../../components/admin/AdminHeader'
+import Modal from '../../components/ui/Modal'
+import ConfirmDialog from '../../components/ui/ConfirmDialog'
 import {
   Plus, QrCode, Pencil, Trash2, X,
   Package, ChevronRight, ChevronDown, Loader2, AlertCircle, Clock, ArrowRight,
@@ -333,13 +335,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Modal */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-brand-papel w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto animate-slide-up">
+      <Modal open={!!modal} onClose={() => setModal(null)} loading={saving} labelledBy="dynamic-modal-title">
+        <div className="relative bg-brand-papel w-full max-w-lg rounded-3xl max-h-[85vh] overflow-y-auto animate-scale-in">
             {/* Modal header */}
             <div className="sticky top-0 bg-brand-papel border-b border-brand-sombra/10 px-5 py-4 flex items-center justify-between rounded-t-3xl">
-              <h2 className="font-heading text-brand-sombra text-lg flex items-center gap-2">
+              <h2 id="dynamic-modal-title" className="font-heading text-brand-sombra text-lg flex items-center gap-2">
                 {modal === 'create' ? <Plus className="w-5 h-5 text-brand-azul" /> : <Pencil className="w-5 h-5 text-brand-azul" />}
                 {modal === 'create' ? 'Nuevo entrenamiento' : 'Editar entrenamiento'}
               </h2>
@@ -444,46 +444,27 @@ export default function AdminDashboard() {
                 {saving ? 'Guardando...' : modal === 'create' ? 'Crear entrenamiento' : 'Guardar cambios'}
               </button>
             </div>
-          </div>
         </div>
-      )}
+      </Modal>
 
       {/* Delete confirmation modal */}
-      {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setDeleteTarget(null)} />
-          <div className="relative bg-brand-papel w-full max-w-sm rounded-3xl border-2 border-brand-sombra shadow-sticker-lg p-6 flex flex-col items-center gap-4 text-center animate-scale-in">
-            <div className="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center">
-              <Trash2 className="w-6 h-6 text-red-500" />
-            </div>
-            <div>
-              <h2 className="font-heading text-brand-sombra text-lg">¿Eliminar esta dinámica?</h2>
-              <p className="text-brand-gris text-sm font-body mt-1">
-                Vas a eliminar <span className="font-bold text-brand-azul">{deleteTarget.keyword}</span>
-                {isDynamicActive(deleteTarget) && ' — esta dinámica está activa ahora mismo'}. Esta acción no se puede deshacer.
-              </p>
-            </div>
-            <div className="flex gap-3 w-full mt-1">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                disabled={deleting}
-                className="flex-1 font-heading text-xs uppercase tracking-wide text-brand-sombra bg-brand-sombra/10 rounded-2xl py-3 hover:bg-brand-sombra/15 transition-all"
-              >
-                Cancelar
-              </button>
-              <button
-                id="confirm-delete-btn"
-                onClick={handleConfirmDelete}
-                disabled={deleting}
-                className="flex-1 flex items-center justify-center gap-1.5 font-heading text-xs uppercase tracking-wide text-white bg-red-500 rounded-2xl py-3 border-2 border-brand-sombra hover:bg-red-600 transition-all disabled:opacity-70"
-              >
-                {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                {deleting ? 'Eliminando...' : 'Eliminar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        tone="danger"
+        icon={<Trash2 className="w-6 h-6 text-red-500" />}
+        title="¿Eliminar esta dinámica?"
+        description={deleteTarget && (
+          <>
+            Vas a eliminar <span className="font-bold text-brand-azul">{deleteTarget.keyword}</span>
+            {isDynamicActive(deleteTarget) && ' — esta dinámica está activa ahora mismo'}. Esta acción no se puede deshacer.
+          </>
+        )}
+        confirmLabel="Eliminar"
+        confirmId="confirm-delete-btn"
+        loading={deleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

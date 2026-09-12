@@ -4,7 +4,6 @@ import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { useBottomNavVisible } from '../components/layout/BottomNav'
 import { QRCodeSVG as QRCode } from 'qrcode.react'
 import confetti from 'canvas-confetti'
 import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
@@ -17,7 +16,6 @@ export default function Redeem() {
   const navigate = useNavigate()
   const { getActiveDynamic, login, register, redeemKeyword } = useStore()
   const profile = useStore(s => s.profile)
-  const navVisible = useBottomNavVisible()
 
   const [step, setStep] = useState<Step>('keyword')
   const [authMode, setAuthMode] = useState<AuthMode>('register')
@@ -142,7 +140,7 @@ export default function Redeem() {
   }
 
   return (
-    <div className={cn('min-h-screen flex flex-col bg-brand-papel', navVisible && 'pb-24')}>
+    <div className="min-h-screen flex flex-col bg-brand-papel">
       <Navbar />
 
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 pt-20 pb-8">

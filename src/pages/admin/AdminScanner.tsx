@@ -96,7 +96,7 @@ export default function AdminScanner() {
 
   return (
     <div className={cn(
-      'min-h-screen flex flex-col pb-24 transition-colors duration-500',
+      'h-[100dvh] flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom))] transition-colors duration-500',
       scanState === 'success' ? 'bg-brand-verde' :
       scanState === 'error' ? 'bg-red-600' :
       'bg-brand-azul'
@@ -116,8 +116,8 @@ export default function AdminScanner() {
 
       {/* ── Scanning state ──────────────────────────────── */}
       {scanState === 'scanning' && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4 py-8">
-          <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center gap-4 px-4 py-2">
+          <div className="flex flex-col items-center gap-1.5 text-center">
             <QrCode className="w-8 h-8 text-brand-verde" />
             <h1 className="font-heading text-white text-xl">Escanear cupón</h1>
             <p className="text-white/90 text-sm font-body">Apunta la cámara al QR del cadete</p>
@@ -132,13 +132,13 @@ export default function AdminScanner() {
               </p>
             </div>
           ) : (
-            <div className="relative w-full max-w-xs">
+            <div className="relative w-full max-w-[min(20rem,50vh)]">
               {/* Camera view */}
               <div id="qr-reader" className="rounded-3xl overflow-hidden" />
 
               {/* Corner overlay */}
               <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] aspect-square">
                   {['top-0 left-0 border-t-4 border-l-4', 'top-0 right-0 border-t-4 border-r-4',
                     'bottom-0 left-0 border-b-4 border-l-4', 'bottom-0 right-0 border-b-4 border-r-4'].map((cls, i) => (
                     <div key={i} className={cn('absolute w-8 h-8 border-brand-verde rounded-sm', cls)} />
@@ -150,10 +150,10 @@ export default function AdminScanner() {
 
           {/* Manual test input (dev helper) */}
           <details className="w-full max-w-xs">
-            <summary className="text-white/70 text-xs text-center cursor-pointer hover:text-white transition-colors font-body">
+            <summary className="text-white/70 text-[11px] text-center cursor-pointer hover:text-white transition-colors font-body">
               Ingresar ID manual (dev)
             </summary>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-2 flex gap-2">
               <input
                 id="manual-coupon-id"
                 type="text"
@@ -174,7 +174,7 @@ export default function AdminScanner() {
 
       {/* ── Success state ───────────────────────────────── */}
       {scanState === 'success' && successData && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
           <CheckCircle2 className="w-24 h-24 text-brand-sombra" strokeWidth={1.5} />
 
           <div className="text-center">
@@ -214,7 +214,7 @@ export default function AdminScanner() {
 
       {/* ── Error state ──────────────────────────────────── */}
       {scanState === 'error' && errorReason && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center justify-center gap-8 px-6 animate-scale-in">
           <XCircle className="w-24 h-24 text-white/90 drop-shadow-2xl" strokeWidth={1.5} />
 
           <div className="text-center">

@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 import { Loader2 } from 'lucide-react'
+import Modal from './Modal'
+import { cn } from '../../lib/utils'
 
 export default function ConfirmDialog({
   open,
@@ -7,6 +9,8 @@ export default function ConfirmDialog({
   title,
   description,
   confirmLabel = 'Confirmar',
+  confirmId,
+  tone = 'default',
   loading = false,
   onConfirm,
   onCancel,
@@ -14,23 +18,25 @@ export default function ConfirmDialog({
   open: boolean
   icon: ReactNode
   title: string
-  description: string
+  description: ReactNode
   confirmLabel?: string
+  confirmId?: string
+  tone?: 'default' | 'danger'
   loading?: boolean
   onConfirm: () => void
   onCancel: () => void
 }) {
-  if (!open) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !loading && onCancel()} />
+    <Modal open={open} onClose={onCancel} loading={loading} labelledBy="confirm-dialog-title">
       <div className="relative bg-brand-papel w-full max-w-sm rounded-3xl border-2 border-brand-sombra shadow-sticker-lg p-6 flex flex-col items-center gap-4 text-center animate-scale-in">
-        <div className="w-12 h-12 rounded-2xl bg-brand-rosa/15 flex items-center justify-center">
+        <div className={cn(
+          'w-12 h-12 rounded-2xl flex items-center justify-center',
+          tone === 'danger' ? 'bg-red-100' : 'bg-brand-rosa/15'
+        )}>
           {icon}
         </div>
         <div>
-          <h2 className="font-heading text-brand-sombra text-lg">{title}</h2>
+          <h2 id="confirm-dialog-title" className="font-heading text-brand-sombra text-lg">{title}</h2>
           <p className="text-brand-gris text-sm font-body mt-1">{description}</p>
         </div>
         <div className="flex gap-3 w-full mt-1">
@@ -42,15 +48,19 @@ export default function ConfirmDialog({
             Cancelar
           </button>
           <button
+            id={confirmId}
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 flex items-center justify-center gap-1.5 font-heading text-xs uppercase tracking-wide text-white bg-brand-rosa rounded-2xl py-3 border-2 border-brand-sombra hover:brightness-95 transition-all disabled:opacity-70"
+            className={cn(
+              'flex-1 flex items-center justify-center gap-1.5 font-heading text-xs uppercase tracking-wide text-white rounded-2xl py-3 border-2 border-brand-sombra transition-all disabled:opacity-70',
+              tone === 'danger' ? 'bg-red-500 hover:bg-red-600' : 'bg-brand-rosa hover:brightness-95'
+            )}
           >
             {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             {confirmLabel}
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }

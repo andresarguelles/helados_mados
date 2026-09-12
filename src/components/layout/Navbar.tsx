@@ -1,19 +1,15 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
-import { User, LogOut, ArrowRight } from 'lucide-react'
+import { User, LogOut } from 'lucide-react'
 import { useState } from 'react'
 import ConfirmDialog from '../ui/ConfirmDialog'
-
-const AUTH_ROUTES = ['/login', '/canjear']
+import { SOCIAL_LINKS } from './socials'
 
 export default function Navbar() {
   const { getCurrentUser, logout } = useStore()
   const user = getCurrentUser()
   const navigate = useNavigate()
-  const location = useLocation()
   const [confirmOpen, setConfirmOpen] = useState(false)
-
-  const showAuthCta = !user && !AUTH_ROUTES.includes(location.pathname)
 
   const handleLogout = async () => {
     await logout()
@@ -47,15 +43,22 @@ export default function Navbar() {
               <LogOut className="w-4 h-4" />
             </button>
           </div>
-        ) : showAuthCta ? (
-          <Link
-            to="/login"
-            className="flex items-center gap-1.5 text-sm font-bold text-white/90 hover:text-brand-verde transition-colors"
-          >
-            Iniciar sesión
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        ) : null}
+        ) : (
+          <div className="flex items-center gap-3.5">
+            {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="text-white/75 hover:text-brand-rosa transition-colors"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       <ConfirmDialog
