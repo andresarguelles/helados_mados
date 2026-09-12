@@ -23,6 +23,7 @@ export default function LeaderboardTabs() {
   const [active, setActive] = useState<Period>('all')
   const getLeaderboard = useStore(s => s.getLeaderboard)
   const currentUserId = useStore(s => s.profile?.id ?? null)
+  const isAdmin = useStore(s => s.isAdmin)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
   const [loaded, setLoaded] = useState(false)
 
@@ -119,7 +120,9 @@ export default function LeaderboardTabs() {
                 </>
               ) : (
                 <p className="flex-1 font-body text-white/70 text-xs text-center">
-                  Aún no sumas puntos en este período
+                  {isAdmin
+                    ? 'Los administradores no participan en el ranking'
+                    : 'Aún no sumas puntos en este período'}
                 </p>
               )}
             </div>
