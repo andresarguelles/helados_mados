@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "db:backup": "node scripts/backup-db.mjs",
-    "db:reset-user": "node scripts/reset-test-account.mjs"
+    "db:reset-user": "node scripts/reset-test-account.mjs",
+    "phone": "node scripts/phone-link.mjs"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",

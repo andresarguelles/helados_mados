@@ -29,6 +29,18 @@ export default function AdminScanner() {
 
   const startScanner = async () => {
     setCameraError('')
+
+    // El navegador solo entrega la camara en un contexto seguro: HTTPS o localhost. Abriendo el
+    // dev server por la IP de la red (http://192.168.x.x:3000) la bloquea de raiz, y el catch de
+    // abajo lo reportaria como un problema de permisos, mandando a buscar donde no es.
+    if (!window.isSecureContext) {
+      setCameraError(
+        `La camara solo funciona en HTTPS o en localhost, y estas entrando por ${window.location.host}. ` +
+          'En el telefono corre "npm run phone" para verlo como localhost; mientras tanto, usa el ingreso manual de abajo.'
+      )
+      return
+    }
+
     const qr = new Html5Qrcode('qr-reader')
     scannerRef.current = qr
 
@@ -127,9 +139,6 @@ export default function AdminScanner() {
             <div className="bg-red-500/20 border border-red-400/30 rounded-3xl p-6 text-center max-w-sm w-full">
               <XCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
               <p className="text-white font-heading text-sm">{cameraError}</p>
-              <p className="text-white/90 text-xs mt-2 font-body">
-                Asegúrate de estar en HTTPS y haber concedido permisos de cámara.
-              </p>
             </div>
           ) : (
             <div className="relative w-full max-w-[min(20rem,50vh)]">
@@ -148,8 +157,9 @@ export default function AdminScanner() {
             </div>
           )}
 
-          {/* Manual test input (dev helper) */}
-          <details className="w-full max-w-xs">
+          {/* Manual test input (dev helper). Abierto de entrada si la cámara no arrancó: es la
+              única salida que le queda a quien está probando desde la IP de la red. */}
+          <details className="w-full max-w-xs" open={Boolean(cameraError)}>
             <summary className="text-white/70 text-[11px] text-center cursor-pointer hover:text-white transition-colors font-body">
               Ingresar ID manual (dev)
             </summary>

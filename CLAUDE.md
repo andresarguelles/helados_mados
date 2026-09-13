@@ -38,7 +38,7 @@ A legacy cadet links Google from `/perfil` via `linkIdentity()` (needs Manual Li
 
 **Routing: `src/App.tsx`.** Plain `react-router-dom` `BrowserRouter`. Admin routes (`/admin/dashboard`, `/admin/scanner`, `/admin/users`) are wrapped in a local `ProtectedAdmin` guard that checks `useStore(s => s.isAdmin)` (waiting on `authReady` first) and redirects to `/admin` otherwise — the client-side guard is UX only; the real boundary is Postgres RLS + the RPCs' `is_admin()` checks. `ProtectedMember` additionally bounces anyone whose `profile.username` is null to `/bienvenida`; `redeem_keyword` enforces the same rule server-side (reason `no_username`), since a route guard alone would not stop a direct visit to `/canjear`. `/auth/callback` (`AuthCallback.tsx`) is where every Google redirect lands — it claims the Google bonus, then routes to `/bienvenida`, a resumed `/canjear`, or `next`.
 
-**Two independent auth entry points:** `src/pages/Login.tsx` (standalone login) and the auth step embedded inside the multi-step flow of `src/pages/Redeem.tsx` (`keyword` → `choice` → `auth` → `success`). Both call the same store `login` action and render the same `GoogleButton`; keep them in sync if auth behavior changes.
+**Two independent auth entry points:** `src/pages/Login.tsx` (standalone login, Google first and the legacy password form below it) and the auth step embedded inside the multi-step flow of `src/pages/Redeem.tsx` (`keyword` → `choice` → `auth` → `success`), which exists only to finish an in-flight redemption. Both call the same store `login` action and render the same `GoogleButton`; keep them in sync if auth behavior changes. `Redeem`'s "Inicia sesión primero" shortcut deliberately links to `/login` rather than rendering a third variant inline — someone who wants to sign in without redeeming should get the real login screen, with both methods on it.
 
 **The OAuth `redirectTo` must never carry a query string.** Supabase matches it against the Redirect
 URLs allow-list by comparing the *whole* URL, query string included, so a `?next=...` fails to match an
@@ -49,12 +49,38 @@ trip goes through `sessionStorage`: `src/lib/authIntent.ts` for the post-login d
 `src/lib/pendingRedeem.ts` for an in-flight redemption. That module pair is also why `AuthCallback`
 takes no `next` parameter from the URL, which removes the open-redirect surface entirely.
 
-Two related traps: `vite.config.ts` sets `strictPort: true` because a dev server silently drifting to
-port 3001 changes `window.location.origin` and breaks the match the same way; and the PKCE `code` is
-single-use, so reloading a spent callback URL yields `flow_state_already_used` — that is the link being
-used twice, not a bug.
+**Any change of origin breaks the match the same silent way**, and the symptom never varies: a local
+login lands on the live site. A dev server drifting to port 3001 does it, hence `strictPort: true`.
 
-**The OAuth redirect destroys the state of `Redeem`.** `keyword`, `step` and `skipRedeem` live only in React state, so `src/lib/pendingRedeem.ts` stashes them in `sessionStorage` before the browser leaves for Google; `AuthCallback` routes back to `/canjear` and `Redeem` rehydrates and finishes the redemption on its own. Anything new that sends a user through OAuth mid-flow needs the same treatment.
+**Supabase also rejects any `http://` destination whose host is not `localhost` or `127.0.0.1`, even
+when that exact URL is in the allow list.** This was verified directly against the project: of four
+allow-listed URLs, `http://localhost:3000/auth/callback`, `http://127.0.0.1:3000/auth/callback` and
+`https://heladosmados.com/auth/callback` were accepted while `http://192.168.1.80:3000/auth/callback`
+was rejected. So opening the dev server from a phone over the LAN IP can never work, and adding that
+IP to the allow list does nothing — `npm run phone` is the answer instead (see below).
+
+Because the failure leaves no trace in the browser, `vite.config.ts` carries a plugin that prints, on
+every `npm run dev`, which of the origins it serves are actually usable and which are not. To confirm a
+suspicion from the server side, `auth.flow_state.referrer` stores the destination GoTrue *resolved* for
+each attempt: the allow-listed URL means accepted, the bare Site URL means rejected and fell back.
+
+**`npm run phone` (`scripts/phone-link.mjs`) is how the app gets tested on a real phone.** It uses
+Android wireless debugging: it locates `adb` (which winget installs *without* putting on the PATH),
+discovers the phone over mDNS, connects, and runs `adb reverse tcp:3000 tcp:3000` so the phone's own
+`localhost:3000` points at this machine's dev server. The phone then browses to `http://localhost:3000`
+— an origin Supabase accepts. Pairing is once per phone (`npm run phone -- --pair <ip:port> <code>`,
+and the phone's pairing screen must stay open while it runs, or `adb pair` dies with `protocol fault`).
+
+That also fixes a second problem for free: a LAN-IP origin is not a secure context, so `crypto.subtle`
+is gone (PKCE quietly downgrades from `s256` to `plain`) and `getUserMedia` is blocked outright.
+Reaching the phone through `localhost` restores both, so the QR scanner's camera works there.
+`AdminScanner` still checks `window.isSecureContext` up front and points at its manual-UUID fallback,
+because the raw camera failure reads as a permissions problem and sends you hunting in the wrong place.
+
+One more: the PKCE `code` is single-use, so reloading a spent callback URL yields
+`flow_state_already_used` — that is the link being used twice, not a bug.
+
+**The OAuth redirect destroys the state of `Redeem`.** `keyword` and `step` live only in React state, so `src/lib/pendingRedeem.ts` stashes the keyword in `sessionStorage` before the browser leaves for Google; `AuthCallback` routes back to `/canjear` and `Redeem` rehydrates and finishes the redemption on its own. Anything new that sends a user through OAuth mid-flow needs the same treatment.
 
 **Admin flow:** `AdminLogin.tsx` → `AdminDashboard.tsx` (manage `Dynamic` campaigns via `addDynamic`/`updateDynamic`/`deleteDynamic`) and `AdminUsers.tsx` (browse `profiles` via `fetchAllProfiles`) → `AdminScanner.tsx` (camera-based QR scanning via `html5-qrcode`, calls `scanCoupon`). The scanner has a manual UUID-entry fallback (`<details>` block) for testing without a camera/second device.
 
