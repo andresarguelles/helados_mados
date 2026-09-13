@@ -74,7 +74,7 @@ export default function AdminScanner() {
 
     if (result.success) {
       setSuccessData({
-        username: result.user.username,
+        username: result.user.username ?? 'Cadete',
         prizeLabel: result.dynamic.prize_label,
         points: result.user.total_points,
       })

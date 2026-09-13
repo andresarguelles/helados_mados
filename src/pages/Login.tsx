@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
+import GoogleButton from '../components/auth/GoogleButton'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2, Zap } from 'lucide-react'
+import { User, Eye, EyeOff, Loader2, Zap, AlertTriangle } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
-
-type AuthMode = 'login' | 'register'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, register } = useStore()
+  const [params] = useSearchParams()
+  const login = useStore(s => s.login)
   const profile = useStore(s => s.profile)
   const authReady = useStore(s => s.authReady)
 
@@ -20,48 +20,37 @@ export default function Login() {
     if (authReady && profile) navigate('/perfil', { replace: true })
   }, [authReady, profile, navigate])
 
-  const [authMode, setAuthMode] = useState<AuthMode>('login')
-  const [username, setUsername] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [termsAccepted, setTermsAccepted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(
+    params.get('auth') === 'error' ? 'No pudimos completar el acceso con Google. Intenta de nuevo.' : ''
+  )
+  // Se enciende cuando alguien falla escribiendo un apodo: puede ser una cuenta nacida con Google.
+  const [showGoogleHint, setShowGoogleHint] = useState(false)
   const [loading, setLoading] = useState(false)
 
   if (profile) return null
 
   const handleSubmit = async () => {
     setError('')
+    setShowGoogleHint(false)
 
-    if (authMode === 'register') {
-      if (!username.trim()) { setError('Elige un apodo'); return }
-      if (username.trim().length < 3) { setError('El apodo debe tener al menos 3 caracteres'); return }
-      if (password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); return }
-      if (password !== confirmPassword) { setError('Las contraseñas no coinciden'); return }
-      if (!termsAccepted) { setError('Debes aceptar los términos y condiciones'); return }
-    } else {
-      if (!username.trim() || !password) { setError('Completa todos los campos'); return }
-    }
+    const value = identifier.trim()
+    if (!value || !password) { setError('Completa todos los campos'); return }
 
     setLoading(true)
+    const result = await login(value, password)
+    setLoading(false)
 
-    if (authMode === 'login') {
-      const result = await login(username.trim(), password)
-      setLoading(false)
-      if (!result.success) { setError('Usuario o contraseña incorrectos'); return }
-      navigate(result.user.is_admin ? '/admin/dashboard' : '/perfil', { replace: true })
-    } else {
-      const result = await register(username.trim(), password)
-      setLoading(false)
-      if (!result.success) {
-        setError(result.reason === 'username_taken'
-          ? 'Ese apodo ya está en uso. Elige otro.'
-          : 'Error al crear tu cuenta. Intenta de nuevo.')
-        return
-      }
-      navigate('/perfil', { replace: true })
+    if (!result.success) {
+      const looksLikeEmail = value.includes('@')
+      setError(looksLikeEmail ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos')
+      setShowGoogleHint(!looksLikeEmail)
+      return
     }
+
+    navigate(result.user.is_admin ? '/admin/dashboard' : '/perfil', { replace: true })
   }
 
   return (
@@ -76,53 +65,30 @@ export default function Login() {
             Acceso cadete
           </span>
           <div>
-            <h1 className="font-heading text-brand-sombra text-3xl">
-              {authMode === 'login' ? 'Bienvenido' : 'Únete'}
-            </h1>
+            <h1 className="font-heading text-brand-sombra text-3xl">Bienvenido</h1>
             <p className="text-brand-gris text-sm font-body mt-1">
-              {authMode === 'login'
-                ? 'Ingresa para ver tus puntos y cupones'
-                : 'Crea tu cuenta con solo un apodo'}
+              Ingresa para ver tus puntos y cupones
             </p>
           </div>
         </div>
 
-        {/* Toggle */}
-        <div className="flex gap-2 p-1 bg-brand-sombra/10 rounded-2xl mb-6">
-          <button
-            onClick={() => { setAuthMode('login'); setError('') }}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
-              authMode === 'login' ? 'bg-brand-sombra text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
-            )}
-          >
-            <User className="w-4 h-4" /> Iniciar sesión
-          </button>
-          <button
-            onClick={() => { setAuthMode('register'); setError('') }}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-heading uppercase tracking-wide transition-all duration-200',
-              authMode === 'register' ? 'bg-brand-azul text-white shadow' : 'text-brand-gris hover:text-brand-sombra'
-            )}
-          >
-            <UserPlus className="w-4 h-4" /> Crear cuenta
-          </button>
-        </div>
-
         {/* Form */}
         <div className="paper-card rounded-3xl p-6 flex flex-col gap-4 animate-slide-up">
-          {/* Username */}
+          {/*
+            Acepta apodo o correo: los cadetes legacy entran con su apodo, y quien nació con Google
+            y luego se puso contraseña entra con su correo (su email primario es el Gmail real).
+          */}
           <div>
-            <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-              {authMode === 'login' ? 'Tu apodo' : 'Elige tu apodo'}
+            <label htmlFor="login-username" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+              Apodo o correo
             </label>
             <input
               id="login-username"
               type="text"
-              value={username}
-              onChange={e => { setUsername(e.target.value); setError('') }}
+              value={identifier}
+              onChange={e => { setIdentifier(e.target.value); setError(''); setShowGoogleHint(false) }}
               placeholder="Ej. IceKingXL"
-              maxLength={20}
+              maxLength={60}
               className="field-input"
               autoComplete="username"
               autoFocus
@@ -131,22 +97,19 @@ export default function Login() {
 
           {/* Password */}
           <div>
-            <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
+            <label htmlFor="login-password" className="font-heading text-brand-sombra text-xs mb-1.5 block">
               Contraseña
-              {authMode === 'register' && (
-                <span className="text-brand-gris font-body"> (mín. 8 caracteres)</span>
-              )}
             </label>
             <div className="relative">
               <input
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={e => { setPassword(e.target.value); setError('') }}
+                onChange={e => { setPassword(e.target.value); setError(''); setShowGoogleHint(false) }}
                 onKeyDown={e => e.key === 'Enter' && !loading && handleSubmit()}
                 placeholder="••••••••"
                 className="field-input pr-10"
-                autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                autoComplete="current-password"
               />
               <button
                 type="button"
@@ -159,71 +122,45 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Confirm password (register only) */}
-          {authMode === 'register' && (
-            <>
-              <div>
-                <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                  Confirma contraseña
-                </label>
-                <input
-                  id="login-confirm-password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={e => { setConfirmPassword(e.target.value); setError('') }}
-                  onKeyDown={e => e.key === 'Enter' && !loading && handleSubmit()}
-                  placeholder="••••••••"
-                  className="field-input"
-                  autoComplete="new-password"
-                />
-              </div>
-
-              {/* T&C */}
-              <label className="flex items-start gap-3 cursor-pointer">
-                <div
-                  onClick={() => setTermsAccepted(t => !t)}
-                  className={cn(
-                    'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                    termsAccepted
-                      ? 'bg-brand-azul border-brand-sombra'
-                      : 'border-brand-sombra/30 hover:border-brand-azul'
-                  )}
-                >
-                  {termsAccepted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                </div>
-                <span className="text-xs text-brand-gris font-body leading-relaxed">
-                  Acepto los{' '}
-                  <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
-                    Términos y Condiciones
-                  </Link>{' '}
-                  de Helados Mados.
-                </span>
-              </label>
-            </>
-          )}
-
           {/* Error */}
           {error && <ErrorAlert msg={error} />}
+          {showGoogleHint && (
+            <p className="text-xs text-brand-gris font-body leading-relaxed -mt-1">
+              Si creaste tu cuenta con Google, entra con tu correo o usa el botón de abajo.
+            </p>
+          )}
 
           {/* Submit */}
           <button
             id="login-submit"
             onClick={handleSubmit}
             disabled={loading}
-            className={cn(
-              authMode === 'login' ? 'btn-tinta' : 'btn-fresa',
-              'mt-1',
-              loading && 'opacity-70 cursor-not-allowed'
-            )}
+            className={cn('btn-tinta mt-1', loading && 'opacity-70 cursor-not-allowed')}
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {loading
-              ? 'Verificando...'
-              : authMode === 'login'
-              ? 'Entrar'
-              : 'Crear mi cuenta'
-            }
+            {loading ? 'Verificando...' : 'Entrar'}
           </button>
+        </div>
+
+        {/* Google */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-brand-sombra/10" />
+          <span className="text-xs text-brand-gris font-body">¿Primera vez?</span>
+          <div className="flex-1 h-px bg-brand-sombra/10" />
+        </div>
+
+        <GoogleButton next="/perfil" />
+
+        {/*
+          Un legacy que entre con Google sin vincular primero acaba en una cuenta nueva con 0 puntos:
+          su email sintético nunca coincide con su Gmail, así que Supabase no puede auto-vincular.
+        */}
+        <div className="mt-4 flex gap-2.5 rounded-2xl bg-brand-amarillo/15 border border-brand-amarillo px-4 py-3">
+          <AlertTriangle className="w-4 h-4 text-brand-sombra shrink-0 mt-0.5" />
+          <p className="text-[11px] text-brand-gris font-body leading-relaxed">
+            ¿Ya eras cadete? Entra arriba con tu apodo y vincula Google desde tu perfil, así no
+            pierdes tus puntos.
+          </p>
         </div>
 
         {/* Divider */}

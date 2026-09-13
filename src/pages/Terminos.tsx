@@ -44,7 +44,28 @@ export default function Terminos() {
 
           <Section icon={<Users className="w-5 h-5" />} title="Creación de cuenta, privacidad y datos">
             <p className="mb-2">
-              <span className="font-semibold">Identidad del usuario:</span> actualmente, la identidad del usuario en la plataforma se basa en un Nombre de Usuario (Apodo / Gamer Tag) y contraseña, creados de manera voluntaria por el propio usuario. Helados Mados podrá solicitar datos adicionales en el futuro para mejorar los Servicios, en cuyo caso estos Términos y Condiciones serán actualizados para reflejarlo.
+              <span className="font-semibold">Creación de cuenta:</span> las cuentas nuevas se crean exclusivamente a través de Google (Google SSO). Al hacerlo, Google nos comparte su dirección de correo electrónico, su nombre y apellido, y su foto de perfil. Helados Mados nunca recibe ni almacena su contraseña de Google. Los usuarios que se registraron antes con un Nombre de Usuario (Apodo / Gamer Tag) y contraseña conservan ese método de acceso, y pueden vincular su cuenta de Google cuando lo deseen.
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">Identidad del usuario:</span> su Apodo es el único dato que se muestra públicamente dentro de la plataforma, por ejemplo en el leaderboard. Su nombre, correo, teléfono y fecha de nacimiento nunca se muestran a otros usuarios.
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">Datos que recabamos y para qué:</span>
+            </p>
+            <ul className="list-disc list-inside flex flex-col gap-1.5 text-sm mb-2">
+              <li><span className="font-semibold">Correo electrónico</span> (obtenido de Google): identificar su cuenta y permitirle recuperar el acceso.</li>
+              <li><span className="font-semibold">Nombre y apellido</span>: atenderle por su nombre en la estación.</li>
+              <li><span className="font-semibold">Fecha de nacimiento</span>: enviarle promociones en su cumpleaños. Es opcional.</li>
+              <li><span className="font-semibold">Número de teléfono</span>: enviarle promociones por WhatsApp, únicamente si usted lo autoriza de forma expresa. Es opcional.</li>
+            </ul>
+            <p className="mb-2">
+              Salvo el correo electrónico, todos estos datos son opcionales: usted decide si los proporciona, y puede modificarlos o eliminarlos en cualquier momento desde su perfil.
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">Promociones por WhatsApp:</span> solo le escribiremos si marcó expresamente la casilla de consentimiento en su perfil. Registramos la fecha en que lo otorgó. Puede revocarlo cuando quiera desmarcando esa misma casilla, sin que ello afecte su cuenta, sus puntos ni sus cupones.
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">Derechos ARCO:</span> usted puede solicitar en cualquier momento el acceso, rectificación, cancelación u oposición al tratamiento de sus datos personales, así como revocar su consentimiento, escribiendo a contact@heladosmados.com. Atenderemos su solicitud en los plazos que marca la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.
             </p>
             <p className="mb-2">
               <span className="font-semibold">Uso de la información:</span> Helados Mados no vende su información. Sí podemos compartir datos de uso con proveedores de servicios (como herramientas de analítica web, descritas en la siguiente sección) que los procesan en nuestro nombre y bajo sus propias políticas de privacidad.

@@ -4,6 +4,8 @@ import { Loader2 } from 'lucide-react'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Redeem from './pages/Redeem'
+import AuthCallback from './pages/AuthCallback'
+import Bienvenida from './pages/Bienvenida'
 import Perfil from './pages/Perfil'
 import Cupones from './pages/Cupones'
 import Ranking from './pages/Ranking'
@@ -50,6 +52,8 @@ function ProtectedMember({ children }: { children: React.ReactNode }) {
   const authReady = useStore(s => s.authReady)
   if (!authReady) return null
   if (!profile) return <Navigate to="/login" replace />
+  // Un registro con Google a medias no tiene apodo, y el apodo es la identidad pública del ranking.
+  if (!profile.username) return <Navigate to="/bienvenida" replace />
   return <>{children}</>
 }
 
@@ -68,6 +72,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/canjear" element={<Redeem />} />
+        {/* Aterrizaje del redirect de Google (login y vinculación). */}
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        {/* Fuera de ProtectedMember a propósito: es justo donde se elige el apodo que falta. */}
+        <Route path="/bienvenida" element={<Bienvenida />} />
         <Route path="/perfil" element={<ProtectedMember><Perfil /></ProtectedMember>} />
         <Route path="/cupones" element={<ProtectedMember><Cupones /></ProtectedMember>} />
         <Route path="/ranking" element={<ProtectedMember><Ranking /></ProtectedMember>} />

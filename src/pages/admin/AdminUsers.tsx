@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../../lib/store'
+import { Profile } from '../../lib/types'
 import { formatDate } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import AdminHeader from '../../components/admin/AdminHeader'
-import { Search, ChevronDown, Users2, Gift, QrCode } from 'lucide-react'
+import { Search, ChevronDown, Users2, Gift, QrCode, Cake, Mail, Phone, MessageCircle } from 'lucide-react'
 
 type SortKey = 'points' | 'recent'
 
@@ -11,6 +12,16 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'points', label: 'Más puntos' },
   { key: 'recent', label: 'Más recientes' },
 ]
+
+function fullName(profile: Profile): string {
+  return [profile.first_name, profile.last_name].filter(Boolean).join(' ')
+}
+
+/** Solo día y mes: para las promos de cumpleaños el año no aporta. */
+function formatBirthday(value: string): string {
+  const [, month, day] = value.split('-')
+  return `${day}/${month}`
+}
 
 export default function AdminUsers() {
   const { profiles, coupons, fetchAllProfiles, fetchDynamics } = useStore()
@@ -27,7 +38,9 @@ export default function AdminUsers() {
     const q = query.trim().toLowerCase()
     return profiles
       .filter(p => !p.is_admin)
-      .filter(p => !q || p.username.toLowerCase().includes(q))
+      // Ahora hay más de un dato por el que buscar a alguien en el mostrador.
+      .filter(p => !q || [p.username, p.first_name, p.last_name, p.email, p.phone]
+        .some(value => value?.toLowerCase().includes(q)))
       .sort((a, b) => sort === 'points'
         ? b.total_points - a.total_points
         : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -133,8 +146,41 @@ export default function AdminUsers() {
               return (
                 <div key={customer.id} className="bg-white/5 border border-white/10 rounded-3xl p-4 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="font-heading text-white text-sm truncate">{customer.username}</p>
-                    <p className="text-white/85 text-xs font-body mt-0.5">Miembro desde {formatDate(customer.created_at)}</p>
+                    <p className="font-heading text-white text-sm truncate">
+                      {/* Un registro con Google a medias todavía no tiene apodo. */}
+                      {customer.username ?? <span className="text-white/50">Sin apodo</span>}
+                    </p>
+                    {fullName(customer) && (
+                      <p className="text-white/85 text-xs font-body mt-0.5 truncate">{fullName(customer)}</p>
+                    )}
+                    <p className="text-white/60 text-xs font-body mt-0.5">Miembro desde {formatDate(customer.created_at)}</p>
+
+                    {(customer.email || customer.phone || customer.birthdate) && (
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/75 font-body mt-1.5">
+                        {customer.email && (
+                          <span className="flex items-center gap-1 min-w-0">
+                            <Mail className="w-3 h-3 text-brand-amarillo/70 shrink-0" />
+                            <span className="truncate">{customer.email}</span>
+                          </span>
+                        )}
+                        {customer.phone && (
+                          <span className="flex items-center gap-1">
+                            {/* El icono de WhatsApp distingue a quién sí se le puede escribir. */}
+                            {customer.whatsapp_opt_in
+                              ? <MessageCircle className="w-3 h-3 text-brand-verde shrink-0" />
+                              : <Phone className="w-3 h-3 text-brand-amarillo/70 shrink-0" />}
+                            {customer.phone}
+                          </span>
+                        )}
+                        {customer.birthdate && (
+                          <span className="flex items-center gap-1">
+                            <Cake className="w-3 h-3 text-brand-amarillo/70 shrink-0" />
+                            {formatBirthday(customer.birthdate)}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <div className="flex items-center gap-3 text-xs text-white/75 font-body mt-1.5">
                       <span className="flex items-center gap-1">
                         <Gift className="w-3 h-3 text-brand-amarillo/70" />{digital} digitales

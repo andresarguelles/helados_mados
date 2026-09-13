@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -132,25 +132,55 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          birthdate: string | null
           created_at: string
+          email: string | null
+          first_name: string | null
+          google_bonus_awarded: boolean
           id: string
           is_admin: boolean
+          last_name: string | null
+          phone: string | null
+          profile_bonus_awarded: boolean
           total_points: number
-          username: string
+          username: string | null
+          whatsapp_opt_in: boolean
+          whatsapp_opt_in_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          birthdate?: string | null
           created_at?: string
+          email?: string | null
+          first_name?: string | null
+          google_bonus_awarded?: boolean
           id: string
           is_admin?: boolean
+          last_name?: string | null
+          phone?: string | null
+          profile_bonus_awarded?: boolean
           total_points?: number
-          username: string
+          username?: string | null
+          whatsapp_opt_in?: boolean
+          whatsapp_opt_in_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          birthdate?: string | null
           created_at?: string
+          email?: string | null
+          first_name?: string | null
+          google_bonus_awarded?: boolean
           id?: string
           is_admin?: boolean
+          last_name?: string | null
+          phone?: string | null
+          profile_bonus_awarded?: boolean
           total_points?: number
-          username?: string
+          username?: string | null
+          whatsapp_opt_in?: boolean
+          whatsapp_opt_in_at?: string | null
         }
         Relationships: []
       }
@@ -159,6 +189,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_google_bonus: { Args: never; Returns: Json }
+      claim_username: { Args: { p_username: string }; Returns: Json }
       get_leaderboard: {
         Args: { p_period?: string }
         Returns: {
@@ -174,12 +206,29 @@ export type Database = {
           range_start: string
         }[]
       }
+      google_name_parts: {
+        Args: { p_data: Json }
+        Returns: {
+          first_name: string
+          last_name: string
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       redeem_keyword: {
         Args: { p_ip_hash: string; p_keyword: string }
         Returns: Json
       }
       scan_coupon: { Args: { p_coupon_id: string }; Returns: Json }
+      update_my_profile: {
+        Args: {
+          p_birthdate: string
+          p_first_name: string
+          p_last_name: string
+          p_phone: string
+          p_whatsapp_opt_in: boolean
+        }
+        Returns: Json
+      }
       username_available: { Args: { p_username: string }; Returns: boolean }
     }
     Enums: {
@@ -199,12 +248,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -228,11 +277,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -253,11 +302,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -278,11 +327,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -295,11 +344,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }

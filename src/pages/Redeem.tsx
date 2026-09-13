@@ -1,30 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
+import GoogleButton from '../components/auth/GoogleButton'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
+import { savePendingRedeem, readPendingRedeem, clearPendingRedeem } from '../lib/pendingRedeem'
 import { QRCodeSVG as QRCode } from 'qrcode.react'
 import confetti from 'canvas-confetti'
 import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
 type Step = 'keyword' | 'choice' | 'auth' | 'success'
-type AuthMode = 'login' | 'register'
+// El registro con contraseña ya no existe: un cadete nuevo entra por Google.
+type AuthMode = 'login' | 'google'
 
 export default function Redeem() {
   const navigate = useNavigate()
-  const { getActiveDynamic, login, register, redeemKeyword } = useStore()
+  const { getActiveDynamic, login, redeemKeyword } = useStore()
   const profile = useStore(s => s.profile)
+  const authReady = useStore(s => s.authReady)
 
   const [step, setStep] = useState<Step>('keyword')
-  const [authMode, setAuthMode] = useState<AuthMode>('register')
+  const [authMode, setAuthMode] = useState<AuthMode>('google')
   const [skipRedeem, setSkipRedeem] = useState(false)
   const [keyword, setKeyword] = useState('')
-  const [username, setUsername] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [termsAccepted, setTermsAccepted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -43,6 +45,7 @@ export default function Redeem() {
         already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por entrenamiento.',
         ip_limit: 'Se alcanzó el límite de canjes desde tu red. Intenta más tarde.',
         not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
+        no_username: 'Primero elige tu apodo para poder canjear.',
       }
       setError(messages[result.reason] || 'Error inesperado.')
       return
@@ -61,6 +64,38 @@ export default function Redeem() {
 
     setStep('success')
   }
+
+  // ─── Reanudar tras volver de Google ─────────────────────────
+  // El redirect de OAuth recarga la página, así que keyword/step/skipRedeem se perdieron.
+  // pendingRedeem los rescata de sessionStorage y el canje continúa donde se quedó.
+  const resumed = useRef(false)
+
+  useEffect(() => {
+    if (!authReady || resumed.current) return
+
+    const pending = readPendingRedeem()
+    if (!pending) return
+
+    resumed.current = true
+    clearPendingRedeem()
+
+    // Volvió sin sesión (canceló en Google): se queda en el paso normal con su palabra a la mano.
+    if (!profile) {
+      setKeyword(pending.keyword)
+      return
+    }
+
+    if (pending.skipRedeem) {
+      navigate('/perfil', { replace: true })
+      return
+    }
+
+    setKeyword(pending.keyword)
+    setLoading(true)
+    void attemptRedeem(pending.keyword)
+    // attemptRedeem y navigate son estables para lo que aquí importa: esto corre una sola vez.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authReady, profile])
 
   // ─── Step 1: Validate keyword ──────────────────────────────
   const handleKeyword = async () => {
@@ -96,38 +131,20 @@ export default function Redeem() {
     setStep('choice')
   }
 
-  // ─── Step 2: Auth + Redeem ──────────────────────────────────
+  // ─── Step 3: Login + Redeem ─────────────────────────────────
   const handleAuth = async () => {
     setError('')
 
-    if (authMode === 'register') {
-      if (!username.trim()) { setError('Elige un apodo'); return }
-      if (username.trim().length < 3) { setError('El apodo debe tener al menos 3 caracteres'); return }
-      if (password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); return }
-      if (password !== confirmPassword) { setError('Las contraseñas no coinciden'); return }
-      if (!termsAccepted) { setError('Debes aceptar los términos y condiciones'); return }
-    } else {
-      if (!username.trim() || !password) { setError('Completa todos los campos'); return }
-    }
+    const value = identifier.trim()
+    if (!value || !password) { setError('Completa todos los campos'); return }
 
     setLoading(true)
 
-    if (authMode === 'login') {
-      const result = await login(username.trim(), password)
-      if (!result.success) {
-        setError('Usuario o contraseña incorrectos')
-        setLoading(false)
-        return
-      }
-    } else {
-      const result = await register(username.trim(), password)
-      if (!result.success) {
-        setError(result.reason === 'username_taken'
-          ? 'Ese apodo ya está en uso. Elige otro.'
-          : 'Error al crear tu cuenta. Intenta de nuevo.')
-        setLoading(false)
-        return
-      }
+    const result = await login(value, password)
+    if (!result.success) {
+      setError(value.includes('@') ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos')
+      setLoading(false)
+      return
     }
 
     if (skipRedeem) {
@@ -137,6 +154,12 @@ export default function Redeem() {
     }
 
     await attemptRedeem(keyword.trim().toUpperCase())
+  }
+
+  // Última oportunidad de guardar el canje antes de que el navegador se vaya a Google.
+  const persistBeforeGoogle = () => {
+    if (skipRedeem) return
+    savePendingRedeem({ keyword: keyword.trim().toUpperCase(), skipRedeem: false })
   }
 
   return (
@@ -264,25 +287,25 @@ export default function Redeem() {
               </button>
 
               <button
-                onClick={() => setAuthMode('register')}
+                onClick={() => setAuthMode('google')}
                 className={cn(
                   'flex items-center gap-4 p-4 rounded-3xl border-2 text-left transition-all',
-                  authMode === 'register'
+                  authMode === 'google'
                     ? 'border-brand-azul bg-brand-azul/5 shadow-card'
                     : 'border-brand-sombra/10 hover:border-brand-sombra/30'
                 )}
               >
                 <div className={cn(
                   'w-11 h-11 rounded-2xl flex items-center justify-center shrink-0',
-                  authMode === 'register' ? 'bg-brand-azul text-white' : 'bg-brand-sombra/10 text-brand-sombra'
+                  authMode === 'google' ? 'bg-brand-azul text-white' : 'bg-brand-sombra/10 text-brand-sombra'
                 )}>
                   <UserPlus className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
                   <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy nuevo cadete</p>
-                  <p className="font-body text-brand-gris text-xs mt-0.5">Es mi primera vez</p>
+                  <p className="font-body text-brand-gris text-xs mt-0.5">Creo mi cuenta con Google</p>
                 </div>
-                {authMode === 'register' && <CheckCircle2 className="w-5 h-5 text-brand-azul shrink-0" />}
+                {authMode === 'google' && <CheckCircle2 className="w-5 h-5 text-brand-azul shrink-0" />}
               </button>
             </div>
 
@@ -300,119 +323,92 @@ export default function Redeem() {
                 {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
               </h1>
               <p className="font-body text-brand-gris text-sm mt-1">
-                {skipRedeem
-                  ? (authMode === 'login' ? 'Ingresa para ver tus puntos y cupones.' : 'Crea tu cuenta con solo un apodo.')
-                  : (authMode === 'login'
-                    ? 'Inicia sesión para recibir tu punto y tu cupón de medalla.'
-                    : 'Solo necesitas un apodo.')}
+                {authMode === 'google'
+                  ? 'Con Google es un toque: no tienes que inventar contraseña.'
+                  : skipRedeem
+                  ? 'Ingresa para ver tus puntos y cupones.'
+                  : 'Inicia sesión para recibir tu punto y tu cupón de medalla.'}
               </p>
             </div>
 
-            <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
-              {/* Username */}
-              <div>
-                <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                  {authMode === 'login' ? 'Tu apodo' : 'Crea tu apodo'}
-                </label>
-                <input
-                  id="username-input"
-                  type="text"
-                  value={username}
-                  onChange={e => { setUsername(e.target.value); setError('') }}
-                  placeholder="Ej. IceKingXL"
-                  maxLength={20}
-                  className="field-input"
-                  autoComplete="username"
+            {authMode === 'google' ? (
+              <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
+                <GoogleButton
+                  next={skipRedeem ? '/perfil' : '/canjear'}
+                  onBeforeRedirect={persistBeforeGoogle}
                 />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                  {authMode === 'login' ? 'Contraseña' : 'Crea contraseña'}
-                  {authMode === 'register' && <span className="text-brand-gris font-body"> (mín. 8 caracteres)</span>}
-                </label>
-                <div className="relative">
-                  <input
-                    id="password-input"
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={e => { setPassword(e.target.value); setError('') }}
-                    placeholder="••••••••"
-                    className="field-input pr-10"
-                    autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(s => !s)}
-                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-gris hover:text-brand-sombra transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Register extras */}
-              {authMode === 'register' && (
-                <>
-                  <div>
-                    <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                      Confirma contraseña
-                    </label>
-                    <input
-                      id="confirm-password-input"
-                      type={showPassword ? 'text' : 'password'}
-                      value={confirmPassword}
-                      onChange={e => { setConfirmPassword(e.target.value); setError('') }}
-                      placeholder="••••••••"
-                      className="field-input"
-                      autoComplete="new-password"
-                    />
-                  </div>
-
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <div
-                      onClick={() => setTermsAccepted(t => !t)}
-                      className={cn(
-                        'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                        termsAccepted
-                          ? 'bg-brand-azul border-brand-sombra'
-                          : 'border-brand-sombra/30 hover:border-brand-azul'
-                      )}
-                    >
-                      {termsAccepted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                    </div>
-                    <span className="text-xs text-brand-gris font-body leading-relaxed">
-                      Acepto los{' '}
-                      <a href="/terminos" target="_blank" className="text-brand-azul font-bold underline">
-                        Términos y Condiciones
-                      </a>{' '}
-                      de Helados Mados.
-                    </span>
-                  </label>
-                </>
-              )}
-
-              {error && <ErrorAlert msg={error} />}
-
-              <button
-                id="auth-submit"
-                onClick={handleAuth}
-                disabled={loading}
-                className={cn(
-                  authMode === 'login' ? 'btn-tinta' : 'btn-fresa',
-                  loading && 'opacity-70 cursor-not-allowed'
+                {!skipRedeem && (
+                  <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
+                    Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
+                    al volver, tu canje sigue solo.
+                  </p>
                 )}
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                {loading
-                  ? 'Procesando...'
-                  : skipRedeem
-                  ? (authMode === 'login' ? 'Entrar' : 'Crear mi cuenta')
-                  : (authMode === 'login' ? 'Canjear +1 punto' : 'Registrarme y canjear')}
-              </button>
-            </div>
+                <p className="text-[11px] text-brand-gris font-body leading-relaxed text-center">
+                  Al continuar aceptas los{' '}
+                  <a href="/terminos" target="_blank" className="text-brand-azul font-bold underline">
+                    Términos y Condiciones
+                  </a>{' '}
+                  de Helados Mados.
+                </p>
+              </div>
+            ) : (
+              <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
+                {/* Apodo para los legacy; correo para quien nació con Google y ya tiene contraseña. */}
+                <div>
+                  <label htmlFor="username-input" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+                    Apodo o correo
+                  </label>
+                  <input
+                    id="username-input"
+                    type="text"
+                    value={identifier}
+                    onChange={e => { setIdentifier(e.target.value); setError('') }}
+                    placeholder="Ej. IceKingXL"
+                    maxLength={60}
+                    className="field-input"
+                    autoComplete="username"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="password-input" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+                    Contraseña
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password-input"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={e => { setPassword(e.target.value); setError('') }}
+                      onKeyDown={e => e.key === 'Enter' && !loading && handleAuth()}
+                      placeholder="••••••••"
+                      className="field-input pr-10"
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(s => !s)}
+                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-gris hover:text-brand-sombra transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {error && <ErrorAlert msg={error} />}
+
+                <button
+                  id="auth-submit"
+                  onClick={handleAuth}
+                  disabled={loading}
+                  className={cn('btn-tinta', loading && 'opacity-70 cursor-not-allowed')}
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {loading ? 'Procesando...' : skipRedeem ? 'Entrar' : 'Canjear +1 punto'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 

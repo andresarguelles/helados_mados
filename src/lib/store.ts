@@ -1,12 +1,22 @@
 import { create } from 'zustand'
-import type { PostgrestError } from '@supabase/supabase-js'
+import type { PostgrestError, Session, UserIdentity } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 import { Profile, Dynamic, Coupon } from './types'
+import type { Database } from './database.types'
+import { saveAuthIntent, clearAuthIntent } from './authIntent'
 
 // GoTrue rejects RFC 2606/6762 reserved TLDs (.local, .test, .invalid, ...), so this needs to
 // look like a real domain even though it's never used to send or receive mail.
 const EMAIL_DOMAIN = 'accounts.helados-mados.app'
 const usernameToEmail = (username: string) => `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`
+
+// Desde que el registro es solo con Google conviven dos clases de email primario: el sintético de los
+// cadetes legacy y el Gmail real de quien nació con Google y luego se puso contraseña. Por eso el campo
+// del formulario acepta apodo o correo: si trae '@' es un correo y se usa tal cual.
+const toLoginEmail = (identifier: string) => {
+  const trimmed = identifier.trim()
+  return trimmed.includes('@') ? trimmed.toLowerCase() : usernameToEmail(trimmed)
+}
 
 // Postgres SQLSTATE 23P01 = exclusion_violation, thrown by dynamics_no_overlapping_keyword
 // when the same keyword is active during an overlapping date range.
@@ -31,19 +41,49 @@ type LoginResult =
   | { success: true; user: Profile }
   | { success: false; reason: 'invalid_credentials' | 'error' }
 
-type RegisterResult =
-  | { success: true; user: Profile }
-  | { success: false; reason: 'username_taken' | 'error' }
-
 type DynamicWriteResult = { success: true } | { success: false; error: string }
 
 type RedeemResult =
   | { success: true; coupon: Coupon }
-  | { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'ip_limit' | 'not_authenticated' | 'error' }
+  | { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'ip_limit' | 'not_authenticated' | 'no_username' | 'error' }
+
+// scan_coupon ya no devuelve la fila completa del perfil: mandaba teléfono, cumpleaños y correo
+// al dispositivo del mostrador en cada escaneo.
+export type ScanUser = Pick<Profile, 'id' | 'username' | 'total_points'>
+
+type ScanReason = 'not_found' | 'already_used' | 'expired' | 'stock_empty' | 'forbidden' | 'error'
 
 type ScanResult =
-  | { success: true; user: Profile; dynamic: Dynamic }
-  | { success: false; reason: 'not_found' | 'already_used' | 'expired' | 'stock_empty' | 'forbidden' | 'error' }
+  | { success: true; user: ScanUser; dynamic: Dynamic }
+  | { success: false; reason: ScanReason }
+
+type ClaimUsernameReason =
+  | 'too_short' | 'username_taken' | 'already_set' | 'not_authenticated' | 'error'
+
+type ClaimUsernameResult =
+  | { success: true }
+  | { success: false; reason: ClaimUsernameReason }
+
+export interface ProfileDataInput {
+  first_name: string | null
+  last_name: string | null
+  birthdate: string | null
+  phone: string | null
+  whatsapp_opt_in: boolean
+}
+
+type UpdateProfileReason =
+  | 'invalid_phone' | 'invalid_birthdate' | 'optin_without_phone' | 'not_authenticated' | 'error'
+
+type UpdateProfileResult =
+  | { success: true; pointsAwarded: number }
+  | { success: false; reason: UpdateProfileReason }
+
+type OAuthResult = { success: true } | { success: false; reason: 'already_linked' | 'error' }
+
+type PasswordResult = { success: true } | { success: false; reason: 'weak_password' | 'error' }
+
+type UnlinkResult = { success: true } | { success: false; reason: 'needs_password' | 'not_linked' | 'error' }
 
 // ─── Store State ──────────────────────────────────────────────────────────────
 
@@ -51,16 +91,37 @@ interface AppState {
   profile: Profile | null
   isAdmin: boolean
   authReady: boolean
+  /** Proveedores vinculados a la cuenta ('email' para los legacy, 'google' tras vincular). */
+  identities: UserIdentity[]
+  /** Si es false, desvincular Google dejaría al usuario sin ninguna forma de entrar. */
+  hasPassword: boolean
   dynamics: Dynamic[]
   coupons: Coupon[]
   profiles: Profile[]
 
   // Auth
   initAuth: () => () => void
-  login: (username: string, password: string) => Promise<LoginResult>
-  register: (username: string, password: string) => Promise<RegisterResult>
+  /** `identifier` es un apodo (legacy) o un correo (nacido con Google + contraseña). */
+  login: (identifier: string, password: string) => Promise<LoginResult>
   logout: () => Promise<void>
   getCurrentUser: () => Profile | null
+  refreshProfile: () => Promise<void>
+
+  // Google
+  signInWithGoogle: (next?: string) => Promise<OAuthResult>
+  linkGoogle: () => Promise<OAuthResult>
+  unlinkGoogle: () => Promise<UnlinkResult>
+  isGoogleLinked: () => boolean
+  googleEmail: () => string | null
+  /** Con qué se entra usando contraseña: el apodo (legacy) o el correo (nacido con Google). */
+  loginIdentifier: () => string | null
+  claimGoogleBonus: () => Promise<number>
+
+  // Perfil
+  isUsernameAvailable: (username: string) => Promise<boolean | null>
+  claimUsername: (username: string) => Promise<ClaimUsernameResult>
+  updateMyProfile: (data: ProfileDataInput) => Promise<UpdateProfileResult>
+  setPassword: (password: string) => Promise<PasswordResult>
 
   // Admin: customers
   fetchAllProfiles: () => Promise<void>
@@ -89,12 +150,45 @@ async function loadProfile(): Promise<Profile | null> {
   return data
 }
 
+async function loadIdentities(): Promise<UserIdentity[]> {
+  const { data, error } = await supabase.auth.getUserIdentities()
+  if (error || !data) return []
+  return data.identities
+}
+
+// GoTrue no expone "este usuario tiene contraseña". Los legacy sí la tienen y se delatan por su
+// identidad 'email'; a los de Google se la marcamos en user_metadata al momento de crearla.
+function derivePasswordFlag(session: Session, identities: UserIdentity[]): boolean {
+  if (identities.some(i => i.provider === 'email')) return true
+  return session.user.user_metadata?.has_password === true
+}
+
+// El redirectTo debe coincidir CARACTER POR CARACTER con una entrada de Redirect URLs del dashboard,
+// query string incluido. Por eso va limpio: lo que haya que recordar entre saltos viaja en
+// sessionStorage (ver authIntent.ts). Si no coincide, GoTrue lo descarta en silencio y manda al
+// Site URL, que es produccion — sintoma: en local el login termina en heladosmados.com.
+function oauthRedirectTo(): string {
+  const redirectTo = `${window.location.origin}/auth/callback`
+
+  if (import.meta.env.DEV) {
+    console.info(
+      `[auth] redirectTo = ${redirectTo}\n` +
+      'Debe estar tal cual en Authentication -> URL Configuration -> Redirect URLs, ' +
+      'o el viaje termina en el Site URL (produccion).'
+    )
+  }
+
+  return redirectTo
+}
+
 // ─── Store ────────────────────────────────────────────────────────────────────
 
 export const useStore = create<AppState>()((set, get) => ({
   profile: null,
   isAdmin: false,
   authReady: false,
+  identities: [],
+  hasPassword: false,
   dynamics: [],
   coupons: [],
   profiles: [],
@@ -102,60 +196,182 @@ export const useStore = create<AppState>()((set, get) => ({
   // ── Auth ──────────────────────────────────────────────────────────────
 
   initAuth: () => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const profile = session ? await loadProfile() : null
-      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
-    })
+    const hydrate = async (session: Session | null) => {
+      if (!session) {
+        set({ profile: null, isAdmin: false, identities: [], hasPassword: false, authReady: true })
+        return
+      }
+      const [profile, identities] = await Promise.all([loadProfile(), loadIdentities()])
+      set({
+        profile,
+        isAdmin: profile?.is_admin ?? false,
+        identities,
+        hasPassword: derivePasswordFlag(session, identities),
+        authReady: true,
+      })
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const profile = session ? await loadProfile() : null
-      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
+    supabase.auth.getSession().then(({ data: { session } }) => { void hydrate(session) })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      void hydrate(session)
     })
 
     return () => subscription.unsubscribe()
   },
 
-  login: async (username, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: usernameToEmail(username),
+  login: async (identifier, password) => {
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: toLoginEmail(identifier),
       password,
     })
     if (error) return { success: false, reason: 'invalid_credentials' }
 
-    const profile = await loadProfile()
+    const [profile, identities] = await Promise.all([loadProfile(), loadIdentities()])
     if (!profile) return { success: false, reason: 'error' }
-    set({ profile, isAdmin: profile.is_admin })
-    return { success: true, user: profile }
-  },
-
-  register: async (username, password) => {
-    const trimmed = username.trim()
-
-    const { data: available, error: checkError } = await supabase.rpc('username_available', {
-      p_username: trimmed,
+    set({
+      profile,
+      isAdmin: profile.is_admin,
+      identities,
+      hasPassword: authData.session ? derivePasswordFlag(authData.session, identities) : true,
     })
-    if (checkError) return { success: false, reason: 'error' }
-    if (!available) return { success: false, reason: 'username_taken' }
-
-    const { data, error } = await supabase.auth.signUp({
-      email: usernameToEmail(trimmed),
-      password,
-      options: { data: { username: trimmed } },
-    })
-    if (error || !data.user) return { success: false, reason: 'error' }
-
-    const profile = await loadProfile()
-    if (!profile) return { success: false, reason: 'error' }
-    set({ profile, isAdmin: profile.is_admin })
     return { success: true, user: profile }
   },
 
   logout: async () => {
     await supabase.auth.signOut()
-    set({ profile: null, isAdmin: false })
+    set({ profile: null, isAdmin: false, identities: [], hasPassword: false })
   },
 
   getCurrentUser: () => get().profile,
+
+  refreshProfile: async () => {
+    const profile = await loadProfile()
+    set({ profile, isAdmin: profile?.is_admin ?? false })
+  },
+
+  // ── Google ────────────────────────────────────────────────────────────
+
+  signInWithGoogle: async (next) => {
+    saveAuthIntent({ next: next ?? '/perfil', linking: false })
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: oauthRedirectTo() },
+    })
+    // En el camino feliz el navegador ya se fue a Google y esto no llega a leerse.
+    if (error) {
+      // Sin limpiar, esta intencion contaminaria el proximo aterrizaje.
+      clearAuthIntent()
+      return { success: false, reason: 'error' }
+    }
+    return { success: true }
+  },
+
+  linkGoogle: async () => {
+    saveAuthIntent({ next: '/perfil', linking: true })
+    const { error } = await supabase.auth.linkIdentity({
+      provider: 'google',
+      options: { redirectTo: oauthRedirectTo() },
+    })
+    if (error) {
+      clearAuthIntent()
+      const alreadyLinked = /already|exists|registered/i.test(error.message)
+      return { success: false, reason: alreadyLinked ? 'already_linked' : 'error' }
+    }
+    return { success: true }
+  },
+
+  unlinkGoogle: async () => {
+    // Sin contraseña, desvincular Google deja al usuario sin ninguna forma de entrar.
+    if (!get().hasPassword) return { success: false, reason: 'needs_password' }
+
+    const identities = await loadIdentities()
+    const google = identities.find(i => i.provider === 'google')
+    if (!google) return { success: false, reason: 'not_linked' }
+
+    const { error } = await supabase.auth.unlinkIdentity(google)
+    if (error) return { success: false, reason: 'error' }
+
+    set({ identities: await loadIdentities() })
+    return { success: true }
+  },
+
+  isGoogleLinked: () => get().identities.some(i => i.provider === 'google'),
+
+  googleEmail: () => {
+    const google = get().identities.find(i => i.provider === 'google')
+    const email = google?.identity_data?.email
+    return typeof email === 'string' ? email : null
+  },
+
+  loginIdentifier: () => {
+    const { identities, profile } = get()
+    // Un legacy tiene identidad 'email' y su email primario es el sintetico derivado del apodo,
+    // asi que signInWithPassword solo funciona escribiendo el apodo. Quien nacio con Google tiene
+    // su Gmail real como email primario y entra con el correo. Confundirlos deja al usuario
+    // intentando entrar con un dato que nunca va a funcionar.
+    const isLegacy = identities.some(i => i.provider === 'email')
+    return (isLegacy ? profile?.username : profile?.email) ?? null
+  },
+
+  claimGoogleBonus: async () => {
+    const { data, error } = await supabase.rpc('claim_google_bonus')
+    if (error || !data) return 0
+    const result = data as { success: boolean; points_awarded?: number }
+    await get().refreshProfile()
+    set({ identities: await loadIdentities() })
+    return result.success ? (result.points_awarded ?? 0) : 0
+  },
+
+  // ── Perfil ────────────────────────────────────────────────────────────
+
+  isUsernameAvailable: async (username) => {
+    const { data, error } = await supabase.rpc('username_available', { p_username: username.trim() })
+    if (error) return null
+    return data
+  },
+
+  claimUsername: async (username) => {
+    const { data, error } = await supabase.rpc('claim_username', { p_username: username.trim() })
+    if (error || !data) return { success: false, reason: 'error' }
+    const result = data as { success: boolean; reason?: ClaimUsernameReason }
+    if (!result.success) return { success: false, reason: result.reason ?? 'error' }
+    await get().refreshProfile()
+    return { success: true }
+  },
+
+  updateMyProfile: async (input) => {
+    const args = {
+      p_first_name: input.first_name,
+      p_last_name: input.last_name,
+      p_birthdate: input.birthdate,
+      p_phone: input.phone,
+      p_whatsapp_opt_in: input.whatsapp_opt_in,
+    }
+    // Postgres no expresa nullability en la firma de una función, así que el generador de tipos
+    // asume lo más estricto y los declara `string`. La RPC sí acepta null en todos ellos — es
+    // justamente como el usuario borra un dato. El cast vive aquí para que database.types.ts
+    // siga siendo un archivo puramente generado, sin ediciones a mano que se pierdan al regenerarlo.
+    type UpdateProfileArgs = Database['public']['Functions']['update_my_profile']['Args']
+    const { data, error } = await supabase.rpc('update_my_profile', args as UpdateProfileArgs)
+    if (error || !data) return { success: false, reason: 'error' }
+    const result = data as { success: boolean; reason?: UpdateProfileReason; points_awarded?: number }
+    if (!result.success) return { success: false, reason: result.reason ?? 'error' }
+    await get().refreshProfile()
+    return { success: true, pointsAwarded: result.points_awarded ?? 0 }
+  },
+
+  setPassword: async (password) => {
+    // El flag en user_metadata es lo único que nos deja saber después si un usuario de Google
+    // ya se puso contraseña (GoTrue no lo expone).
+    const { error } = await supabase.auth.updateUser({ password, data: { has_password: true } })
+    if (error) {
+      const weak = /password/i.test(error.message)
+      return { success: false, reason: weak ? 'weak_password' : 'error' }
+    }
+    set({ hasPassword: true })
+    return { success: true }
+  },
 
   // ── Admin: customers ──────────────────────────────────────────────────
 
@@ -224,8 +440,7 @@ export const useStore = create<AppState>()((set, get) => ({
     if (error) return { success: false, reason: 'error' }
     if (!data.success) return { success: false, reason: data.reason }
 
-    const profile = await loadProfile()
-    if (profile) set({ profile })
+    await get().refreshProfile()
 
     return { success: true, coupon: data.coupon as Coupon }
   },
@@ -233,7 +448,7 @@ export const useStore = create<AppState>()((set, get) => ({
   scanCoupon: async (couponId) => {
     const { data, error } = await supabase.rpc('scan_coupon', { p_coupon_id: couponId })
     if (error || !data) return { success: false, reason: 'error' }
-    const result = data as { success: boolean; reason?: ScanResult extends { success: false } ? ScanResult['reason'] : never; user?: Profile; dynamic?: Dynamic }
+    const result = data as { success: boolean; reason?: ScanReason; user?: ScanUser; dynamic?: Dynamic }
     if (!result.success) return { success: false, reason: result.reason ?? 'error' }
     return { success: true, user: result.user!, dynamic: result.dynamic! }
   },
