@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:backup": "node scripts/backup-db.mjs",
+    "db:reset-user": "node scripts/reset-test-account.mjs"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
