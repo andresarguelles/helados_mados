@@ -7,8 +7,6 @@ const KEY = 'mados:pending-redeem'
 
 export interface PendingRedeem {
   keyword: string
-  /** true cuando el usuario entró a autenticarse sin querer canjear todavía. */
-  skipRedeem: boolean
 }
 
 export function savePendingRedeem(pending: PendingRedeem): void {
@@ -25,7 +23,7 @@ export function readPendingRedeem(): PendingRedeem | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<PendingRedeem>
     if (typeof parsed.keyword !== 'string' || !parsed.keyword) return null
-    return { keyword: parsed.keyword, skipRedeem: parsed.skipRedeem === true }
+    return { keyword: parsed.keyword }
   } catch {
     return null
   }

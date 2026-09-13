@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import GoogleButton from '../components/auth/GoogleButton'
@@ -23,7 +23,6 @@ export default function Redeem() {
 
   const [step, setStep] = useState<Step>('keyword')
   const [authMode, setAuthMode] = useState<AuthMode>('google')
-  const [skipRedeem, setSkipRedeem] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
@@ -66,7 +65,7 @@ export default function Redeem() {
   }
 
   // ─── Reanudar tras volver de Google ─────────────────────────
-  // El redirect de OAuth recarga la página, así que keyword/step/skipRedeem se perdieron.
+  // El redirect de OAuth recarga la página, así que keyword y step se perdieron.
   // pendingRedeem los rescata de sessionStorage y el canje continúa donde se quedó.
   const resumed = useRef(false)
 
@@ -82,11 +81,6 @@ export default function Redeem() {
     // Volvió sin sesión (canceló en Google): se queda en el paso normal con su palabra a la mano.
     if (!profile) {
       setKeyword(pending.keyword)
-      return
-    }
-
-    if (pending.skipRedeem) {
-      navigate('/perfil', { replace: true })
       return
     }
 
@@ -119,7 +113,6 @@ export default function Redeem() {
     }
 
     setLoading(false)
-    setSkipRedeem(false)
 
     confetti({
       particleCount: 50,
@@ -147,19 +140,12 @@ export default function Redeem() {
       return
     }
 
-    if (skipRedeem) {
-      setLoading(false)
-      navigate('/perfil', { replace: true })
-      return
-    }
-
     await attemptRedeem(keyword.trim().toUpperCase())
   }
 
   // Última oportunidad de guardar el canje antes de que el navegador se vaya a Google.
   const persistBeforeGoogle = () => {
-    if (skipRedeem) return
-    savePendingRedeem({ keyword: keyword.trim().toUpperCase(), skipRedeem: false })
+    savePendingRedeem({ keyword: keyword.trim().toUpperCase() })
   }
 
   return (
@@ -174,12 +160,12 @@ export default function Redeem() {
             onClick={() => {
               if (step === 'keyword') { navigate('/'); return }
               if (step === 'choice') { setStep('keyword'); return }
-              setStep(skipRedeem ? 'keyword' : 'choice')
+              setStep('choice')
             }}
             className="flex items-center gap-1.5 text-brand-gris hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {step === 'keyword' ? 'Inicio' : step === 'choice' ? 'Cambiar palabra' : skipRedeem ? 'Atrás' : 'Cambiar opción'}
+            {step === 'keyword' ? 'Inicio' : step === 'choice' ? 'Cambiar palabra' : 'Cambiar opción'}
           </button>
         )}
 
@@ -234,12 +220,9 @@ export default function Redeem() {
               ) : (
                 <p className="text-xs text-brand-gris font-body">
                   ¿Ya tienes cuenta?{' '}
-                  <button
-                    onClick={() => { setKeyword(''); setError(''); setSkipRedeem(true); setAuthMode('login'); setStep('auth') }}
-                    className="text-brand-azul font-bold"
-                  >
+                  <Link to="/login" className="text-brand-azul font-bold">
                     Inicia sesión primero
-                  </button>
+                  </Link>
                 </p>
               )}
             </div>
@@ -325,8 +308,6 @@ export default function Redeem() {
               <p className="font-body text-brand-gris text-sm mt-1">
                 {authMode === 'google'
                   ? 'Con Google es un toque: no tienes que inventar contraseña.'
-                  : skipRedeem
-                  ? 'Ingresa para ver tus puntos y cupones.'
                   : 'Inicia sesión para recibir tu punto y tu cupón de medalla.'}
               </p>
             </div>
@@ -334,15 +315,13 @@ export default function Redeem() {
             {authMode === 'google' ? (
               <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
                 <GoogleButton
-                  next={skipRedeem ? '/perfil' : '/canjear'}
+                  next="/canjear"
                   onBeforeRedirect={persistBeforeGoogle}
                 />
-                {!skipRedeem && (
-                  <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
-                    Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
-                    al volver, tu canje sigue solo.
-                  </p>
-                )}
+                <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
+                  Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
+                  al volver, tu canje sigue solo.
+                </p>
                 <p className="text-[11px] text-brand-gris font-body leading-relaxed text-center">
                   Al continuar aceptas los{' '}
                   <a href="/terminos" target="_blank" className="text-brand-azul font-bold underline">
@@ -405,7 +384,7 @@ export default function Redeem() {
                   className={cn('btn-tinta', loading && 'opacity-70 cursor-not-allowed')}
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  {loading ? 'Procesando...' : skipRedeem ? 'Entrar' : 'Canjear +1 punto'}
+                  {loading ? 'Procesando...' : 'Canjear +1 punto'}
                 </button>
               </div>
             )}

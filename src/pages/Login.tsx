@@ -72,6 +72,30 @@ export default function Login() {
           </div>
         </div>
 
+        {/* Google */}
+        <div className="animate-slide-up">
+          <GoogleButton next="/perfil" />
+        </div>
+
+        {/*
+          Un legacy que entre con Google sin vincular primero acaba en una cuenta nueva con 0 puntos:
+          su email sintético nunca coincide con su Gmail, así que Supabase no puede auto-vincular.
+        */}
+        <div className="mt-4 flex gap-2.5 rounded-2xl bg-brand-amarillo/15 border border-brand-amarillo px-4 py-3">
+          <AlertTriangle className="w-4 h-4 text-brand-sombra shrink-0 mt-0.5" />
+          <p className="text-[11px] text-brand-gris font-body leading-relaxed">
+            ¿Ya eras cadete? Entra abajo con tu apodo y vincula Google desde tu perfil, así no
+            pierdes tus puntos.
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-brand-sombra/10" />
+          <span className="text-xs text-brand-gris font-body">¿Ya tienes apodo y contraseña?</span>
+          <div className="flex-1 h-px bg-brand-sombra/10" />
+        </div>
+
         {/* Form */}
         <div className="paper-card rounded-3xl p-6 flex flex-col gap-4 animate-slide-up">
           {/*
@@ -91,7 +115,6 @@ export default function Login() {
               maxLength={60}
               className="field-input"
               autoComplete="username"
-              autoFocus
             />
           </div>
 
@@ -126,7 +149,7 @@ export default function Login() {
           {error && <ErrorAlert msg={error} />}
           {showGoogleHint && (
             <p className="text-xs text-brand-gris font-body leading-relaxed -mt-1">
-              Si creaste tu cuenta con Google, entra con tu correo o usa el botón de abajo.
+              Si creaste tu cuenta con Google, entra con tu correo o usa el botón de arriba.
             </p>
           )}
 
@@ -140,27 +163,6 @@ export default function Login() {
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? 'Verificando...' : 'Entrar'}
           </button>
-        </div>
-
-        {/* Google */}
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-brand-sombra/10" />
-          <span className="text-xs text-brand-gris font-body">¿Primera vez?</span>
-          <div className="flex-1 h-px bg-brand-sombra/10" />
-        </div>
-
-        <GoogleButton next="/perfil" />
-
-        {/*
-          Un legacy que entre con Google sin vincular primero acaba en una cuenta nueva con 0 puntos:
-          su email sintético nunca coincide con su Gmail, así que Supabase no puede auto-vincular.
-        */}
-        <div className="mt-4 flex gap-2.5 rounded-2xl bg-brand-amarillo/15 border border-brand-amarillo px-4 py-3">
-          <AlertTriangle className="w-4 h-4 text-brand-sombra shrink-0 mt-0.5" />
-          <p className="text-[11px] text-brand-gris font-body leading-relaxed">
-            ¿Ya eras cadete? Entra arriba con tu apodo y vincula Google desde tu perfil, así no
-            pierdes tus puntos.
-          </p>
         </div>
 
         {/* Divider */}
