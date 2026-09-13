@@ -190,7 +190,14 @@ export type Database = {
     }
     Functions: {
       claim_google_bonus: { Args: never; Returns: Json }
-      claim_username: { Args: { p_username: string }; Returns: Json }
+      complete_signup: {
+        Args: {
+          p_phone: string
+          p_username: string
+          p_whatsapp_opt_in: boolean
+        }
+        Returns: Json
+      }
       get_leaderboard: {
         Args: { p_period?: string }
         Returns: {

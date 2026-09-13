@@ -57,12 +57,19 @@ type ScanResult =
   | { success: true; user: ScanUser; dynamic: Dynamic }
   | { success: false; reason: ScanReason }
 
-type ClaimUsernameReason =
-  | 'too_short' | 'username_taken' | 'already_set' | 'not_authenticated' | 'error'
+export interface SignupInput {
+  username: string
+  phone: string
+  whatsappOptIn: boolean
+}
 
-type ClaimUsernameResult =
+type CompleteSignupReason =
+  | 'too_short' | 'username_taken' | 'already_set' | 'consent_required'
+  | 'invalid_phone' | 'phone_taken' | 'not_authenticated' | 'error'
+
+type CompleteSignupResult =
   | { success: true }
-  | { success: false; reason: ClaimUsernameReason }
+  | { success: false; reason: CompleteSignupReason }
 
 export interface ProfileDataInput {
   first_name: string | null
@@ -73,7 +80,8 @@ export interface ProfileDataInput {
 }
 
 type UpdateProfileReason =
-  | 'invalid_phone' | 'invalid_birthdate' | 'optin_without_phone' | 'not_authenticated' | 'error'
+  | 'invalid_phone' | 'invalid_birthdate' | 'optin_without_phone'
+  | 'phone_immutable' | 'phone_taken' | 'not_authenticated' | 'error'
 
 type UpdateProfileResult =
   | { success: true; pointsAwarded: number }
@@ -119,7 +127,7 @@ interface AppState {
 
   // Perfil
   isUsernameAvailable: (username: string) => Promise<boolean | null>
-  claimUsername: (username: string) => Promise<ClaimUsernameResult>
+  completeSignup: (input: SignupInput) => Promise<CompleteSignupResult>
   updateMyProfile: (data: ProfileDataInput) => Promise<UpdateProfileResult>
   setPassword: (password: string) => Promise<PasswordResult>
 
@@ -331,10 +339,16 @@ export const useStore = create<AppState>()((set, get) => ({
     return data
   },
 
-  claimUsername: async (username) => {
-    const { data, error } = await supabase.rpc('claim_username', { p_username: username.trim() })
+  // Apodo, teléfono y consentimiento se guardan juntos o no se guarda nada: la RPC es una sola
+  // transacción, así que no puede quedar un apodo tomado por una cuenta sin número.
+  completeSignup: async ({ username, phone, whatsappOptIn }) => {
+    const { data, error } = await supabase.rpc('complete_signup', {
+      p_username: username.trim(),
+      p_phone: phone,
+      p_whatsapp_opt_in: whatsappOptIn,
+    })
     if (error || !data) return { success: false, reason: 'error' }
-    const result = data as { success: boolean; reason?: ClaimUsernameReason }
+    const result = data as { success: boolean; reason?: CompleteSignupReason }
     if (!result.success) return { success: false, reason: result.reason ?? 'error' }
     await get().refreshProfile()
     return { success: true }

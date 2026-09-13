@@ -1,27 +1,11 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Loader2, X } from 'lucide-react'
+import { CheckCircle2, Loader2, Lock, X } from 'lucide-react'
 import Modal from '../ui/Modal'
 import ErrorAlert from '../ui/ErrorAlert'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
+import { normalizePhone } from '../../lib/phone'
 import { Profile } from '../../lib/types'
-
-// El grueso del público del Live es de México, así que un número sin prefijo internacional
-// se asume mexicano. El CHECK de la base solo acepta E.164, de ahí la normalización.
-const DEFAULT_COUNTRY_CODE = '52'
-const E164 = /^\+[1-9]\d{7,14}$/
-
-export function normalizePhone(raw: string): string | null {
-  const trimmed = raw.trim()
-  if (!trimmed) return null
-
-  const hasCountryCode = trimmed.startsWith('+')
-  const digits = trimmed.replace(/\D/g, '')
-  if (!digits) return null
-
-  const e164 = hasCountryCode ? `+${digits}` : `+${DEFAULT_COUNTRY_CODE}${digits}`
-  return E164.test(e164) ? e164 : null
-}
 
 interface FormState {
   firstName: string
@@ -56,6 +40,11 @@ export default function ProfileDataModal({
   const [form, setForm] = useState<FormState>(() => formFrom(profile))
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+
+  // El número se escribe una sola vez: los cadetes nuevos lo dan al crear la cuenta y los legacy
+  // pueden agregarlo aquí, pero después queda fijo. El servidor lo rechaza igual (`phone_immutable`);
+  // esto solo evita que alguien escriba un cambio que nunca se iba a guardar.
+  const phoneLocked = profile.phone !== null
 
   // Al reabrir, volver a partir de lo guardado en vez de arrastrar una edición abandonada.
   useEffect(() => {
@@ -99,6 +88,8 @@ export default function ProfileDataModal({
         invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
         invalid_birthdate: 'Esa fecha de nacimiento no es válida.',
         optin_without_phone: 'Para recibir promociones por WhatsApp necesitas dejarnos tu número.',
+        phone_immutable: 'Tu número ya quedó registrado y no se puede cambiar. Escríbenos a contact@heladosmados.com.',
+        phone_taken: 'Ese número ya está registrado en otra cuenta.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
       }
       setError(messages[result.reason] ?? 'No pudimos guardar tus datos. Intenta de nuevo.')
@@ -183,17 +174,28 @@ export default function ProfileDataModal({
           <label htmlFor="profile-phone" className="font-heading text-brand-sombra text-xs mb-1.5 block">
             WhatsApp
           </label>
-          <input
-            id="profile-phone"
-            type="tel"
-            inputMode="tel"
-            value={form.phone}
-            onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setError('') }}
-            placeholder="55 1234 5678"
-            maxLength={20}
-            className="field-input"
-            autoComplete="tel"
-          />
+          <div className="relative">
+            <input
+              id="profile-phone"
+              type="tel"
+              inputMode="tel"
+              value={form.phone}
+              onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setError('') }}
+              readOnly={phoneLocked}
+              placeholder="55 1234 5678"
+              maxLength={20}
+              className={cn('field-input', phoneLocked && 'pr-10 opacity-60 cursor-not-allowed')}
+              autoComplete="tel"
+            />
+            {phoneLocked && (
+              <Lock className="w-4 h-4 text-brand-gris absolute right-3 top-1/2 -translate-y-1/2" />
+            )}
+          </div>
+          <p className="text-[11px] text-brand-gris font-body mt-1.5">
+            {phoneLocked
+              ? 'Tu número queda fijo. Si te equivocaste, escríbenos a contact@heladosmados.com.'
+              : 'Se guarda una sola vez: después ya no se puede cambiar desde aquí.'}
+          </p>
         </div>
 
         {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad. */}

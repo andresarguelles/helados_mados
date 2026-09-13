@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AlertTriangle, Check, Loader2, LogOut, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, Check, CheckCircle2, Loader2, LogOut, Sparkles, X } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
+import { normalizePhone } from '../lib/phone'
 import { readPendingRedeem } from '../lib/pendingRedeem'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
@@ -11,19 +12,25 @@ type Availability = 'idle' | 'short' | 'checking' | 'free' | 'taken'
 const CHECK_DEBOUNCE_MS = 400
 
 /**
- * Primera pantalla de todo cadete que nace con Google: el apodo es la identidad pública del
- * ranking y Google no lo aporta, así que se pide aquí y el gate de ProtectedMember no deja
- * avanzar sin él.
+ * Primera pantalla de todo cadete que nace con Google. Pide las tres cosas que Google no aporta y
+ * sin las que la cuenta no sirve al negocio: el apodo (identidad pública del ranking), el WhatsApp
+ * (el canal de las promociones) y el consentimiento explícito para usarlo.
+ *
+ * Las tres son obligatorias y se guardan juntas en una sola RPC. El gate de ProtectedMember no deja
+ * avanzar sin apodo, y `complete_signup` rechaza en el servidor cualquier intento sin número o sin
+ * consentimiento: quitar los campos del formulario no bastaría.
  */
 export default function Bienvenida() {
   const navigate = useNavigate()
   const authReady = useStore(s => s.authReady)
   const profile = useStore(s => s.profile)
-  const claimUsername = useStore(s => s.claimUsername)
+  const completeSignup = useStore(s => s.completeSignup)
   const isUsernameAvailable = useStore(s => s.isUsernameAvailable)
   const logout = useStore(s => s.logout)
 
   const [username, setUsername] = useState('')
+  const [phone, setPhone] = useState('')
+  const [optIn, setOptIn] = useState(false)
   const [availability, setAvailability] = useState<Availability>('idle')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -52,6 +59,15 @@ export default function Bienvenida() {
 
   if (!authReady || !profile || profile.username) return null
 
+  // Los tres datos son requisito. El botón deshabilitado evita el viaje al servidor, pero la
+  // validación de verdad está en `complete_signup`.
+  const canSubmit =
+    !loading &&
+    availability !== 'taken' &&
+    username.trim().length >= 3 &&
+    normalizePhone(phone) !== null &&
+    optIn
+
   const handleSubmit = async () => {
     setError('')
     const value = username.trim()
@@ -59,8 +75,18 @@ export default function Bienvenida() {
     if (!value) { setError('Elige un apodo'); return }
     if (value.length < 3) { setError('El apodo debe tener al menos 3 caracteres'); return }
 
+    const e164 = normalizePhone(phone)
+    if (!e164) {
+      setError('Revisa tu número. Escríbelo a 10 dígitos, o con lada internacional (ej. +52 55 1234 5678).')
+      return
+    }
+    if (!optIn) {
+      setError('Necesitamos tu permiso para escribirte por WhatsApp.')
+      return
+    }
+
     setLoading(true)
-    const result = await claimUsername(value)
+    const result = await completeSignup({ username: value, phone: e164, whatsappOptIn: optIn })
     setLoading(false)
 
     if (!result.success) {
@@ -68,9 +94,12 @@ export default function Bienvenida() {
         username_taken: 'Ese apodo ya está en uso. Elige otro.',
         too_short: 'El apodo debe tener al menos 3 caracteres',
         already_set: 'Ya tienes un apodo asignado.',
+        consent_required: 'Necesitamos tu permiso para escribirte por WhatsApp.',
+        invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
+        phone_taken: 'Ese número ya está registrado en otra cuenta.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
       }
-      setError(messages[result.reason] ?? 'No pudimos guardar tu apodo. Intenta de nuevo.')
+      setError(messages[result.reason] ?? 'No pudimos crear tu cuenta. Intenta de nuevo.')
       return
     }
 
@@ -94,9 +123,9 @@ export default function Bienvenida() {
             Último paso
           </span>
           <div>
-            <h1 className="font-heading text-brand-sombra text-3xl">Elige tu apodo</h1>
+            <h1 className="font-heading text-brand-sombra text-3xl">Crea tu cuenta</h1>
             <p className="text-brand-gris text-sm font-body mt-1 leading-relaxed">
-              Así te van a ver en el ranking y en el mostrador. Se elige una sola vez.
+              Nos faltan dos datos que Google no nos da. Se piden una sola vez.
             </p>
           </div>
         </div>
@@ -140,16 +169,63 @@ export default function Bienvenida() {
             </p>
           </div>
 
+          <div>
+            <label htmlFor="bienvenida-phone" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+              Tu WhatsApp
+            </label>
+            <input
+              id="bienvenida-phone"
+              type="tel"
+              inputMode="tel"
+              value={phone}
+              onChange={e => { setPhone(e.target.value); setError('') }}
+              onKeyDown={e => e.key === 'Enter' && !loading && handleSubmit()}
+              placeholder="55 1234 5678"
+              maxLength={20}
+              className="field-input"
+              autoComplete="tel"
+            />
+            {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. */}
+            <p className="text-[11px] text-brand-gris font-body mt-1.5 leading-relaxed">
+              Por aquí te avisamos de las dinámicas y promos.{' '}
+              <span className="font-bold text-brand-sombra">Revísalo bien: después no se puede cambiar.</span>
+            </p>
+          </div>
+
+          {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad, y
+              aquí además es requisito para que la cuenta exista. */}
+          <label className="flex items-start gap-3 cursor-pointer">
+            <div
+              onClick={() => { setOptIn(v => !v); setError('') }}
+              className={cn(
+                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
+                optIn ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 hover:border-brand-azul'
+              )}
+            >
+              {optIn && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+            </div>
+            <span className="text-xs text-brand-gris font-body leading-relaxed">
+              Acepto recibir mensajes con dinámicas y/o publicidad de Helados Mados por WhatsApp.
+              Puedo cancelarlo cuando quiera desde mi perfil.
+            </span>
+          </label>
+
           {error && <ErrorAlert msg={error} />}
 
           <button
             onClick={handleSubmit}
-            disabled={loading || availability === 'taken'}
-            className={cn('btn-fresa', (loading || availability === 'taken') && 'opacity-70 cursor-not-allowed')}
+            disabled={!canSubmit}
+            className={cn('btn-fresa', !canSubmit && 'opacity-70 cursor-not-allowed')}
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {loading ? 'Guardando...' : 'Empezar'}
+            {loading ? 'Creando tu cuenta...' : 'Empezar'}
           </button>
+
+          {!optIn && (
+            <p className="text-[11px] text-brand-gris font-body text-center leading-relaxed -mt-1">
+              Sin aceptar los mensajes de WhatsApp no podemos crear tu cuenta.
+            </p>
+          )}
         </div>
 
         {/*
