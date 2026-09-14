@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Loader2, Lock, X } from 'lucide-react'
+import { CheckCircle2, Loader2, X } from 'lucide-react'
 import Modal from '../ui/Modal'
 import ErrorAlert from '../ui/ErrorAlert'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
-import { normalizePhone } from '../../lib/phone'
+import { normalizePhone, parsePhone, DEFAULT_COUNTRY } from '../../lib/phone'
+import PhoneField from '../ui/PhoneField'
 import { Profile } from '../../lib/types'
 
 interface FormState {
@@ -20,7 +21,9 @@ function formFrom(profile: Profile): FormState {
     firstName: profile.first_name ?? '',
     lastName: profile.last_name ?? '',
     birthdate: profile.birthdate ?? '',
-    phone: profile.phone ?? '',
+    // El campo trabaja solo con los dígitos nacionales, así que un número ya guardado (que está
+    // en E.164) hay que partirlo para poder mostrarlo.
+    phone: parsePhone(profile.phone)?.national ?? '',
     whatsappOptIn: profile.whatsapp_opt_in,
   }
 }
@@ -61,7 +64,12 @@ export default function ProfileDataModal({
 
     const phone = form.phone.trim() ? normalizePhone(form.phone) : null
     if (form.phone.trim() && !phone) {
-      setError('Revisa tu número. Escríbelo a 10 dígitos, o con lada internacional (ej. +52 55 1234 5678).')
+      const faltan = DEFAULT_COUNTRY.nationalDigits - form.phone.length
+      setError(
+        faltan > 0
+          ? `Tu WhatsApp debe tener ${DEFAULT_COUNTRY.nationalDigits} dígitos. Te ${faltan === 1 ? 'falta' : 'faltan'} ${faltan}.`
+          : 'Ese número no parece de México. Revisa que empiece con tu lada (ej. 55, 33, 81).'
+      )
       return
     }
     if (form.whatsappOptIn && !phone) {
@@ -170,33 +178,18 @@ export default function ProfileDataModal({
           </p>
         </div>
 
-        <div>
-          <label htmlFor="profile-phone" className="font-heading text-brand-sombra text-xs mb-1.5 block">
-            WhatsApp
-          </label>
-          <div className="relative">
-            <input
-              id="profile-phone"
-              type="tel"
-              inputMode="tel"
-              value={form.phone}
-              onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setError('') }}
-              readOnly={phoneLocked}
-              placeholder="55 1234 5678"
-              maxLength={20}
-              className={cn('field-input', phoneLocked && 'pr-10 opacity-60 cursor-not-allowed')}
-              autoComplete="tel"
-            />
-            {phoneLocked && (
-              <Lock className="w-4 h-4 text-brand-gris absolute right-3 top-1/2 -translate-y-1/2" />
-            )}
-          </div>
-          <p className="text-[11px] text-brand-gris font-body mt-1.5">
-            {phoneLocked
+        <PhoneField
+          id="profile-phone"
+          label="WhatsApp"
+          value={form.phone}
+          onChange={value => { setForm(f => ({ ...f, phone: value })); setError('') }}
+          locked={phoneLocked}
+          hint={
+            phoneLocked
               ? 'Tu número queda fijo. Si te equivocaste, escríbenos a contact@heladosmados.com.'
-              : 'Se guarda una sola vez: después ya no se puede cambiar desde aquí.'}
-          </p>
-        </div>
+              : 'Se guarda una sola vez: después ya no se puede cambiar desde aquí.'
+          }
+        />
 
         {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad. */}
         <label className="flex items-start gap-3 cursor-pointer">

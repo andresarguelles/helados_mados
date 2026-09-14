@@ -4,6 +4,7 @@ import { Profile } from '../../lib/types'
 import { formatDate } from '../../lib/utils'
 import { cn } from '../../lib/utils'
 import AdminHeader from '../../components/admin/AdminHeader'
+import { formatPhone } from '../../lib/phone'
 import { Search, ChevronDown, Users2, Gift, QrCode, Cake, Mail, Phone, MessageCircle } from 'lucide-react'
 
 type SortKey = 'points' | 'recent'
@@ -169,7 +170,7 @@ export default function AdminUsers() {
                             {customer.whatsapp_opt_in
                               ? <MessageCircle className="w-3 h-3 text-brand-verde shrink-0" />
                               : <Phone className="w-3 h-3 text-brand-amarillo/70 shrink-0" />}
-                            {customer.phone}
+                            {formatPhone(customer.phone)}
                           </span>
                         )}
                         {customer.birthdate && (

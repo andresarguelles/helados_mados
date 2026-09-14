@@ -9,6 +9,7 @@ import PasswordModal from '../components/profile/PasswordModal'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
 import { Coupon, Profile } from '../lib/types'
+import { formatPhone } from '../lib/phone'
 import {
   Star, Zap, Ticket, Medal, LogOut, Pencil, Mail, KeyRound,
   Link2, Link2Off, Check, Sparkles,
@@ -210,7 +211,7 @@ export default function Perfil() {
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-brand-gris">WhatsApp</dt>
-                <dd className="text-brand-sombra text-right">{profile.phone}</dd>
+                <dd className="text-brand-sombra text-right">{formatPhone(profile.phone)}</dd>
               </div>
             </dl>
           )}

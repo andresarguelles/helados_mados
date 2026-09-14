@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, Check, CheckCircle2, Loader2, LogOut, Sparkles, X } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { normalizePhone } from '../lib/phone'
+import { normalizePhone, DEFAULT_COUNTRY } from '../lib/phone'
+import PhoneField from '../components/ui/PhoneField'
 import { readPendingRedeem } from '../lib/pendingRedeem'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
@@ -77,7 +78,12 @@ export default function Bienvenida() {
 
     const e164 = normalizePhone(phone)
     if (!e164) {
-      setError('Revisa tu número. Escríbelo a 10 dígitos, o con lada internacional (ej. +52 55 1234 5678).')
+      const faltan = DEFAULT_COUNTRY.nationalDigits - phone.length
+      setError(
+        faltan > 0
+          ? `Tu WhatsApp debe tener ${DEFAULT_COUNTRY.nationalDigits} dígitos. Te ${faltan === 1 ? 'falta' : 'faltan'} ${faltan}.`
+          : 'Ese número no parece de México. Revisa que empiece con tu lada (ej. 55, 33, 81).'
+      )
       return
     }
     if (!optIn) {
@@ -170,20 +176,11 @@ export default function Bienvenida() {
           </div>
 
           <div>
-            <label htmlFor="bienvenida-phone" className="font-heading text-brand-sombra text-xs mb-1.5 block">
-              Tu WhatsApp
-            </label>
-            <input
+            <PhoneField
               id="bienvenida-phone"
-              type="tel"
-              inputMode="tel"
+              label="Tu WhatsApp"
               value={phone}
-              onChange={e => { setPhone(e.target.value); setError('') }}
-              onKeyDown={e => e.key === 'Enter' && !loading && handleSubmit()}
-              placeholder="55 1234 5678"
-              maxLength={20}
-              className="field-input"
-              autoComplete="tel"
+              onChange={value => { setPhone(value); setError('') }}
             />
             {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. */}
             <p className="text-[11px] text-brand-gris font-body mt-1.5 leading-relaxed">
