@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStore } from '../../lib/store'
+import { useStore, loginErrorMessage } from '../../lib/store'
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 
 export default function AdminLogin() {
@@ -22,7 +22,13 @@ export default function AdminLogin() {
     setLoading(false)
 
     if (!result.success || !result.user.is_admin) {
-      setError('Credenciales incorrectas o acceso no autorizado.')
+      // Un admin que no puede entrar porque el proveedor Email está apagado necesita saberlo; el
+      // resto sigue sin distinguir contraseña mala de cuenta sin permisos, a propósito.
+      setError(
+        !result.success && result.reason === 'provider_disabled'
+          ? loginErrorMessage(result.reason, username)
+          : 'Credenciales incorrectas o acceso no autorizado.'
+      )
       return
     }
 

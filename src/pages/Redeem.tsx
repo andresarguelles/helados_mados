@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import GoogleButton from '../components/auth/GoogleButton'
-import { useStore } from '../lib/store'
+import { useStore, loginErrorMessage } from '../lib/store'
 import { cn } from '../lib/utils'
 import { savePendingRedeem, readPendingRedeem, clearPendingRedeem } from '../lib/pendingRedeem'
 import { QRCodeSVG as QRCode } from 'qrcode.react'
@@ -135,7 +135,7 @@ export default function Redeem() {
 
     const result = await login(value, password)
     if (!result.success) {
-      setError(value.includes('@') ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos')
+      setError(loginErrorMessage(result.reason, value))
       setLoading(false)
       return
     }

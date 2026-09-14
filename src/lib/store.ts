@@ -37,9 +37,25 @@ interface LeaderboardRange {
   end: string
 }
 
+// 'provider_disabled': el proveedor Email está apagado en el dashboard, así que GoTrue rechaza el
+// intento sin llegar a mirar la contraseña. No es culpa de quien escribe, y decirle "contraseña
+// incorrecta" lo manda a resetearla en vano.
+export type LoginFailureReason = 'invalid_credentials' | 'provider_disabled' | 'error'
+
 type LoginResult =
   | { success: true; user: Profile }
-  | { success: false; reason: 'invalid_credentials' | 'error' }
+  | { success: false; reason: LoginFailureReason }
+
+// Los tres puntos de entrada con contraseña (Login, el paso auth de Redeem y AdminLogin) comparten
+// este texto para no volver a divergir. 'provider_disabled' importa: mandar a alguien a revisar su
+// contraseña cuando el servidor ni la miró lo deja dando vueltas — pasó con los 175 legacy cuando
+// se apagó el proveedor Email.
+export function loginErrorMessage(reason: LoginFailureReason, identifier: string): string {
+  if (reason === 'provider_disabled') {
+    return 'El acceso con contraseña está temporalmente deshabilitado. Entra con Google o inténtalo más tarde.'
+  }
+  return identifier.includes('@') ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos'
+}
 
 type DynamicWriteResult = { success: true } | { success: false; error: string }
 
@@ -233,7 +249,10 @@ export const useStore = create<AppState>()((set, get) => ({
       email: toLoginEmail(identifier),
       password,
     })
-    if (error) return { success: false, reason: 'invalid_credentials' }
+    if (error) {
+      const disabled = error.code === 'email_provider_disabled'
+      return { success: false, reason: disabled ? 'provider_disabled' : 'invalid_credentials' }
+    }
 
     const [profile, identities] = await Promise.all([loadProfile(), loadIdentities()])
     if (!profile) return { success: false, reason: 'error' }

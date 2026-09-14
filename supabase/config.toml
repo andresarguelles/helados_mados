@@ -222,10 +222,14 @@ web3 = 30
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
-# false: el alta es solo con Google. NO afecta a signInWithPassword, así que los 175 cadetes legacy
-# siguen entrando con su apodo. Este es el candado real: quitar el formulario del cliente no impide
-# que alguien llame signUp() desde la consola.
-enable_signup = false
+# OJO: esta clave se traduce a `external_email_enabled` en el proyecto hosted, o sea al interruptor
+# "Enable Email provider" del dashboard — NO a un permiso de alta por separado. Apagarla no cierra
+# solo el registro por correo: apaga el proveedor entero y GoTrue empieza a rechazar también
+# signInWithPassword con 422 `email_provider_disabled`, dejando fuera a los 175 cadetes legacy (y a
+# quien nació con Google y se puso contraseña). Ya pasó una vez; tiene que quedarse en true.
+# El candado de "solo Google crea cuentas" vive en la migración 0020 (hook before_user_created),
+# que sí sabe distinguir crear cuenta de iniciar sesión.
+enable_signup = true
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -285,9 +289,12 @@ max_frequency = "5s"
 # inactivity_timeout = "8h"
 
 # This hook runs before a new user is created and allows developers to reject the request based on the incoming user object.
-# [auth.hook.before_user_created]
-# enabled = true
-# uri = "pg-functions://postgres/auth/before-user-created-hook"
+# El candado de "solo Google crea cuentas" (migración 0020). Corre únicamente al crear un usuario
+# nuevo, así que no toca signInWithPassword, linkIdentity() ni setPassword(). En el proyecto hosted
+# hay que activarlo aparte en Authentication -> Hooks -> Before User Created; esto solo cubre local.
+[auth.hook.before_user_created]
+enabled = true
+uri = "pg-functions://postgres/public/hook_google_only_signup"
 
 # This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
 # [auth.hook.custom_access_token]

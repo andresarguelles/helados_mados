@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import GoogleButton from '../components/auth/GoogleButton'
-import { useStore } from '../lib/store'
+import { useStore, loginErrorMessage } from '../lib/store'
 import { cn } from '../lib/utils'
 import { User, Eye, EyeOff, Loader2, Zap, AlertTriangle } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
@@ -44,9 +44,10 @@ export default function Login() {
     setLoading(false)
 
     if (!result.success) {
-      const looksLikeEmail = value.includes('@')
-      setError(looksLikeEmail ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos')
-      setShowGoogleHint(!looksLikeEmail)
+      setError(loginErrorMessage(result.reason, value))
+      // La pista de "quizá naciste con Google" solo aplica si de verdad fallaron las credenciales;
+      // con el proveedor apagado no hay nada que el usuario pueda corregir escribiendo distinto.
+      setShowGoogleHint(result.reason === 'invalid_credentials' && !value.includes('@'))
       return
     }
 
