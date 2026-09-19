@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/legal-check.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "legal:build": "node scripts/legal-build.mjs",
+    "legal:check": "node scripts/legal-check.mjs --cross",
     "db:backup": "node scripts/backup-db.mjs",
     "db:reset-user": "node scripts/reset-test-account.mjs",
     "phone": "node scripts/phone-link.mjs"

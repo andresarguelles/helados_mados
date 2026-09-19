@@ -1,0 +1,29 @@
+{
+  "generador": 1,
+  "docs": {
+    "privacidad": {
+      "version": "2.0.0",
+      "actualizado": "2026-09-18",
+      "astHash": "a197680c49b7aec24e02da339fca30e2431c2deb46778147775359c902233859",
+      "secciones": 21,
+      "bloques": 97
+    },
+    "terminos": {
+      "version": "2.0.0",
+      "actualizado": "2026-09-18",
+      "astHash": "6cc64cbbe22656b2fa55cfaff2ebdfebc6f3d684face72cf26d52e57efa09f7d",
+      "secciones": 16,
+      "bloques": 61
+    }
+  },
+  "bundleHash": "901d9fecefe7eaedc8e9fb8f1b3b2176c369214e17603380cd0cfd9dcf67ab1f",
+  "artefactos": {
+    "web": {
+      "src/content/legal/generated/legalContent.ts": "62213ea9d12a1a2c08a6edb3462d672c775e51e1b6144225aa8f5646f64f67d1",
+      "src/content/legal/generated/legalSimplificado.ts": "a91f9220f81fed83de6fde43ae7e84e37e9532166331a3fa71cf192cbf46f48e"
+    },
+    "android": {
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "f149f947fd3c78bf51f0243dd9681c6c9427448d73dd1fc441156cff9c1c8a95"
+    }
+  }
+}
