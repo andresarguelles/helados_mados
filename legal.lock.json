@@ -2,28 +2,28 @@
   "generador": 1,
   "docs": {
     "privacidad": {
-      "version": "2.1.0",
+      "version": "2.2.0",
       "actualizado": "2026-09-19",
-      "astHash": "0be4e2fb711a2749b6086496101c087e51fd49e98cd8b036edd2a994c6363c9c",
+      "astHash": "6ea075bcc3c17b2309c77e3ed443c958b5e49e084f9fc28a0b2b395b01fc3b0f",
       "secciones": 21,
       "bloques": 96
     },
     "terminos": {
-      "version": "2.1.0",
+      "version": "2.2.0",
       "actualizado": "2026-09-19",
-      "astHash": "82c2f0abb31d52a2068415e8182a8e5ffa3619b495b97bf99aaef9d5691a3958",
+      "astHash": "9aa39da1218e502be4a6d5f5a50996fcb54fe20db14027aae279cfe76f4aa99a",
       "secciones": 16,
-      "bloques": 61
+      "bloques": 62
     }
   },
-  "bundleHash": "63f02e11bdd0b2971ad631e07f72734a815e9c4af4dab5607006e9207a74066d",
+  "bundleHash": "fe3efca7a665a2b0517c3837b424832c04d0a1ed18c5f5c5befcbdd0a6b84de0",
   "artefactos": {
     "web": {
-      "src/content/legal/generated/legalContent.ts": "50c975e9e3d7eed1068f9e42f9268529d80bf65613f5d60bace90d9916b81a61",
-      "src/content/legal/generated/legalSimplificado.ts": "66660a9e5f3d353f97df38e299fb644768db8bb8ab59875282b49965d180e652"
+      "src/content/legal/generated/legalContent.ts": "734f0f6832bed4fe538f6d21b223be6e624448fe990c56ee0b86295eb3a39138",
+      "src/content/legal/generated/legalSimplificado.ts": "0cddbf79c35be640700d1670c9a78915a2ae2575cd24ab650fc8dc63791728b5"
     },
     "android": {
-      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "ac816cd6c16291da2ba423ff2547d33ce16076e04a7e492dd733c8938af67a5e"
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "0984f66a548db2cf4eaacd261a40b53907bb79f2a407fbca119ea5b76790bd56"
     }
   }
 }

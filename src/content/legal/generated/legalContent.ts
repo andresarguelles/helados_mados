@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "2.1.0",
+    version: "2.2.0",
     actualizado: "2026-09-19",
-    astHash: "0be4e2fb711a2749b6086496101c087e51fd49e98cd8b036edd2a994c6363c9c",
+    astHash: "6ea075bcc3c17b2309c77e3ed443c958b5e49e084f9fc28a0b2b395b01fc3b0f",
     secciones: [
       {
         id: "aviso-corto",
@@ -25,7 +25,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Lea el " }, { t: 'enlaceLegal', v: "aviso de privacidad integral", doc: "privacidad" }, { t: 'texto', v: ", con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com." }] },
         ],
       },
@@ -39,9 +39,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
-              [{ t: 'texto', v: "Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
-              [{ t: 'texto', v: "Correo para asuntos de datos personales: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
+              [{ t: 'texto', v: "Domicilio (tienda y domicilio fiscal): Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
+              [{ t: 'texto', v: "Correo para asuntos de datos personales: " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }],
               [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
               [{ t: 'texto', v: "Sitio: " }, { t: 'enlace', v: "www.heladosmados.com", href: "https://www.heladosmados.com" }],
             ],
@@ -134,7 +133,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. " }, { t: 'fuerte', v: "No es obligatoria" }, { t: 'texto', v: ": puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre." }],
               [{ t: 'texto', v: "Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera." }],
               [{ t: 'texto', v: "Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar." }],
-              [{ t: 'texto', v: "Para cualquiera de ellas, en cualquier momento: escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
+              [{ t: 'texto', v: "Para cualquiera de ellas, en cualquier momento: escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre." }] },
@@ -238,11 +237,11 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'fuerte', v: "Acceso." }, { t: 'texto', v: " Saber qué datos suyos tenemos y para qué los usamos." }],
               [{ t: 'fuerte', v: "Rectificación." }, { t: 'texto', v: " Corregirlos cuando estén mal, incompletos o desactualizados." }],
-              [{ t: 'fuerte', v: "Cancelación." }, { t: 'texto', v: " Pedir que los eliminemos." }],
+              [{ t: 'fuerte', v: "Cancelación." }, { t: 'texto', v: " Pedir que los eliminemos. Puede hacerlo usted mismo desde la aplicación o el sitio, o pedírnoslo por correo: en ese caso comprobamos que la solicitud venga del correo de la cuenta, la ejecuta una persona de nuestro equipo y le confirmamos cuando está hecha." }],
               [{ t: 'fuerte', v: "Oposición." }, { t: 'texto', v: " Pedir que dejemos de usarlos para una finalidad concreta, por una causa legítima." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para ejercerlos, escriba a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: ". Es gratuito. Esa dirección es también el canal de la persona designada para atender estas solicitudes." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para ejercerlos, escriba a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: ". Es gratuito. Esa dirección es también el canal de la persona designada para atender estas solicitudes." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su solicitud debe contener:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
@@ -279,7 +278,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'fuerte', v: "Para los mensajes de WhatsApp:" }, { t: 'texto', v: " entre a su perfil y desmarque la casilla de consentimiento. Es inmediato y no pierde la cuenta, ni los puntos, ni los cupones." }],
               [{ t: 'fuerte', v: "Para la medición del sitio web:" }, { t: 'texto', v: " rechace las cookies de medición en el aviso de cookies." }],
-              [{ t: 'fuerte', v: "Para cualquier otra cosa:" }, { t: 'texto', v: " escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " indicando que quiere revocar su consentimiento. Le respondemos en los mismos plazos que una solicitud ARCO, y sin costo." }],
+              [{ t: 'fuerte', v: "Para cualquier otra cosa:" }, { t: 'texto', v: " escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " indicando que quiere revocar su consentimiento. Le respondemos en los mismos plazos que una solicitud ARCO, y sin costo." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Una advertencia para que no haya malentendidos: hay finalidades que no dependen de su consentimiento, porque son las que hacen funcionar el servicio que usted nos pidió. Mientras tenga cuenta, no podemos dejar de tratar los datos que la cuenta necesita para existir. Si quiere que dejemos de tratarlos del todo, lo que corresponde es borrar la cuenta." }] },
@@ -318,16 +317,17 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Desde su perfil en la aplicación Android." }],
               [{ t: 'texto', v: "Desde su perfil en el sitio web." }],
               [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta." }],
-              [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
+              [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: ". En ese caso la baja la ejecuta una persona de nuestro equipo a petición suya, después de comprobar que la solicitud viene del correo de la cuenta. Le confirmamos cuando está hecha, dentro de los plazos del apartado de derechos ARCO." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arriba, y sus cupones. Sus puntos desaparecen." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Dos cosas sobreviven, y aquí está el porqué de cada una:" }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tres cosas sobreviven, y aquí está el porqué de cada una:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'fuerte', v: "Los registros técnicos antiabuso" }, { t: 'texto', v: " derivados de direcciones IP. No podemos borrarlos porque no están ligados a usted: no contienen su nombre, su correo ni su identificador, solo un valor derivado de una red y un contador. No sabríamos cuáles son los suyos." }],
               [{ t: 'fuerte', v: "El registro de que usted aceptó estos documentos" }, { t: 'texto', v: ": su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin." }],
+              [{ t: 'fuerte', v: "El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya" }, { t: 'texto', v: ": el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. " }, { t: 'fuerte', v: "No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado." }, { t: 'texto', v: " Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Además guardamos respaldos completos de la base de datos. Un dato que usted borre hoy puede seguir existiendo en un respaldo anterior hasta que ese respaldo se sustituye o se destruye. Esos respaldos no se usan para nada más: están ahí para poder recuperar el servicio si algo se rompe." }] },
@@ -349,6 +349,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "No guardamos contraseñas en claro. Las cuentas antiguas con contraseña la tienen almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla." }],
               [{ t: 'texto', v: "Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor." }],
               [{ t: 'texto', v: "El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor." }],
+              [{ t: 'texto', v: "Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Ningún sistema es infalible. Si ocurre una vulneración de seguridad que afecte de forma significativa sus derechos, se lo comunicaremos para que pueda tomar medidas, como exige la ley." }] },
@@ -363,7 +364,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "La plataforma es solo para mayores de 18 años y no está dirigida a menores de edad." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear su cuenta usted declara que es mayor de edad. Si nos da su fecha de nacimiento, el sistema rechaza cualquiera que implique lo contrario." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No recabamos de manera consciente datos personales de menores de edad. Si detectamos que una cuenta es de un menor, la cancelamos y eliminamos sus datos." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si usted es madre, padre o tutor y cree que un menor a su cargo nos dio sus datos, escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " y los eliminaremos." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si usted es madre, padre o tutor y cree que un menor a su cargo nos dio sus datos, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y los eliminaremos." }] },
         ],
       },
       {
@@ -390,7 +391,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: Scale,
         rol: null,
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si cree que hemos tratado mal sus datos personales, escríbanos primero a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: ". Casi todo se resuelve así, y más rápido." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si cree que hemos tratado mal sus datos personales, escríbanos primero a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: ". Casi todo se resuelve así, y más rápido." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si no queda conforme, puede presentar una solicitud de protección de datos ante la autoridad. Desde el 21 de marzo de 2025 esa autoridad es la " }, { t: 'fuerte', v: "Secretaría Anticorrupción y Buen Gobierno" }, { t: 'texto', v: ", que asumió las funciones del extinto Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tiene quince días hábiles para hacerlo, contados desde que le comunicamos nuestra respuesta. Si no le respondemos dentro de nuestro plazo, puede presentarla en cuanto ese plazo venza." }] },
         ],
@@ -405,8 +406,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
-              [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
+              [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }],
+              [{ t: 'texto', v: "Domicilio: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
               [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
             ],
           },
@@ -419,9 +420,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "2.1.0",
+    version: "2.2.0",
     actualizado: "2026-09-19",
-    astHash: "82c2f0abb31d52a2068415e8182a8e5ffa3619b495b97bf99aaef9d5691a3958",
+    astHash: "9aa39da1218e502be4a6d5f5a50996fcb54fe20db14027aae279cfe76f4aa99a",
     secciones: [
       {
         id: "aceptacion",
@@ -445,9 +446,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
-              [{ t: 'texto', v: "Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
-              [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
+              [{ t: 'texto', v: "Domicilio (tienda y domicilio fiscal): Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
+              [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }],
               [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
               [{ t: 'texto', v: "Sitio: " }, { t: 'enlace', v: "www.heladosmados.com", href: "https://www.heladosmados.com" }],
             ],
@@ -485,7 +485,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El teléfono es obligatorio por una razón concreta: " }, { t: 'fuerte', v: "un número, una cuenta" }, { t: 'texto', v: ". Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Por eso mismo, " }, { t: 'fuerte', v: "el teléfono no se puede cambiar después" }, { t: 'texto', v: ". Una vez guardado queda fijo. Si lo escribió mal, escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Por eso mismo, " }, { t: 'fuerte', v: "el teléfono no se puede cambiar después" }, { t: 'texto', v: ". Una vez guardado queda fijo. Si lo escribió mal, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web existe un segundo método de acceso. Las personas que se registraron antes de que las cuentas fueran solo con Google conservan su apodo y su contraseña, y pueden seguir entrando así. La aplicación Android solo ofrece el acceso con Google." }] },
@@ -575,7 +575,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Cualquier uso que contradiga el sentido de la promoción." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Esa decisión la tomamos nosotros y no genera compensación ni reembolso. Si cree que nos equivocamos, escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " y lo revisamos." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Esa decisión la tomamos nosotros y no genera compensación ni reembolso. Si cree que nos equivocamos, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y lo revisamos." }] },
         ],
       },
       {
@@ -642,12 +642,13 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Desde su perfil en la aplicación Android." }],
               [{ t: 'texto', v: "Desde su perfil en el sitio web." }],
               [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta." }],
-              [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
+              [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al borrar su cuenta desaparecen su perfil y sus cupones. Sus puntos se pierden y no se pueden recuperar." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Dos cosas sobreviven, y se lo decimos aquí para que no haya sorpresas: los registros técnicos antiabuso, que no están ligados a usted, y el registro de que aceptó estos documentos. El " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: " explica qué se conserva exactamente, por qué y durante cuánto tiempo." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Nosotros también podemos cancelar su cuenta si usted incumple estos términos." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobreviven los registros técnicos antiabuso, que no están ligados a usted, el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: " explica qué se conserva exactamente, por qué y durante cuánto tiempo." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si prefiere que la hagamos nosotros, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " desde el correo de su cuenta y la ejecutamos por usted." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cosa distinta, y conviene no confundirlas: " }, { t: 'fuerte', v: "nosotros también podemos cancelar su cuenta si usted incumple estos términos" }, { t: 'texto', v: ". Eso no es una baja a petición suya, sino una consecuencia del incumplimiento, y está descrita en el apartado de derecho de admisión." }] },
         ],
       },
       {
@@ -685,8 +686,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: Mail,
         rol: null,
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " para cualquier duda, queja o corrección." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "También puede encontrarnos en la tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " para cualquier duda, queja o corrección." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "También puede encontrarnos ahí mismo: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para todo lo relativo a sus datos personales, incluidos sus derechos ARCO, consulte el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: "." }] },
         ],
       },
@@ -697,4 +698,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "63f02e11bdd0b2971ad631e07f72734a815e9c4af4dab5607006e9207a74066d"
+export const LEGAL_BUNDLE_HASH = "fe3efca7a665a2b0517c3837b424832c04d0a1ed18c5f5c5befcbdd0a6b84de0"

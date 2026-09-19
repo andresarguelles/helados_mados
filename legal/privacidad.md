@@ -2,7 +2,7 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.1.0
+version: 2.2.0
 actualizado: 2026-09-19
 ---
 
@@ -16,7 +16,7 @@ Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y ev
 
 Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta.
 
-Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a [contact@heladosmados.com](mailto:contact@heladosmados.com).
+Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com.
 
@@ -24,9 +24,8 @@ Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y
 
 El responsable del tratamiento de sus datos personales es Marcos Roldán Moreno, persona física con actividad empresarial que opera bajo el nombre comercial Helados Mados, con Registro Federal de Contribuyentes ROMM021221FW1.
 
-- Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
-- Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
-- Correo para asuntos de datos personales: [contact@heladosmados.com](mailto:contact@heladosmados.com)
+- Domicilio (tienda y domicilio fiscal): Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
+- Correo para asuntos de datos personales: [contacto@heladosmados.com](mailto:contacto@heladosmados.com)
 - Teléfono: 55 1073 7537
 - Sitio: [www.heladosmados.com](https://www.heladosmados.com)
 
@@ -93,7 +92,7 @@ Cómo negarse a cada una:
 - Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. **No es obligatoria**: puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre.
 - Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera.
 - Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar.
-- Para cualquiera de ellas, en cualquier momento: escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
+- Para cualquiera de ellas, en cualquier momento: escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre.
 
@@ -183,10 +182,10 @@ Usted tiene cuatro derechos sobre sus datos personales:
 
 - **Acceso.** Saber qué datos suyos tenemos y para qué los usamos.
 - **Rectificación.** Corregirlos cuando estén mal, incompletos o desactualizados.
-- **Cancelación.** Pedir que los eliminemos.
+- **Cancelación.** Pedir que los eliminemos. Puede hacerlo usted mismo desde la aplicación o el sitio, o pedírnoslo por correo: en ese caso comprobamos que la solicitud venga del correo de la cuenta, la ejecuta una persona de nuestro equipo y le confirmamos cuando está hecha.
 - **Oposición.** Pedir que dejemos de usarlos para una finalidad concreta, por una causa legítima.
 
-Para ejercerlos, escriba a [contact@heladosmados.com](mailto:contact@heladosmados.com). Es gratuito. Esa dirección es también el canal de la persona designada para atender estas solicitudes.
+Para ejercerlos, escriba a [contacto@heladosmados.com](mailto:contacto@heladosmados.com). Es gratuito. Esa dirección es también el canal de la persona designada para atender estas solicitudes.
 
 Su solicitud debe contener:
 
@@ -213,7 +212,7 @@ Así se hace:
 
 - **Para los mensajes de WhatsApp:** entre a su perfil y desmarque la casilla de consentimiento. Es inmediato y no pierde la cuenta, ni los puntos, ni los cupones.
 - **Para la medición del sitio web:** rechace las cookies de medición en el aviso de cookies.
-- **Para cualquier otra cosa:** escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) indicando que quiere revocar su consentimiento. Le respondemos en los mismos plazos que una solicitud ARCO, y sin costo.
+- **Para cualquier otra cosa:** escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) indicando que quiere revocar su consentimiento. Le respondemos en los mismos plazos que una solicitud ARCO, y sin costo.
 
 Una advertencia para que no haya malentendidos: hay finalidades que no dependen de su consentimiento, porque son las que hacen funcionar el servicio que usted nos pidió. Mientras tenga cuenta, no podemos dejar de tratar los datos que la cuenta necesita para existir. Si quiere que dejemos de tratarlos del todo, lo que corresponde es borrar la cuenta.
 
@@ -237,14 +236,15 @@ Puede borrar su cuenta cuando quiera, sin costo:
 - Desde su perfil en la aplicación Android.
 - Desde su perfil en el sitio web.
 - Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta.
-- Escribiéndonos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
+- Escribiéndonos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com). En ese caso la baja la ejecuta una persona de nuestro equipo a petición suya, después de comprobar que la solicitud viene del correo de la cuenta. Le confirmamos cuando está hecha, dentro de los plazos del apartado de derechos ARCO.
 
 Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arriba, y sus cupones. Sus puntos desaparecen.
 
-Dos cosas sobreviven, y aquí está el porqué de cada una:
+Tres cosas sobreviven, y aquí está el porqué de cada una:
 
 - **Los registros técnicos antiabuso** derivados de direcciones IP. No podemos borrarlos porque no están ligados a usted: no contienen su nombre, su correo ni su identificador, solo un valor derivado de una red y un contador. No sabríamos cuáles son los suyos.
 - **El registro de que usted aceptó estos documentos**: su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin.
+- **El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya**: el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. **No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado.** Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja.
 
 Además guardamos respaldos completos de la base de datos. Un dato que usted borre hoy puede seguir existiendo en un respaldo anterior hasta que ese respaldo se sustituye o se destruye. Esos respaldos no se usan para nada más: están ahí para poder recuperar el servicio si algo se rompe.
 
@@ -258,6 +258,7 @@ Tenemos medidas administrativas, técnicas y físicas para proteger sus datos. S
 - No guardamos contraseñas en claro. Las cuentas antiguas con contraseña la tienen almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla.
 - Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor.
 - El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor.
+- Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted.
 
 Ningún sistema es infalible. Si ocurre una vulneración de seguridad que afecte de forma significativa sus derechos, se lo comunicaremos para que pueda tomar medidas, como exige la ley.
 
@@ -269,7 +270,7 @@ Al crear su cuenta usted declara que es mayor de edad. Si nos da su fecha de nac
 
 No recabamos de manera consciente datos personales de menores de edad. Si detectamos que una cuenta es de un menor, la cancelamos y eliminamos sus datos.
 
-Si usted es madre, padre o tutor y cree que un menor a su cargo nos dio sus datos, escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) y los eliminaremos.
+Si usted es madre, padre o tutor y cree que un menor a su cargo nos dio sus datos, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) y los eliminaremos.
 
 ## Cambios a este aviso {#cambios icono=RefreshCw}
 
@@ -284,7 +285,7 @@ Guardamos qué versión aceptó usted y cuándo. Ese registro es el que nos perm
 
 ## Ante quién puede reclamar {#autoridad icono=Scale}
 
-Si cree que hemos tratado mal sus datos personales, escríbanos primero a [contact@heladosmados.com](mailto:contact@heladosmados.com). Casi todo se resuelve así, y más rápido.
+Si cree que hemos tratado mal sus datos personales, escríbanos primero a [contacto@heladosmados.com](mailto:contacto@heladosmados.com). Casi todo se resuelve así, y más rápido.
 
 Si no queda conforme, puede presentar una solicitud de protección de datos ante la autoridad. Desde el 21 de marzo de 2025 esa autoridad es la **Secretaría Anticorrupción y Buen Gobierno**, que asumió las funciones del extinto Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales.
 
@@ -294,8 +295,8 @@ Tiene quince días hábiles para hacerlo, contados desde que le comunicamos nues
 
 Para cualquier asunto relacionado con sus datos personales, incluidos sus derechos ARCO y la revocación de su consentimiento:
 
-- Correo: [contact@heladosmados.com](mailto:contact@heladosmados.com)
-- Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
+- Correo: [contacto@heladosmados.com](mailto:contacto@heladosmados.com)
+- Domicilio: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
 - Teléfono: 55 1073 7537
 
 Las reglas de la promoción, los puntos y la cancelación de cuenta están en los [términos y condiciones](legal:terminos).

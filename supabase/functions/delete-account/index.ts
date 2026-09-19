@@ -15,6 +15,12 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 //   - legal_acceptances: es la prueba de que hubo consentimiento. Si se fuera con la
 //     cuenta, la baja destruiria justo la evidencia. Queda bloqueada, sin FK, con un
 //     user_id que ya no resuelve a nadie.
+//
+// Esta baja NO se anota en account_deletions, y es deliberado: el titular actuo por si
+// mismo, el acto es la solicitud, y no hay un tercero del que defenderse. Guardar su UUID
+// despues de que pidio desaparecer seria retencion sin finalidad. La bitacora existe para
+// las bajas que ejecuta el personal, que es donde si hace falta poder demostrar quien
+// actuo y por que. Ver admin-delete-account.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

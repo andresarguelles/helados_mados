@@ -136,12 +136,14 @@ export default function Home() {
           </div>
 
           <address className="font-body text-brand-gris text-sm leading-relaxed mt-4 not-italic">
-            Angel Reyes 7, Lomas de Puerta Grande<br />
-            Álvaro Obregón, CDMX, C.P. 01630
+            Avenida Centenario 1229, Reacomodo Valentín Gómez Farías<br />
+            Álvaro Obregón, CDMX, C.P. 01569
           </address>
 
           <a
-            href="https://www.google.com/maps/dir/?api=1&destination=Helados+Mados%2C+Angel+Reyes+7%2C+Lomas+de+Puerta+Grande%2C+%C3%81lvaro+Obreg%C3%B3n%2C+CDMX"
+            /* Coordenadas y no la direccion escrita: Google resuelve el texto, no el pin, y una
+               calle tecleada vuelve a poder equivocarse. El punto ya esta verificado. */
+            href="https://www.google.com/maps/dir/?api=1&destination=19.35916671342604,-99.2322540358465"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-tinta text-xs px-6 py-2.5 mt-4"

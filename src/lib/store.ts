@@ -80,6 +80,24 @@ type DeleteAccountReason =
 
 type DeleteAccountResult = { success: true } | { success: false; reason: DeleteAccountReason }
 
+/** Categoria de una baja ejecutada por el personal. La elige el admin y queda en la bitacora. */
+export type BajaVia = 'admin_a_peticion' | 'admin_prueba'
+
+type AdminDeleteReason =
+  | 'not_authenticated'
+  /** Quien llama no es admin. El guard de ruta es comodidad; esto es la frontera. */
+  | 'forbidden'
+  | 'not_found'
+  /** No se borra a otro admin: dejaria la tienda sin quien escanee, y el rol no se reotorga desde la app. */
+  | 'target_is_admin'
+  /** El apodo tecleado no corresponde al objetivo. Atado a quien se borra, no una cadena fija. */
+  | 'confirmation_mismatch'
+  | 'no_identifier' | 'invalid' | 'invalid_via' | 'error'
+
+type AdminDeleteResult =
+  | { success: true; username: string | null }
+  | { success: false; reason: AdminDeleteReason }
+
 interface LeaderboardRange {
   start: string
   end: string
@@ -228,6 +246,7 @@ interface AppState {
 
   // Baja de cuenta
   deleteMyAccount: () => Promise<DeleteAccountResult>
+  adminDeleteAccount: (userId: string, confirmacion: string, via: BajaVia) => Promise<AdminDeleteResult>
 }
 
 async function loadProfile(): Promise<Profile | null> {
@@ -617,6 +636,29 @@ export const useStore = create<AppState>()((set, get) => ({
     await supabase.auth.signOut()
     set({ profile: null, isAdmin: false, identities: [], hasPassword: false })
     return { success: true }
+  },
+
+  /**
+   * Baja ejecutada por el personal a peticion del titular.
+   *
+   * `confirmacion` es el apodo del objetivo, no una cadena fija: el servidor comprueba que
+   * corresponda al `userId`, asi que un id arrastrado por error no puede borrar a quien no es.
+   *
+   * La funcion devuelve 200 con `{success:false, reason}` para los rechazos de negocio
+   * —`invoke` se come el cuerpo de los 4xx—, asi que aqui la razon concreta si llega.
+   */
+  adminDeleteAccount: async (userId, confirmacion, via) => {
+    const { data, error } = await supabase.functions.invoke('admin-delete-account', {
+      body: { userId, confirmacion, via },
+    })
+    if (error && !data) return { success: false, reason: 'error' }
+    if (!data?.success) return { success: false, reason: data?.reason ?? 'error' }
+
+    // Igual que deleteDynamic: la accion refresca su propia coleccion. `coupons` queda con
+    // los del borrado, pero de forma invisible: solo se filtran por un user_id que ya no se
+    // pinta, y los conteos de los demas no cambian.
+    await get().fetchAllProfiles()
+    return { success: true, username: data.username ?? null }
   },
 
   getLeaderboardRange: async (period) => {

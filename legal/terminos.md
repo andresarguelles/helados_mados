@@ -2,7 +2,7 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 2.1.0
+version: 2.2.0
 actualizado: 2026-09-19
 ---
 
@@ -20,9 +20,8 @@ Cada documento lleva una versión y una fecha. Guardamos cuál aceptó usted y c
 
 Helados Mados es el nombre comercial de Marcos Roldán Moreno, persona física con actividad empresarial, con Registro Federal de Contribuyentes ROMM021221FW1.
 
-- Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
-- Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
-- Correo: [contact@heladosmados.com](mailto:contact@heladosmados.com)
+- Domicilio (tienda y domicilio fiscal): Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
+- Correo: [contacto@heladosmados.com](mailto:contacto@heladosmados.com)
 - Teléfono: 55 1073 7537
 - Sitio: [www.heladosmados.com](https://www.heladosmados.com)
 
@@ -51,7 +50,7 @@ Para terminar el alta le pedimos tres cosas obligatorias y le ofrecemos una opci
 
 El teléfono es obligatorio por una razón concreta: **un número, una cuenta**. Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión.
 
-Por eso mismo, **el teléfono no se puede cambiar después**. Una vez guardado queda fijo. Si lo escribió mal, escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario.
+Por eso mismo, **el teléfono no se puede cambiar después**. Una vez guardado queda fijo. Si lo escribió mal, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario.
 
 El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes.
 
@@ -120,7 +119,7 @@ Podemos anular un cupón, retirar puntos, suspender o cancelar una cuenta cuando
 - Reventa, compra o intercambio de cupones o de cuentas.
 - Cualquier uso que contradiga el sentido de la promoción.
 
-Esa decisión la tomamos nosotros y no genera compensación ni reembolso. Si cree que nos equivocamos, escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) y lo revisamos.
+Esa decisión la tomamos nosotros y no genera compensación ni reembolso. Si cree que nos equivocamos, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) y lo revisamos.
 
 ## Lo que no se puede hacer {#prohibido icono=Ban}
 
@@ -160,13 +159,15 @@ Puede borrar su cuenta cuando quiera, sin dar explicaciones y sin costo:
 - Desde su perfil en la aplicación Android.
 - Desde su perfil en el sitio web.
 - Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta.
-- Escribiéndonos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
+- Escribiéndonos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Al borrar su cuenta desaparecen su perfil y sus cupones. Sus puntos se pierden y no se pueden recuperar.
 
-Dos cosas sobreviven, y se lo decimos aquí para que no haya sorpresas: los registros técnicos antiabuso, que no están ligados a usted, y el registro de que aceptó estos documentos. El [aviso de privacidad](legal:privacidad) explica qué se conserva exactamente, por qué y durante cuánto tiempo.
+Sobreviven los registros técnicos antiabuso, que no están ligados a usted, el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el [aviso de privacidad](legal:privacidad) explica qué se conserva exactamente, por qué y durante cuánto tiempo.
 
-Nosotros también podemos cancelar su cuenta si usted incumple estos términos.
+Si prefiere que la hagamos nosotros, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) desde el correo de su cuenta y la ejecutamos por usted.
+
+Cosa distinta, y conviene no confundirlas: **nosotros también podemos cancelar su cuenta si usted incumple estos términos**. Eso no es una baja a petición suya, sino una consecuencia del incumplimiento, y está descrita en el apartado de derecho de admisión.
 
 ## Cambios a estos términos {#cambios icono=RefreshCw}
 
@@ -189,8 +190,8 @@ Como consumidor, usted puede acudir además a la Procuraduría Federal del Consu
 
 ## Contacto {#contacto icono=Mail}
 
-Escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) para cualquier duda, queja o corrección.
+Escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) para cualquier duda, queja o corrección.
 
-También puede encontrarnos en la tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México.
+También puede encontrarnos ahí mismo: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México.
 
 Para todo lo relativo a sus datos personales, incluidos sus derechos ARCO, consulte el [aviso de privacidad](legal:privacidad).

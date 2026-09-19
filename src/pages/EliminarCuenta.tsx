@@ -18,7 +18,7 @@ import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
-const CORREO = 'contact@heladosmados.com'
+const CORREO = 'contacto@heladosmados.com'
 
 export default function EliminarCuenta() {
   const navigate = useNavigate()
@@ -85,6 +85,12 @@ export default function EliminarCuenta() {
               no sabríamos cuáles son los tuyos ni aunque quisiéramos.
             </li>
           </ul>
+          {/* El autoborrado NO deja constancia; la baja que ejecutamos nosotros sí. La
+              distinción importa y por eso se dice aquí, no solo en el aviso. */}
+          <p>
+            Si en vez de hacerlo aquí nos lo pides por correo, queda además constancia de que
+            la ejecutamos nosotros: quién y cuándo, sin tus datos de contacto.
+          </p>
           <p>
             Está explicado a detalle en el{' '}
             <Link to="/privacidad" className="text-brand-azul font-bold underline">

@@ -96,7 +96,7 @@ export default function ProfileDataModal({
         invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
         invalid_birthdate: 'Esa fecha de nacimiento no es válida.',
         optin_without_phone: 'Para recibir promociones por WhatsApp necesitas dejarnos tu número.',
-        phone_immutable: 'Tu número ya quedó registrado y no se puede cambiar. Escríbenos a contact@heladosmados.com.',
+        phone_immutable: 'Tu número ya quedó registrado y no se puede cambiar. Escríbenos a contacto@heladosmados.com.',
         phone_taken: 'Ese número ya está registrado en otra cuenta.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
       }
@@ -186,7 +186,7 @@ export default function ProfileDataModal({
           locked={phoneLocked}
           hint={
             phoneLocked
-              ? 'Tu número queda fijo. Si te equivocaste, escríbenos a contact@heladosmados.com.'
+              ? 'Tu número queda fijo. Si te equivocaste, escríbenos a contacto@heladosmados.com.'
               : 'Se guarda una sola vez: después ya no se puede cambiar desde aquí.'
           }
         />
