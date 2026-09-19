@@ -2,13 +2,13 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.0.0
-actualizado: 2026-09-18
+version: 2.1.0
+actualizado: 2026-09-19
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
 
-Helados Mados, con domicilio en Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, es responsable de sus datos personales.
+Marcos Roldán Moreno, que opera bajo el nombre Helados Mados, con domicilio en Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, es responsable de sus datos personales.
 
 Tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible.
 
@@ -22,12 +22,12 @@ Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y
 
 ## Quién es el responsable {#responsable icono=MapPin}
 
-El responsable del tratamiento de sus datos personales es «PENDIENTE: nombre completo del responsable», persona física con actividad empresarial que opera bajo el nombre comercial Helados Mados, con Registro Federal de Contribuyentes «PENDIENTE: RFC».
+El responsable del tratamiento de sus datos personales es Marcos Roldán Moreno, persona física con actividad empresarial que opera bajo el nombre comercial Helados Mados, con Registro Federal de Contribuyentes ROMM021221FW1.
 
 - Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
-- Domicilio fiscal: «PENDIENTE: domicilio fiscal»
+- Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
 - Correo para asuntos de datos personales: [contact@heladosmados.com](mailto:contact@heladosmados.com)
-- Teléfono: «PENDIENTE: teléfono de contacto»
+- Teléfono: 55 1073 7537
 - Sitio: [www.heladosmados.com](https://www.heladosmados.com)
 
 Este aviso cubre por igual el sitio web y la aplicación para Android. **Es el mismo documento en las dos.** Lo único que cambia son los apartados marcados como propios de una plataforma, que usted ve igualmente desde la otra, con su etiqueta.
@@ -42,7 +42,8 @@ Esta es la lista completa de los datos personales que guardamos de usted. No hay
 - **Apodo.** Lo elige usted al darse de alta. Es obligatorio y es público.
 - **Correo electrónico.** Nos lo da Google al iniciar sesión. No existe ninguna pantalla donde usted lo escriba, y por eso todo correo que guardamos está verificado por Google.
 - **Número de WhatsApp.** Lo escribe usted al darse de alta y es obligatorio. Solo aceptamos números de México, a diez dígitos. **No se puede cambiar después.**
-- **Su consentimiento para recibir mensajes**, junto con la fecha y la hora en que lo otorgó. Es obligatorio para crear la cuenta, y se puede retirar en cuanto la cuenta existe.
+- **Si nos dio permiso para escribirle**, junto con la fecha y la hora en que lo hizo. Guardamos la fecha para poder demostrar cuándo nos lo dio. No es obligatorio y se puede retirar cuando quiera.
+- **La fecha en que declaró ser mayor de edad.**
 - **Nombre y apellido.** Nos los da Google, y usted puede corregirlos o borrarlos. No son obligatorios.
 - **Fecha de nacimiento.** La escribe usted. No es obligatoria.
 - **Foto de perfil.** Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero **hoy no la mostramos en ninguna pantalla.**
@@ -50,7 +51,7 @@ Esta es la lista completa de los datos personales que guardamos de usted. No hay
 - **Un valor derivado de su dirección IP** cuando canjea una palabra secreta. Tiene su propio apartado más abajo.
 - **El registro de qué versión de estos documentos aceptó usted y cuándo.**
 
-Al crear una cuenta le pedimos el apodo, el número de WhatsApp y el consentimiento. Todo lo demás es opcional o nos lo da Google.
+Al crear una cuenta le pedimos tres cosas obligatorias: el apodo, el número de WhatsApp y que declare ser mayor de edad. El permiso para escribirle es opcional. Todo lo demás es opcional o nos lo da Google.
 
 :::alcance web
 En el sitio web, su navegador guarda además su sesión iniciada, y durante el alta guarda temporalmente algunos datos del proceso que se borran al terminarlo o al cerrar la pestaña. Eso vive en su navegador, no en nuestros servidores.
@@ -235,7 +236,7 @@ Puede borrar su cuenta cuando quiera, sin costo:
 
 - Desde su perfil en la aplicación Android.
 - Desde su perfil en el sitio web.
-- Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: «PENDIENTE: URL pública de solicitud de eliminación de cuenta».
+- Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta.
 - Escribiéndonos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
 
 Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arriba, y sus cupones. Sus puntos desaparecen.
@@ -295,6 +296,6 @@ Para cualquier asunto relacionado con sus datos personales, incluidos sus derech
 
 - Correo: [contact@heladosmados.com](mailto:contact@heladosmados.com)
 - Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
-- Teléfono: «PENDIENTE: teléfono de contacto»
+- Teléfono: 55 1073 7537
 
 Las reglas de la promoción, los puntos y la cancelación de cuenta están en los [términos y condiciones](legal:terminos).

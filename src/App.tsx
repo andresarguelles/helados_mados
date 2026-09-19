@@ -20,6 +20,7 @@ import { trackPageview } from './lib/analytics'
 // El texto legal es largo y casi nadie lo abre: que sea su propio chunk.
 const Terminos = lazy(() => import('./pages/Terminos'))
 const Privacidad = lazy(() => import('./pages/Privacidad'))
+const EliminarCuenta = lazy(() => import('./pages/EliminarCuenta'))
 
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
@@ -107,6 +108,11 @@ export default function App() {
         } />
         {/* El nombre que la gente teclea. */}
         <Route path="/aviso-de-privacidad" element={<Navigate to="/privacidad" replace />} />
+        {/* Publica y sin guard: Google Play exige una URL donde cualquiera pueda encontrar
+            como borrar su cuenta sin instalar la app, y el aviso la nombra por su direccion. */}
+        <Route path="/eliminar-cuenta" element={
+          <Suspense fallback={<LegalFallback />}><EliminarCuenta /></Suspense>
+        } />
         <Route path="/admin" element={
           <Suspense fallback={<AdminFallback />}><AdminLogin /></Suspense>
         } />

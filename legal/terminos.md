@@ -2,8 +2,8 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 2.0.0
-actualizado: 2026-09-18
+version: 2.1.0
+actualizado: 2026-09-19
 ---
 
 ## Lo que acepta al usar Helados Mados {#aceptacion icono=Shield}
@@ -18,12 +18,12 @@ Cada documento lleva una versión y una fecha. Guardamos cuál aceptó usted y c
 
 ## Quiénes somos {#responsable icono=MapPin}
 
-Helados Mados es el nombre comercial de «PENDIENTE: nombre completo del responsable», persona física con actividad empresarial, con Registro Federal de Contribuyentes «PENDIENTE: RFC».
+Helados Mados es el nombre comercial de Marcos Roldán Moreno, persona física con actividad empresarial, con Registro Federal de Contribuyentes ROMM021221FW1.
 
 - Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México
-- Domicilio fiscal: «PENDIENTE: domicilio fiscal»
+- Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México
 - Correo: [contact@heladosmados.com](mailto:contact@heladosmados.com)
-- Teléfono: «PENDIENTE: teléfono de contacto»
+- Teléfono: 55 1073 7537
 - Sitio: [www.heladosmados.com](https://www.heladosmados.com)
 
 Cuando en este documento decimos "nosotros", nos referimos a esa persona.
@@ -159,7 +159,7 @@ Puede borrar su cuenta cuando quiera, sin dar explicaciones y sin costo:
 
 - Desde su perfil en la aplicación Android.
 - Desde su perfil en el sitio web.
-- Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: «PENDIENTE: URL pública de solicitud de eliminación de cuenta».
+- Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta.
 - Escribiéndonos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
 
 Al borrar su cuenta desaparecen su perfil y sus cupones. Sus puntos se pierden y no se pueden recuperar.

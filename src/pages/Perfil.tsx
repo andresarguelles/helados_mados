@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import { useBottomNavVisible } from '../components/layout/BottomNav'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
@@ -328,6 +328,15 @@ export default function Perfil() {
           <LogOut className="w-4 h-4" />
           Cerrar sesión
         </button>
+
+        {/* Discreto pero presente: es el derecho de Cancelación de ARCO y Google Play lo
+            exige dentro de la app. Esconderlo del todo sería incumplir las dos cosas. */}
+        <Link
+          to="/eliminar-cuenta"
+          className="font-body text-xs text-brand-gris text-center underline hover:text-brand-rosa transition-colors"
+        >
+          Eliminar mi cuenta
+        </Link>
       </div>
 
       <ProfileDataModal

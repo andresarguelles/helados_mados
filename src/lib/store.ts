@@ -71,6 +71,15 @@ type LegalStatus =
   | { estado: 'pendiente'; docs: string[] }
   | { estado: 'desconocido' }
 
+type DeleteAccountReason =
+  | 'not_authenticated'
+  /** Un admin que se borra deja la tienda sin quien escanee cupones. Que lo haga otro admin. */
+  | 'admin_cannot_delete'
+  | 'confirmation_required'
+  | 'error'
+
+type DeleteAccountResult = { success: true } | { success: false; reason: DeleteAccountReason }
+
 interface LeaderboardRange {
   start: string
   end: string
@@ -216,6 +225,9 @@ interface AppState {
   // Texto legal
   getLegalStatus: () => Promise<LegalStatus>
   acceptLegal: () => Promise<boolean>
+
+  // Baja de cuenta
+  deleteMyAccount: () => Promise<DeleteAccountResult>
 }
 
 async function loadProfile(): Promise<Profile | null> {
@@ -580,6 +592,31 @@ export const useStore = create<AppState>()((set, get) => ({
     })
     if (error || !data) return false
     return (data as { success: boolean }).success === true
+  },
+
+  // ── Baja de cuenta ────────────────────────────────────────────────────
+
+  /**
+   * Derecho de Cancelación de ARCO, y requisito de Google Play para publicar.
+   *
+   * La cadena de confirmación tiene que ir literal: no es seguridad —el JWT ya lo es—
+   * sino un seguro contra un cliente mal cableado. Ninguna petición accidental borra
+   * una cuenta.
+   */
+  deleteMyAccount: async () => {
+    const { data, error } = await supabase.functions.invoke('delete-account', {
+      body: { confirmacion: 'ELIMINAR MI CUENTA' },
+    })
+    // La función responde 4xx con un cuerpo útil, y supabase-js lo trata como error;
+    // el cuerpo no llega aquí, así que un fallo se reporta genérico salvo que venga en data.
+    if (error && !data) return { success: false, reason: 'error' }
+    if (!data?.success) return { success: false, reason: data?.reason ?? 'error' }
+
+    // La sesión apunta a un usuario que ya no existe: limpiarla aquí evita que la app
+    // quede en un estado donde hay token pero no hay perfil.
+    await supabase.auth.signOut()
+    set({ profile: null, isAdmin: false, identities: [], hasPassword: false })
+    return { success: true }
   },
 
   getLeaderboardRange: async (period) => {

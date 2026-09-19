@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "2.0.0",
-    actualizado: "2026-09-18",
-    astHash: "a4be758d25e500e314f04b584f173993195b27b7abc690b804107b26ad8269c8",
+    version: "2.1.0",
+    actualizado: "2026-09-19",
+    astHash: "0be4e2fb711a2749b6086496101c087e51fd49e98cd8b036edd2a994c6363c9c",
     secciones: [
       {
         id: "aviso-corto",
@@ -21,7 +21,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: Shield,
         rol: "simplificado",
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Helados Mados, con domicilio en Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, es responsable de sus datos personales." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Marcos Roldán Moreno, que opera bajo el nombre Helados Mados, con domicilio en Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, es responsable de sus datos personales." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
@@ -35,14 +35,14 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: MapPin,
         rol: null,
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El responsable del tratamiento de sus datos personales es «PENDIENTE: nombre completo del responsable», persona física con actividad empresarial que opera bajo el nombre comercial Helados Mados, con Registro Federal de Contribuyentes «PENDIENTE: RFC»." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El responsable del tratamiento de sus datos personales es Marcos Roldán Moreno, persona física con actividad empresarial que opera bajo el nombre comercial Helados Mados, con Registro Federal de Contribuyentes ROMM021221FW1." }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
-              [{ t: 'texto', v: "Domicilio fiscal: «PENDIENTE: domicilio fiscal»" }],
+              [{ t: 'texto', v: "Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
               [{ t: 'texto', v: "Correo para asuntos de datos personales: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
-              [{ t: 'texto', v: "Teléfono: «PENDIENTE: teléfono de contacto»" }],
+              [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
               [{ t: 'texto', v: "Sitio: " }, { t: 'enlace', v: "www.heladosmados.com", href: "https://www.heladosmados.com" }],
             ],
           },
@@ -64,7 +64,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "Apodo." }, { t: 'texto', v: " Lo elige usted al darse de alta. Es obligatorio y es público." }],
               [{ t: 'fuerte', v: "Correo electrónico." }, { t: 'texto', v: " Nos lo da Google al iniciar sesión. No existe ninguna pantalla donde usted lo escriba, y por eso todo correo que guardamos está verificado por Google." }],
               [{ t: 'fuerte', v: "Número de WhatsApp." }, { t: 'texto', v: " Lo escribe usted al darse de alta y es obligatorio. Solo aceptamos números de México, a diez dígitos. " }, { t: 'fuerte', v: "No se puede cambiar después." }],
-              [{ t: 'fuerte', v: "Su consentimiento para recibir mensajes" }, { t: 'texto', v: ", junto con la fecha y la hora en que lo otorgó. Es obligatorio para crear la cuenta, y se puede retirar en cuanto la cuenta existe." }],
+              [{ t: 'fuerte', v: "Si nos dio permiso para escribirle" }, { t: 'texto', v: ", junto con la fecha y la hora en que lo hizo. Guardamos la fecha para poder demostrar cuándo nos lo dio. No es obligatorio y se puede retirar cuando quiera." }],
+              [{ t: 'fuerte', v: "La fecha en que declaró ser mayor de edad." }],
               [{ t: 'fuerte', v: "Nombre y apellido." }, { t: 'texto', v: " Nos los da Google, y usted puede corregirlos o borrarlos. No son obligatorios." }],
               [{ t: 'fuerte', v: "Fecha de nacimiento." }, { t: 'texto', v: " La escribe usted. No es obligatoria." }],
               [{ t: 'fuerte', v: "Foto de perfil." }, { t: 'texto', v: " Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero " }, { t: 'fuerte', v: "hoy no la mostramos en ninguna pantalla." }],
@@ -73,7 +74,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "El registro de qué versión de estos documentos aceptó usted y cuándo." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta le pedimos el apodo, el número de WhatsApp y el consentimiento. Todo lo demás es opcional o nos lo da Google." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta le pedimos tres cosas obligatorias: el apodo, el número de WhatsApp y que declare ser mayor de edad. El permiso para escribirle es opcional. Todo lo demás es opcional o nos lo da Google." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web, su navegador guarda además su sesión iniciada, y durante el alta guarda temporalmente algunos datos del proceso que se borran al terminarlo o al cerrar la pestaña. Eso vive en su navegador, no en nuestros servidores." }] },
         ],
       },
@@ -316,7 +317,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'texto', v: "Desde su perfil en la aplicación Android." }],
               [{ t: 'texto', v: "Desde su perfil en el sitio web." }],
-              [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: «PENDIENTE: URL pública de solicitud de eliminación de cuenta»." }],
+              [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta." }],
               [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
@@ -406,7 +407,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
               [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
-              [{ t: 'texto', v: "Teléfono: «PENDIENTE: teléfono de contacto»" }],
+              [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Las reglas de la promoción, los puntos y la cancelación de cuenta están en los " }, { t: 'enlaceLegal', v: "términos y condiciones", doc: "terminos" }, { t: 'texto', v: "." }] },
@@ -418,9 +419,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "2.0.0",
-    actualizado: "2026-09-18",
-    astHash: "4283c8272a8553f057cc93847240e35935038b9a48bd7856a7871ed6c009b982",
+    version: "2.1.0",
+    actualizado: "2026-09-19",
+    astHash: "82c2f0abb31d52a2068415e8182a8e5ffa3619b495b97bf99aaef9d5691a3958",
     secciones: [
       {
         id: "aceptacion",
@@ -440,14 +441,14 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: MapPin,
         rol: null,
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Helados Mados es el nombre comercial de «PENDIENTE: nombre completo del responsable», persona física con actividad empresarial, con Registro Federal de Contribuyentes «PENDIENTE: RFC»." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Helados Mados es el nombre comercial de Marcos Roldán Moreno, persona física con actividad empresarial, con Registro Federal de Contribuyentes ROMM021221FW1." }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'texto', v: "Tienda: Angel Reyes 7, Lomas de Puerta Grande, Álvaro Obregón, Ciudad de México, C.P. 01630, México" }],
-              [{ t: 'texto', v: "Domicilio fiscal: «PENDIENTE: domicilio fiscal»" }],
+              [{ t: 'texto', v: "Domicilio fiscal: Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, México" }],
               [{ t: 'texto', v: "Correo: " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }],
-              [{ t: 'texto', v: "Teléfono: «PENDIENTE: teléfono de contacto»" }],
+              [{ t: 'texto', v: "Teléfono: 55 1073 7537" }],
               [{ t: 'texto', v: "Sitio: " }, { t: 'enlace', v: "www.heladosmados.com", href: "https://www.heladosmados.com" }],
             ],
           },
@@ -640,7 +641,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'texto', v: "Desde su perfil en la aplicación Android." }],
               [{ t: 'texto', v: "Desde su perfil en el sitio web." }],
-              [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: «PENDIENTE: URL pública de solicitud de eliminación de cuenta»." }],
+              [{ t: 'texto', v: "Desde la página pública de solicitud de eliminación, si ya no puede entrar a su cuenta: www.heladosmados.com/eliminar-cuenta." }],
               [{ t: 'texto', v: "Escribiéndonos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
@@ -696,4 +697,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "18ca354d9b588fcfc70dea0106218758279a46ada66bfd60bc201e83cad67987"
+export const LEGAL_BUNDLE_HASH = "63f02e11bdd0b2971ad631e07f72734a815e9c4af4dab5607006e9207a74066d"
