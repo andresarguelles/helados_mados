@@ -16,7 +16,7 @@ Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y ev
 
 Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta.
 
-Su apodo, sus puntos y su identificador de cuenta son públicos en el marcador. Puede pedirnos que limitemos otros usos escribiendo a [contact@heladosmados.com](mailto:contact@heladosmados.com).
+Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a [contact@heladosmados.com](mailto:contact@heladosmados.com).
 
 Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com.
 
@@ -89,7 +89,7 @@ Estas otras finalidades no son necesarias para el servicio. Si dice que no, su c
 
 Cómo negarse a cada una:
 
-- Para los mensajes de WhatsApp: desmarque la casilla de consentimiento en su perfil. Aquí le debemos una precisión incómoda pero cierta: **hoy esa casilla es obligatoria para crear la cuenta**, y puede desmarcarla en cuanto la cuenta existe.
+- Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. **No es obligatoria**: puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre.
 - Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera.
 - Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar.
 - Para cualquiera de ellas, en cualquier momento: escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com).
@@ -104,13 +104,9 @@ Tenga presente que completar su nombre, su apellido, su fecha de nacimiento y su
 
 El marcador de la promoción es público. **Cualquier persona puede consultarlo sin iniciar sesión**, y los cinco primeros lugares aparecen en la página de inicio del sitio.
 
-De cada participante, el marcador entrega tres cosas:
+De cada participante, el marcador entrega dos cosas: **su apodo y sus puntos**. Nada más.
 
-- Su apodo.
-- Sus puntos.
-- Su identificador interno de cuenta.
-
-El identificador no se dibuja en la pantalla, pero viaja en la respuesta que el servidor entrega, así que **cualquier persona con conocimientos técnicos puede leerlo**. Se lo decimos porque es verdad y porque una versión anterior de este documento afirmaba que el apodo era el único dato público. No lo es.
+Hasta septiembre de 2026 entregaba además el identificador interno de su cuenta, que no se dibujaba en la pantalla pero sí viajaba en la respuesta del servidor, de modo que cualquier persona con conocimientos técnicos podía leerlo. Lo quitamos al escribir este aviso: ahora el servidor solo indica si una fila es la suya, sin revelar de quién es ninguna de las demás.
 
 No se publican su nombre, su apellido, su correo, su teléfono, su fecha de nacimiento ni su foto.
 

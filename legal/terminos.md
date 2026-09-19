@@ -42,17 +42,18 @@ Si detectamos que una cuenta pertenece a un menor, la cancelamos y eliminamos su
 
 Las cuentas nuevas se crean únicamente con Google. Al hacerlo, Google nos comparte su correo, su nombre, su apellido y su foto de perfil. **Nunca recibimos su contraseña de Google.**
 
-Para terminar el alta le pedimos tres cosas más, y las tres son obligatorias:
+Para terminar el alta le pedimos tres cosas obligatorias y le ofrecemos una opcional:
 
-- Un apodo. Es el nombre con el que aparecerá ante los demás.
-- Un número de WhatsApp de México, a diez dígitos.
-- Su consentimiento expreso para que podamos escribirle a ese número.
+- Un apodo. Es el nombre con el que aparecerá ante los demás. Obligatorio.
+- Un número de WhatsApp de México, a diez dígitos. Obligatorio.
+- Declarar que tiene 18 años cumplidos. Obligatorio.
+- Su permiso para escribirle a ese número con avisos de dinámicas y promociones. **Opcional**: si no lo da, su cuenta funciona igual.
 
 El teléfono es obligatorio por una razón concreta: **un número, una cuenta**. Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión.
 
 Por eso mismo, **el teléfono no se puede cambiar después**. Una vez guardado queda fijo. Si lo escribió mal, escríbanos a [contact@heladosmados.com](mailto:contact@heladosmados.com) y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario.
 
-El consentimiento para recibir mensajes sí lo puede retirar cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones.
+El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes.
 
 Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda.
 

@@ -13,7 +13,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     icono: Shield,
     version: "2.0.0",
     actualizado: "2026-09-18",
-    astHash: "a197680c49b7aec24e02da339fca30e2431c2deb46778147775359c902233859",
+    astHash: "dbfeecc309a38d77e92cad41c7d06282eb495fedb7b7973251af5f8e2ed4fae5",
     secciones: [
       {
         id: "aviso-corto",
@@ -25,7 +25,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo, sus puntos y su identificador de cuenta son públicos en el marcador. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Lea el " }, { t: 'enlaceLegal', v: "aviso de privacidad integral", doc: "privacidad" }, { t: 'texto', v: ", con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com." }] },
         ],
       },
@@ -130,7 +130,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Para los mensajes de WhatsApp: desmarque la casilla de consentimiento en su perfil. Aquí le debemos una precisión incómoda pero cierta: " }, { t: 'fuerte', v: "hoy esa casilla es obligatoria para crear la cuenta" }, { t: 'texto', v: ", y puede desmarcarla en cuanto la cuenta existe." }],
+              [{ t: 'texto', v: "Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. " }, { t: 'fuerte', v: "No es obligatoria" }, { t: 'texto', v: ": puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre." }],
               [{ t: 'texto', v: "Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera." }],
               [{ t: 'texto', v: "Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar." }],
               [{ t: 'texto', v: "Para cualquiera de ellas, en cualquier momento: escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: "." }],
@@ -148,16 +148,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: null,
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El marcador de la promoción es público. " }, { t: 'fuerte', v: "Cualquier persona puede consultarlo sin iniciar sesión" }, { t: 'texto', v: ", y los cinco primeros lugares aparecen en la página de inicio del sitio." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "De cada participante, el marcador entrega tres cosas:" }] },
-          {
-            tipo: 'lista', alcance: 'ambas',
-            items: [
-              [{ t: 'texto', v: "Su apodo." }],
-              [{ t: 'texto', v: "Sus puntos." }],
-              [{ t: 'texto', v: "Su identificador interno de cuenta." }],
-            ],
-          },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El identificador no se dibuja en la pantalla, pero viaja en la respuesta que el servidor entrega, así que " }, { t: 'fuerte', v: "cualquier persona con conocimientos técnicos puede leerlo" }, { t: 'texto', v: ". Se lo decimos porque es verdad y porque una versión anterior de este documento afirmaba que el apodo era el único dato público. No lo es." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "De cada participante, el marcador entrega dos cosas: " }, { t: 'fuerte', v: "su apodo y sus puntos" }, { t: 'texto', v: ". Nada más." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Hasta septiembre de 2026 entregaba además el identificador interno de su cuenta, que no se dibujaba en la pantalla pero sí viajaba en la respuesta del servidor, de modo que cualquier persona con conocimientos técnicos podía leerlo. Lo quitamos al escribir este aviso: ahora el servidor solo indica si una fila es la suya, sin revelar de quién es ninguna de las demás." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No se publican su nombre, su apellido, su correo, su teléfono, su fecha de nacimiento ni su foto." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Quien todavía no ha elegido apodo no aparece en el marcador, y las cuentas del personal tampoco." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Elija su apodo pensando en esto: si pone su nombre completo, su nombre completo será público." }] },
@@ -428,7 +420,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     icono: Shield,
     version: "2.0.0",
     actualizado: "2026-09-18",
-    astHash: "6cc64cbbe22656b2fa55cfaff2ebdfebc6f3d684face72cf26d52e57efa09f7d",
+    astHash: "4283c8272a8553f057cc93847240e35935038b9a48bd7856a7871ed6c009b982",
     secciones: [
       {
         id: "aceptacion",
@@ -481,18 +473,19 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: null,
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Las cuentas nuevas se crean únicamente con Google. Al hacerlo, Google nos comparte su correo, su nombre, su apellido y su foto de perfil. " }, { t: 'fuerte', v: "Nunca recibimos su contraseña de Google." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para terminar el alta le pedimos tres cosas más, y las tres son obligatorias:" }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para terminar el alta le pedimos tres cosas obligatorias y le ofrecemos una opcional:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Un apodo. Es el nombre con el que aparecerá ante los demás." }],
-              [{ t: 'texto', v: "Un número de WhatsApp de México, a diez dígitos." }],
-              [{ t: 'texto', v: "Su consentimiento expreso para que podamos escribirle a ese número." }],
+              [{ t: 'texto', v: "Un apodo. Es el nombre con el que aparecerá ante los demás. Obligatorio." }],
+              [{ t: 'texto', v: "Un número de WhatsApp de México, a diez dígitos. Obligatorio." }],
+              [{ t: 'texto', v: "Declarar que tiene 18 años cumplidos. Obligatorio." }],
+              [{ t: 'texto', v: "Su permiso para escribirle a ese número con avisos de dinámicas y promociones. " }, { t: 'fuerte', v: "Opcional" }, { t: 'texto', v: ": si no lo da, su cuenta funciona igual." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El teléfono es obligatorio por una razón concreta: " }, { t: 'fuerte', v: "un número, una cuenta" }, { t: 'texto', v: ". Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Por eso mismo, " }, { t: 'fuerte', v: "el teléfono no se puede cambiar después" }, { t: 'texto', v: ". Una vez guardado queda fijo. Si lo escribió mal, escríbanos a " }, { t: 'enlace', v: "contact@heladosmados.com", href: "mailto:contact@heladosmados.com" }, { t: 'texto', v: " y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El consentimiento para recibir mensajes sí lo puede retirar cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web existe un segundo método de acceso. Las personas que se registraron antes de que las cuentas fueran solo con Google conservan su apodo y su contraseña, y pueden seguir entrando así. La aplicación Android solo ofrece el acceso con Google." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web, si usted tiene una cuenta antigua y quiere empezar a usar Google, vincúlela desde su perfil antes de intentar entrar con Google. Si entra primero con Google se crea una cuenta nueva y vacía, y sus puntos se quedan en la anterior." }] },
@@ -703,4 +696,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "901d9fecefe7eaedc8e9fb8f1b3b2176c369214e17603380cd0cfd9dcf67ab1f"
+export const LEGAL_BUNDLE_HASH = "6d21dd7ad43c7913d407e77f5a0978709b1ea48759c8edf824ff4beedc96f382"
