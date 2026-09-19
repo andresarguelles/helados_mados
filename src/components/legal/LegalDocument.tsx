@@ -28,8 +28,11 @@ export default function LegalDocument({ doc }: { doc: LegalDoc }) {
       </header>
 
       <nav id="indice" aria-labelledby="indice-titulo" className="paper-card rounded-3xl p-5 scroll-mt-20 mb-5">
+        {/* "Índice" y no "Contenido": es la misma palabra que usa Android y la misma que
+            el enlace de vuelta al pie de cada seccion. El cromo no entra en el hash, asi
+            que nada lo obliga a coincidir — solo la intencion de que sea un documento. */}
         <h2 id="indice-titulo" className="font-heading text-brand-sombra text-base mb-3">
-          Contenido
+          Índice
         </h2>
         <ol className="flex flex-col gap-2">
           {doc.secciones.map((seccion, i) => (

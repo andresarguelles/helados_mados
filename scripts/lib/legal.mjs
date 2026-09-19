@@ -487,7 +487,9 @@ function seccionKt(sec) {
     `  LegalSeccion(\n` +
     `    id = ${kt(sec.id)},\n` +
     `    titulo = ${kt(sec.titulo)},\n` +
-    `    icono = MadosIcons.${sec.icono},\n` +
+    // Lambda y no el vector: MadosIcons son propiedades @Composable get(), y esto se
+    // inicializa fuera de toda composicion. Ver IconoLegal en LegalModel.kt.
+    `    icono = { MadosIcons.${sec.icono} },\n` +
     `    rol = ${sec.rol ? kt(sec.rol) : 'null'},\n` +
     `    bloques = listOf(\n${bloques}\n    ),\n` +
     `  )`
@@ -514,7 +516,7 @@ export function emitirKotlin(docs) {
         `val ${simbolo(d.id)}: LegalDoc = LegalDoc(\n` +
         `  id = ${kt(d.id)},\n` +
         `  titulo = ${kt(d.titulo)},\n` +
-        `  icono = MadosIcons.${d.icono},\n` +
+        `  icono = { MadosIcons.${d.icono} },\n` +
         `  version = ${kt(d.version)},\n` +
         `  actualizado = ${kt(d.actualizado)},\n` +
         `  astHash = ${kt(d.astHash)},\n` +

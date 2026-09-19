@@ -23,7 +23,7 @@
       "src/content/legal/generated/legalSimplificado.ts": "187605b3e87266441d0778f3de70035aba42c805f90e56deaff9fee349600d53"
     },
     "android": {
-      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "b0cea8e2cdb9895c7e8481aabdf084a6363aa03f453e791c6ddf3819f88fa064"
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "06716833c2c950bdc6096a17df54681b43b23b198a9ec131ef4bdec4c0f2a573"
     }
   }
 }
