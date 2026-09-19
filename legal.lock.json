@@ -4,7 +4,7 @@
     "privacidad": {
       "version": "2.0.0",
       "actualizado": "2026-09-18",
-      "astHash": "dbfeecc309a38d77e92cad41c7d06282eb495fedb7b7973251af5f8e2ed4fae5",
+      "astHash": "a4be758d25e500e314f04b584f173993195b27b7abc690b804107b26ad8269c8",
       "secciones": 21,
       "bloques": 96
     },
@@ -16,14 +16,14 @@
       "bloques": 61
     }
   },
-  "bundleHash": "6d21dd7ad43c7913d407e77f5a0978709b1ea48759c8edf824ff4beedc96f382",
+  "bundleHash": "18ca354d9b588fcfc70dea0106218758279a46ada66bfd60bc201e83cad67987",
   "artefactos": {
     "web": {
-      "src/content/legal/generated/legalContent.ts": "4e3723e4cf5a31abe85b73416de0c9163220875cda51c961f219f79856ec799d",
+      "src/content/legal/generated/legalContent.ts": "70f35714e97423f1900ac9835564efc1b7f324c0dbe14a7e46fbdc278acc13f7",
       "src/content/legal/generated/legalSimplificado.ts": "187605b3e87266441d0778f3de70035aba42c805f90e56deaff9fee349600d53"
     },
     "android": {
-      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "06716833c2c950bdc6096a17df54681b43b23b198a9ec131ef4bdec4c0f2a573"
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "9824638f5e1a435701fbf72c00e83b96c65c5d4722bddc452202ecac9b15855e"
     }
   }
 }

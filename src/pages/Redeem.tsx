@@ -15,6 +15,32 @@ type Step = 'keyword' | 'choice' | 'auth' | 'success'
 // El registro con contraseña ya no existe: un cadete nuevo entra por Google.
 type AuthMode = 'login' | 'google'
 
+/**
+ * Va en las dos ramas del paso de autenticación, no solo en la de Google. Entrar con
+ * apodo también canja: crea un cupón, suma un punto y manda un hash de la IP a
+ * `ip_redemption_logs`. Lo que se acepta al continuar es lo mismo por los dos caminos,
+ * y que el aviso apareciera solo en una hacía pensar lo contrario.
+ *
+ * `target="_blank"` aunque sea un `Link`: `keyword` y `step` viven en el estado de React
+ * y salir de /canjear los borra. React Router no intercepta un click con target, así que
+ * el documento se abre aparte y el canje se queda donde estaba.
+ */
+function AvisoLegal() {
+  return (
+    <p className="text-[11px] text-brand-gris font-body leading-relaxed text-center">
+      Al continuar aceptas los{' '}
+      <Link to="/terminos" target="_blank" rel="noreferrer" className="text-brand-azul font-bold underline">
+        Términos y Condiciones
+      </Link>{' '}
+      y el{' '}
+      <Link to="/privacidad" target="_blank" rel="noreferrer" className="text-brand-azul font-bold underline">
+        Aviso de Privacidad
+      </Link>{' '}
+      de Helados Mados.
+    </p>
+  )
+}
+
 export default function Redeem() {
   const navigate = useNavigate()
   const { getActiveDynamic, login, redeemKeyword } = useStore()
@@ -322,13 +348,7 @@ export default function Redeem() {
                   Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
                   al volver, tu canje sigue solo.
                 </p>
-                <p className="text-[11px] text-brand-gris font-body leading-relaxed text-center">
-                  Al continuar aceptas los{' '}
-                  <a href="/terminos" target="_blank" className="text-brand-azul font-bold underline">
-                    Términos y Condiciones
-                  </a>{' '}
-                  de Helados Mados.
-                </p>
+                <AvisoLegal />
               </div>
             ) : (
               <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
@@ -386,6 +406,7 @@ export default function Redeem() {
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                   {loading ? 'Procesando...' : 'Canjear +1 punto'}
                 </button>
+                <AvisoLegal />
               </div>
             )}
           </div>

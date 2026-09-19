@@ -23,13 +23,14 @@ export default function LeaderboardTabs() {
   const [active, setActive] = useState<Period>('all')
   const getLeaderboard = useStore(s => s.getLeaderboard)
   const getLeaderboardRange = useStore(s => s.getLeaderboardRange)
-  const currentUserId = useStore(s => s.profile?.id ?? null)
+  // Solo para saber si hay sesion: la fila propia la marca el servidor con esTuFila.
+  const haySesion = useStore(s => s.profile?.id != null)
   const isAdmin = useStore(s => s.isAdmin)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
   const [loaded, setLoaded] = useState(false)
   const [range, setRange] = useState<Awaited<ReturnType<typeof getLeaderboardRange>>>(null)
 
-  const myIndex = entries.findIndex(e => e.user.id === currentUserId)
+  const myIndex = entries.findIndex(e => e.esTuFila)
   const myEntry = myIndex >= 0 ? { rank: myIndex + 1, points: entries[myIndex].points } : null
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function LeaderboardTabs() {
       </div>
 
       {/* Tu posición — antes vivía en una barra fija al pie; ahora la navegación ocupa ese espacio. */}
-      {currentUserId && loaded && (
+      {haySesion && loaded && (
         <div className="flex items-center gap-3 bg-brand-sombra rounded-2xl px-4 py-3">
           {myEntry ? (
             <>
@@ -114,11 +115,11 @@ export default function LeaderboardTabs() {
           {entries.slice(0, 30).map((entry, i) => {
             const rank = i + 1
             const medal = MEDAL_STYLES[rank]
-            const isMe = entry.user.id === currentUserId
+            const isMe = entry.esTuFila
 
             return (
               <div
-                key={entry.user.id}
+                key={entry.username}
                 className={cn(
                   'lb-row',
                   medal ? medal.row : isMe && 'bg-brand-azul/10 border border-brand-azul/30',
@@ -130,7 +131,7 @@ export default function LeaderboardTabs() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-heading text-brand-sombra text-sm truncate">
-                    {entry.user.username}
+                    {entry.username}
                     {isMe && <span className="text-brand-azul text-xs ml-1 font-body">(Tú)</span>}
                   </p>
                 </div>

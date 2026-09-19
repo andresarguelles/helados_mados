@@ -129,7 +129,7 @@ Estos registros **no están ligados a su cuenta**. No guardan quién es usted: s
 ## Cookies y herramientas de medición {#cookies icono=BarChart3}
 
 :::alcance web
-En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera vez verá un aviso de cookies: las de medición solo se cargan si usted las acepta. Puede cambiar de opinión después desde ese mismo aviso, y puede borrar las cookies desde la configuración de su navegador.
+En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera vez verá un aviso de cookies: las de medición solo se cargan si usted las acepta. Puede cambiar de opinión cuando quiera desde el enlace **Cookies** que está al pie de cada página, y puede borrar las cookies desde la configuración de su navegador.
 
 En el sitio web usamos Google Analytics, de Google LLC, para entender cómo se usa el sitio y mejorarlo. Recoge las páginas que visita, el tiempo que pasa en ellas, el tipo de dispositivo y de navegador, y una ubicación aproximada derivada de su dirección IP, que no es una dirección postal. Esta herramienta solo se carga si usted acepta las cookies de medición.
 

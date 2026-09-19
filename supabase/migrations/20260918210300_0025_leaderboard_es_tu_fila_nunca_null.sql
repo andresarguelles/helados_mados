@@ -1,21 +1,14 @@
--- 0024 — El marcador deja de publicar el UUID de cada usuario.
+-- 0025 — es_tu_fila devuelve false, nunca null.
 --
--- get_leaderboard() tiene `grant execute to anon` (0010) porque el Top 5 se pinta en la
--- pagina de inicio publica. Hasta aqui devolvia tambien `user_id`, asi que CUALQUIERA sin
--- sesion podia leer el identificador interno de todas las cuentas, no solo el apodo y los
--- puntos. El aviso de privacidad anterior afirmaba justo lo contrario.
+-- Bug de la 0024, encontrado al ejecutarla contra la base real: `p.id = v_me` con v_me
+-- nulo no da false, da NULL. Y v_me es null justo en el caso mas comun de esta funcion,
+-- que esta concedida a `anon` para pintar el Top 5 de la home publica.
 --
--- Los tres clientes que usaban ese UUID lo usaban para lo mismo: saber cual fila es la
--- tuya (`soyYo` en RankingScreen, la posicion propia en RankingViewModel e InicioViewModel,
--- y el `isMe` de LeaderboardTabs). Eso lo resuelve un booleano calculado en el servidor
--- contra auth.uid(), sin exponer nada. Como clave de lista queda el apodo, que ya es unico
--- (citext unique) y ya es publico por definicion.
---
--- Para `anon` no hay sesion, asi que es_tu_fila es false en todas: correcto.
---
--- Hay que DROP y no `create or replace`: cambia el tipo de retorno.
-
-drop function if exists public.get_leaderboard(text);
+-- En JavaScript null es falsy y el bug no se nota nunca. En Kotlin, deserializar null
+-- sobre un Boolean no anulable lanza: la pantalla de inicio de la app reventaria para
+-- cualquiera sin sesion. La logica de tres valores de SQL contra el booleano de dos
+-- valores del cliente es una trampa que solo aparece al cruzar el limite, y que no se ve
+-- leyendo el SQL — hay que ejecutarlo.
 
 create or replace function public.get_leaderboard(p_period text default 'all')
 returns table(username citext, points integer, es_tu_fila boolean)
@@ -32,7 +25,7 @@ declare
 begin
   if p_period = 'all' then
     return query
-      select p.username, p.total_points, (p.id = v_me)
+      select p.username, p.total_points, coalesce(p.id = v_me, false)
       from public.profiles p
       where p.is_admin = false and p.username is not null
       order by p.total_points desc;
@@ -55,7 +48,7 @@ begin
     return query
       select p.username,
         sum((case when c.digital_awarded then 1 else 0 end) + (case when c.physical_awarded then 10 else 0 end))::int,
-        (p.id = v_me)
+        coalesce(p.id = v_me, false)
       from public.coupons c join public.profiles p on p.id = c.user_id
       where c.created_at >= v_start and c.created_at < v_end
         and p.is_admin = false and p.username is not null
@@ -67,8 +60,7 @@ end;
 $$;
 
 comment on function public.get_leaderboard(text) is
-  'Marcador publico. NO devuelve el id del usuario a proposito: es_tu_fila se calcula contra auth.uid() para que anon no pueda leer identificadores.';
+  'Marcador publico. NO devuelve el id del usuario a proposito: es_tu_fila se calcula contra auth.uid(), y va con coalesce para no devolver null cuando no hay sesion.';
 
--- Sigue siendo publica: el Top 5 se pinta en la home sin sesion.
 revoke all on function public.get_leaderboard(text) from public;
 grant execute on function public.get_leaderboard(text) to anon, authenticated;

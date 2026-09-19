@@ -130,8 +130,60 @@ export type Database = {
           },
         ]
       }
+      legal_acceptances: {
+        Row: {
+          accepted_at: string
+          ast_hash: string
+          doc_id: string
+          id: string
+          platform: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          accepted_at?: string
+          ast_hash: string
+          doc_id: string
+          id?: string
+          platform: string
+          user_id: string
+          version: string
+        }
+        Update: {
+          accepted_at?: string
+          ast_hash?: string
+          doc_id?: string
+          id?: string
+          platform?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      legal_versions: {
+        Row: {
+          ast_hash: string
+          doc_id: string
+          published_at: string
+          version: string
+        }
+        Insert: {
+          ast_hash: string
+          doc_id: string
+          published_at?: string
+          version: string
+        }
+        Update: {
+          ast_hash?: string
+          doc_id?: string
+          published_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          age_confirmed_at: string | null
           avatar_url: string | null
           birthdate: string | null
           created_at: string
@@ -149,6 +201,7 @@ export type Database = {
           whatsapp_opt_in_at: string | null
         }
         Insert: {
+          age_confirmed_at?: string | null
           avatar_url?: string | null
           birthdate?: string | null
           created_at?: string
@@ -166,6 +219,7 @@ export type Database = {
           whatsapp_opt_in_at?: string | null
         }
         Update: {
+          age_confirmed_at?: string | null
           avatar_url?: string | null
           birthdate?: string | null
           created_at?: string
@@ -189,10 +243,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_legal: {
+        Args: { p_docs: Json; p_platform: string }
+        Returns: Json
+      }
       claim_google_bonus: { Args: never; Returns: Json }
       complete_signup: {
         Args: {
+          p_age_confirmed: boolean
+          p_legal: Json
           p_phone: string
+          p_platform: string
           p_username: string
           p_whatsapp_opt_in: boolean
         }
@@ -201,8 +262,8 @@ export type Database = {
       get_leaderboard: {
         Args: { p_period?: string }
         Returns: {
+          es_tu_fila: boolean
           points: number
-          user_id: string
           username: string
         }[]
       }
@@ -220,7 +281,19 @@ export type Database = {
           last_name: string
         }[]
       }
+      hook_google_only_signup: { Args: { event: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
+      is_adult: { Args: { p_birthdate: string }; Returns: boolean }
+      legal_current_versions: {
+        Args: never
+        Returns: {
+          ast_hash: string
+          doc_id: string
+          version: string
+        }[]
+      }
+      my_legal_status: { Args: never; Returns: Json }
+      phone_is_valid: { Args: { p_phone: string }; Returns: boolean }
       redeem_keyword: {
         Args: { p_ip_hash: string; p_keyword: string }
         Returns: Json

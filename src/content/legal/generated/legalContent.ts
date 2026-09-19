@@ -13,7 +13,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     icono: Shield,
     version: "2.0.0",
     actualizado: "2026-09-18",
-    astHash: "dbfeecc309a38d77e92cad41c7d06282eb495fedb7b7973251af5f8e2ed4fae5",
+    astHash: "a4be758d25e500e314f04b584f173993195b27b7abc690b804107b26ad8269c8",
     secciones: [
       {
         id: "aviso-corto",
@@ -174,7 +174,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: BarChart3,
         rol: null,
         bloques: [
-          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera vez verá un aviso de cookies: las de medición solo se cargan si usted las acepta. Puede cambiar de opinión después desde ese mismo aviso, y puede borrar las cookies desde la configuración de su navegador." }] },
+          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera vez verá un aviso de cookies: las de medición solo se cargan si usted las acepta. Puede cambiar de opinión cuando quiera desde el enlace " }, { t: 'fuerte', v: "Cookies" }, { t: 'texto', v: " que está al pie de cada página, y puede borrar las cookies desde la configuración de su navegador." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web usamos Google Analytics, de Google LLC, para entender cómo se usa el sitio y mejorarlo. Recoge las páginas que visita, el tiempo que pasa en ellas, el tipo de dispositivo y de navegador, y una ubicación aproximada derivada de su dirección IP, que no es una dirección postal. Esta herramienta solo se carga si usted acepta las cookies de medición." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web hay además dos servicios de Google que se cargan siempre, y que nunca habíamos declarado. Las tipografías del sitio se descargan de Google Fonts, y la página de inicio muestra un mapa de Google con la ubicación de la tienda. Por el solo hecho de mostrarlos, Google recibe su dirección IP. No son herramientas de medición nuestras y no podemos desactivarlas sin dejar de mostrar el mapa y las tipografías." }] },
         ],
@@ -696,4 +696,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "6d21dd7ad43c7913d407e77f5a0978709b1ea48759c8edf824ff4beedc96f382"
+export const LEGAL_BUNDLE_HASH = "18ca354d9b588fcfc70dea0106218758279a46ada66bfd60bc201e83cad67987"

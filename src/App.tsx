@@ -12,6 +12,8 @@ import Ranking from './pages/Ranking'
 import Misiones from './pages/Misiones'
 import NotFound from './pages/NotFound'
 import BottomNav from './components/layout/BottomNav'
+import CookieBanner from './components/legal/CookieBanner'
+import LegalGate from './components/legal/LegalGate'
 import { useStore } from './lib/store'
 import { trackPageview } from './lib/analytics'
 
@@ -66,7 +68,9 @@ function ProtectedMember({ children }: { children: React.ReactNode }) {
   if (!profile) return <Navigate to="/login" replace />
   // Un registro con Google a medias no tiene apodo, y el apodo es la identidad pública del ranking.
   if (!profile.username) return <Navigate to="/bienvenida" replace />
-  return <>{children}</>
+  // Va DENTRO y no envolviendo las rutas: /terminos y /privacidad tienen que seguir siendo
+  // alcanzables mientras la compuerta está puesta, o estaríamos pidiendo aceptar a ciegas.
+  return <LegalGate>{children}</LegalGate>
 }
 
 export default function App() {
@@ -124,6 +128,9 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
+      {/* Dentro del Router: el aviso enlaza a /privacidad y manda la vista actual al
+          aceptar, así que necesita Link y useLocation. */}
+      <CookieBanner />
     </BrowserRouter>
   )
 }

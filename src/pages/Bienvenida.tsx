@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AlertTriangle, Check, CheckCircle2, Loader2, LogOut, Sparkles, X } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
@@ -7,19 +7,28 @@ import { normalizePhone, DEFAULT_COUNTRY } from '../lib/phone'
 import PhoneField from '../components/ui/PhoneField'
 import { readPendingRedeem } from '../lib/pendingRedeem'
 import ErrorAlert from '../components/ui/ErrorAlert'
+import LegalBlocks from '../components/legal/LegalBlocks'
+import { AVISO_SIMPLIFICADO } from '../content/legal/generated/legalSimplificado'
 
 type Availability = 'idle' | 'short' | 'checking' | 'free' | 'taken'
 
 const CHECK_DEBOUNCE_MS = 400
 
 /**
- * Primera pantalla de todo cadete que nace con Google. Pide las tres cosas que Google no aporta y
- * sin las que la cuenta no sirve al negocio: el apodo (identidad pública del ranking), el WhatsApp
- * (el canal de las promociones) y el consentimiento explícito para usarlo.
+ * Primera pantalla de todo cadete que nace con Google. Pide lo que Google no aporta: el apodo
+ * (identidad pública del ranking), el WhatsApp (un número, una cuenta) y la aceptación del texto
+ * legal junto con la declaración de mayoría de edad.
  *
- * Las tres son obligatorias y se guardan juntas en una sola RPC. El gate de ProtectedMember no deja
- * avanzar sin apodo, y `complete_signup` rechaza en el servidor cualquier intento sin número o sin
- * consentimiento: quitar los campos del formulario no bastaría.
+ * Todo se guarda junto en una sola RPC, así que no puede quedar un apodo tomado por una cuenta
+ * sin número ni una cuenta sin constancia de qué texto aceptó su dueño. El gate de
+ * ProtectedMember no deja avanzar sin apodo y `complete_signup` revalida en el servidor: quitar
+ * campos del formulario no bastaría.
+ *
+ * DOS CASILLAS, y la separación importa. La primera junta los 18 años y la aceptación de los
+ * documentos, porque las dos son términos del contrato. La segunda, el permiso para mandar
+ * mensajes, va aparte y es OPCIONAL: es tratamiento de datos para publicidad, y condicionar el
+ * alta a aceptarlo haría que el consentimiento no fuera libre. Hasta la migración 0023 era
+ * obligatorio, y ese era el punto más atacable de todo el producto.
  */
 export default function Bienvenida() {
   const navigate = useNavigate()
@@ -32,6 +41,7 @@ export default function Bienvenida() {
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
   const [optIn, setOptIn] = useState(false)
+  const [aceptaLegal, setAceptaLegal] = useState(false)
   const [availability, setAvailability] = useState<Availability>('idle')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -60,14 +70,14 @@ export default function Bienvenida() {
 
   if (!authReady || !profile || profile.username) return null
 
-  // Los tres datos son requisito. El botón deshabilitado evita el viaje al servidor, pero la
-  // validación de verdad está en `complete_signup`.
+  // El botón deshabilitado evita el viaje al servidor, pero la validación de verdad está en
+  // `complete_signup`. Ojo: `optIn` NO entra aquí — es opcional desde la 0023.
   const canSubmit =
     !loading &&
     availability !== 'taken' &&
     username.trim().length >= 3 &&
     normalizePhone(phone) !== null &&
-    optIn
+    aceptaLegal
 
   const handleSubmit = async () => {
     setError('')
@@ -86,13 +96,18 @@ export default function Bienvenida() {
       )
       return
     }
-    if (!optIn) {
-      setError('Necesitamos tu permiso para escribirte por WhatsApp.')
+    if (!aceptaLegal) {
+      setError('Para crear tu cuenta necesitas ser mayor de edad y aceptar los documentos.')
       return
     }
 
     setLoading(true)
-    const result = await completeSignup({ username: value, phone: e164, whatsappOptIn: optIn })
+    const result = await completeSignup({
+      username: value,
+      phone: e164,
+      whatsappOptIn: optIn,
+      ageConfirmed: aceptaLegal,
+    })
     setLoading(false)
 
     if (!result.success) {
@@ -100,10 +115,14 @@ export default function Bienvenida() {
         username_taken: 'Ese apodo ya está en uso. Elige otro.',
         too_short: 'El apodo debe tener al menos 3 caracteres',
         already_set: 'Ya tienes un apodo asignado.',
-        consent_required: 'Necesitamos tu permiso para escribirte por WhatsApp.',
         invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
         phone_taken: 'Ese número ya está registrado en otra cuenta.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
+        age_required: 'Para crear tu cuenta tienes que ser mayor de edad.',
+        legal_required: 'Falta aceptar los Términos y el Aviso de Privacidad.',
+        legal_incomplete: 'Falta aceptar los Términos y el Aviso de Privacidad.',
+        // Casi siempre es una pestaña vieja mostrando un texto que ya se actualizó.
+        unknown_version: 'Los documentos cambiaron. Recarga la página y vuelve a intentar.',
       }
       setError(messages[result.reason] ?? 'No pudimos crear tu cuenta. Intenta de nuevo.')
       return
@@ -131,7 +150,7 @@ export default function Bienvenida() {
           <div>
             <h1 className="font-heading text-brand-sombra text-3xl">Crea tu cuenta</h1>
             <p className="text-brand-gris text-sm font-body mt-1 leading-relaxed">
-              Nos faltan dos datos que Google no nos da. Se piden una sola vez.
+              Nos falta lo que Google no nos da. Se pide una sola vez.
             </p>
           </div>
         </div>
@@ -182,15 +201,59 @@ export default function Bienvenida() {
               value={phone}
               onChange={value => { setPhone(value); setError('') }}
             />
-            {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. */}
+            {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. El número es
+                requisito por antifraude —un número, una cuenta—, no por mandarte publicidad. */}
             <p className="text-[11px] text-brand-gris font-body mt-1.5 leading-relaxed">
-              Por aquí te avisamos de las dinámicas y promos.{' '}
+              Nos sirve para que nadie abra varias cuentas.{' '}
               <span className="font-bold text-brand-sombra">Revísalo bien: después no se puede cambiar.</span>
             </p>
           </div>
 
-          {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad, y
-              aquí además es requisito para que la cuenta exista. */}
+          {/*
+            El aviso simplificado, en el punto exacto donde se recolectan los datos. Sale del
+            mismo documento que /privacidad, así que no puede divergir de él.
+
+            Va siempre visible y no plegado: esta pantalla ya tiene abandono medido y cada línea
+            cuesta altas, pero "puesto a disposición" quiere decir que se vea, no que se pueda
+            encontrar. Es el precio de pedir un teléfono y una fecha de nacimiento.
+          */}
+          <details open className="rounded-2xl border-2 border-brand-sombra/15 bg-brand-papel/60 px-3.5 py-3">
+            <summary className="font-heading text-brand-sombra text-[11px] uppercase cursor-pointer list-none">
+              {AVISO_SIMPLIFICADO.titulo} · cómo tratamos tus datos
+            </summary>
+            <div className="mt-2 text-[11px]">
+              <LegalBlocks bloques={AVISO_SIMPLIFICADO.bloques} />
+            </div>
+          </details>
+
+          {/* OBLIGATORIA. Junta edad y aceptación porque las dos son términos del contrato. */}
+          <label className="flex items-start gap-3 cursor-pointer">
+            <div
+              onClick={() => { setAceptaLegal(v => !v); setError('') }}
+              className={cn(
+                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
+                aceptaLegal ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 hover:border-brand-azul'
+              )}
+            >
+              {aceptaLegal && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+            </div>
+            <span className="text-xs text-brand-gris font-body leading-relaxed">
+              Tengo 18 años cumplidos y acepto los{' '}
+              <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
+                Términos y Condiciones
+              </Link>{' '}
+              y el{' '}
+              <Link to="/privacidad" target="_blank" className="text-brand-azul font-bold underline">
+                Aviso de Privacidad
+              </Link>.
+            </span>
+          </label>
+
+          {/*
+            OPCIONAL, y esa es la diferencia que importa. Condicionar el alta a aceptar publicidad
+            haría que el consentimiento no fuera libre, y un consentimiento no libre no es
+            consentimiento: arrastraría a todo el aviso. Ver la migración 0023.
+          */}
           <label className="flex items-start gap-3 cursor-pointer">
             <div
               onClick={() => { setOptIn(v => !v); setError('') }}
@@ -202,8 +265,8 @@ export default function Bienvenida() {
               {optIn && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
             <span className="text-xs text-brand-gris font-body leading-relaxed">
-              Acepto recibir mensajes con dinámicas y/o publicidad de Helados Mados por WhatsApp.
-              Puedo cancelarlo cuando quiera desde mi perfil.
+              <span className="font-bold text-brand-sombra">Opcional:</span> quiero que me avisen de
+              las dinámicas y promos por WhatsApp. Puedo cancelarlo cuando quiera desde mi perfil.
             </span>
           </label>
 
@@ -218,9 +281,9 @@ export default function Bienvenida() {
             {loading ? 'Creando tu cuenta...' : 'Empezar'}
           </button>
 
-          {!optIn && (
+          {!aceptaLegal && (
             <p className="text-[11px] text-brand-gris font-body text-center leading-relaxed -mt-1">
-              Sin aceptar los mensajes de WhatsApp no podemos crear tu cuenta.
+              Para crear tu cuenta necesitas aceptar los documentos.
             </p>
           )}
         </div>

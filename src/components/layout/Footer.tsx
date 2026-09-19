@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { cn } from '../../lib/utils'
 import { useBottomNavVisible } from './BottomNav'
 import { SOCIAL_LINKS } from './socials'
+import { abrirPreferenciasCookies } from '../legal/CookieBanner'
+import { medicionConfigurada } from '../../lib/analytics'
 
 export default function Footer() {
   // Cuando la navbar inferior está en pantalla, el hueco entre el footer y ella
@@ -45,6 +47,20 @@ export default function Footer() {
           <Link to="/privacidad" className="hover:text-white transition-colors">
             Aviso de Privacidad
           </Link>
+          {/* Revocar tiene que costar lo mismo que aceptar, y el pie es donde se busca.
+              Es un botón y no un enlace porque no lleva a ninguna parte: reabre la barra. */}
+          {medicionConfigurada() && (
+            <>
+              <span aria-hidden className="text-white/40">·</span>
+              <button
+                type="button"
+                onClick={abrirPreferenciasCookies}
+                className="hover:text-white transition-colors underline-offset-2 hover:underline"
+              >
+                Cookies
+              </button>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col items-center gap-0.5 text-xs text-white/70 font-body">

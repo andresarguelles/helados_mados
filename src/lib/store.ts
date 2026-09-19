@@ -4,6 +4,26 @@ import { supabase } from './supabaseClient'
 import { Profile, Dynamic, Coupon } from './types'
 import type { Database } from './database.types'
 import { saveAuthIntent, clearAuthIntent } from './authIntent'
+import { LEGAL_DOCS } from '../content/legal/generated/legalContent'
+
+/** La plataforma que queda registrada en cada aceptación del texto legal. */
+const PLATAFORMA = 'web'
+
+/**
+ * Las ternas que el servidor exige para registrar una aceptación: id, versión y hash del
+ * AST de CADA documento vigente.
+ *
+ * El hash es lo que hace que la constancia valga: sin él, un cliente con el bundle viejo
+ * registraría "acepté la 2.0.0" mostrando un texto que ya no es la 2.0.0. El servidor
+ * valida la terna completa contra `legal_versions` y responde `unknown_version` si no la
+ * reconoce. Tienen que ir todos, o responde `legal_incomplete`.
+ */
+const documentosParaAceptar = () =>
+  Object.values(LEGAL_DOCS).map((doc) => ({
+    doc_id: doc.id,
+    version: doc.version,
+    ast_hash: doc.astHash,
+  }))
 
 // GoTrue rejects RFC 2606/6762 reserved TLDs (.local, .test, .invalid, ...), so this needs to
 // look like a real domain even though it's never used to send or receive mail.
@@ -28,9 +48,28 @@ function dynamicErrorMessage(error: PostgrestError): string {
 }
 
 interface LeaderboardEntry {
-  user: { id: string; username: string }
+  username: string
   points: number
+  /**
+   * Lo calcula el servidor contra `auth.uid()`. Antes venía el UUID del usuario y el
+   * cliente comparaba — pero la RPC está concedida a `anon` para pintar el Top 5 de la
+   * home, así que eso publicaba el identificador de todas las cuentas a cualquiera.
+   */
+  esTuFila: boolean
 }
+
+/**
+ * Qué documentos le faltan por aceptar al usuario con sesión.
+ *
+ * `desconocido` no es lo mismo que "no falta nada": si la consulta falla (sin red, error
+ * del servidor) no podemos saberlo, y la compuerta NO debe bloquear. Es un requisito
+ * legal, no un control de seguridad: dejar la app inservible por un fallo de red sería
+ * mucho peor que enseñar una versión tarde.
+ */
+type LegalStatus =
+  | { estado: 'al-dia' }
+  | { estado: 'pendiente'; docs: string[] }
+  | { estado: 'desconocido' }
 
 interface LeaderboardRange {
   start: string
@@ -76,12 +115,20 @@ type ScanResult =
 export interface SignupInput {
   username: string
   phone: string
+  /** Opcional desde la 0023: publicidad no puede ser condición para existir. */
   whatsappOptIn: boolean
+  /** Declaración de 18 años cumplidos. Obligatoria: el servidor responde `age_required`. */
+  ageConfirmed: boolean
 }
 
 type CompleteSignupReason =
-  | 'too_short' | 'username_taken' | 'already_set' | 'consent_required'
+  | 'too_short' | 'username_taken' | 'already_set'
   | 'invalid_phone' | 'phone_taken' | 'not_authenticated' | 'error'
+  // Nuevas en la 0023. Ya no existe 'consent_required': el permiso de WhatsApp dejó de
+  // ser obligatorio, porque condicionar el alta a aceptar publicidad hace que el
+  // consentimiento no sea libre, y un consentimiento no libre no es consentimiento.
+  | 'age_required' | 'legal_required' | 'legal_incomplete' | 'unknown_version'
+  | 'invalid_platform'
 
 type CompleteSignupResult =
   | { success: true }
@@ -165,6 +212,10 @@ interface AppState {
   // Leaderboard
   getLeaderboard: (period: 'day' | 'week' | 'month' | 'all') => Promise<LeaderboardEntry[]>
   getLeaderboardRange: (period: 'day' | 'week' | 'month') => Promise<LeaderboardRange | null>
+
+  // Texto legal
+  getLegalStatus: () => Promise<LegalStatus>
+  acceptLegal: () => Promise<boolean>
 }
 
 async function loadProfile(): Promise<Profile | null> {
@@ -358,13 +409,17 @@ export const useStore = create<AppState>()((set, get) => ({
     return data
   },
 
-  // Apodo, teléfono y consentimiento se guardan juntos o no se guarda nada: la RPC es una sola
-  // transacción, así que no puede quedar un apodo tomado por una cuenta sin número.
-  completeSignup: async ({ username, phone, whatsappOptIn }) => {
+  // Apodo, teléfono, edad y aceptación legal se guardan juntos o no se guarda nada: la RPC
+  // es una sola transacción, así que no puede quedar un apodo tomado por una cuenta sin
+  // número, ni una cuenta sin constancia de qué texto aceptó su dueño.
+  completeSignup: async ({ username, phone, whatsappOptIn, ageConfirmed }) => {
     const { data, error } = await supabase.rpc('complete_signup', {
       p_username: username.trim(),
       p_phone: phone,
       p_whatsapp_opt_in: whatsappOptIn,
+      p_age_confirmed: ageConfirmed,
+      p_legal: documentosParaAceptar(),
+      p_platform: PLATAFORMA,
     })
     if (error || !data) return { success: false, reason: 'error' }
     const result = data as { success: boolean; reason?: CompleteSignupReason }
@@ -501,9 +556,30 @@ export const useStore = create<AppState>()((set, get) => ({
     const { data, error } = await supabase.rpc('get_leaderboard', { p_period: period })
     if (error || !data) return []
     return data.map(row => ({
-      user: { id: row.user_id, username: row.username },
+      username: row.username,
       points: row.points,
+      esTuFila: row.es_tu_fila,
     }))
+  },
+
+  // ── Texto legal ───────────────────────────────────────────────────────
+
+  getLegalStatus: async () => {
+    const { data, error } = await supabase.rpc('my_legal_status')
+    if (error || !data) return { estado: 'desconocido' as const }
+    const pendientes = (data as { pendientes?: { doc_id: string }[] }).pendientes ?? []
+    return pendientes.length
+      ? { estado: 'pendiente' as const, docs: pendientes.map((p) => p.doc_id) }
+      : { estado: 'al-dia' as const }
+  },
+
+  acceptLegal: async () => {
+    const { data, error } = await supabase.rpc('accept_legal', {
+      p_docs: documentosParaAceptar(),
+      p_platform: PLATAFORMA,
+    })
+    if (error || !data) return false
+    return (data as { success: boolean }).success === true
   },
 
   getLeaderboardRange: async (period) => {

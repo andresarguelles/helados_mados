@@ -64,7 +64,7 @@ export default function HallOfFame() {
               if (!entry) return null
 
               return (
-                <div key={entry.user.id} className="flex flex-col items-center gap-1.5 w-24">
+                <div key={entry.username} className="flex flex-col items-center gap-1.5 w-24">
                   <div className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center text-brand-sombra border-2 border-brand-sombra shrink-0',
                     podium.badge
@@ -76,7 +76,7 @@ export default function HallOfFame() {
                     podium.height
                   )}>
                     <p className="font-heading text-brand-azul text-[10px] uppercase tracking-wide">{podium.title}</p>
-                    <p className="font-heading text-brand-sombra text-sm truncate w-full text-center">{entry.user.username}</p>
+                    <p className="font-heading text-brand-sombra text-sm truncate w-full text-center">{entry.username}</p>
                     <span className="points-chip">{entry.points} pts</span>
                   </div>
                 </div>
@@ -88,11 +88,11 @@ export default function HallOfFame() {
           {rest.length > 0 && (
             <div className="flex flex-col gap-2">
               {rest.map((entry, i) => (
-                <div key={entry.user.id} className="flex items-center gap-3 bg-white/10 rounded-2xl px-3 py-2">
+                <div key={entry.username} className="flex items-center gap-3 bg-white/10 rounded-2xl px-3 py-2">
                   <div className="w-7 h-7 rounded-full bg-white/15 text-white flex items-center justify-center font-heading text-xs border border-white/20 shrink-0">
                     {i + 4}
                   </div>
-                  <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">{entry.user.username}</p>
+                  <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">{entry.username}</p>
                   <span className="points-chip">{entry.points} pts</span>
                 </div>
               ))}
