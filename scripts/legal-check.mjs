@@ -33,6 +33,8 @@ import {
 
 const CROSS = process.argv.includes('--cross')
 const ESTRICTO = process.env.LEGAL_STRICT === '1'
+// Lo que corre `prebuild`: el texto tiene que estar en condiciones de publicarse.
+const PUBLICABLE = process.argv.includes('--publicable')
 
 const ok = (msg) => console.log(`✓ ${msg}`)
 const aviso = (msg) => console.log(`⚠ ${msg}`)
@@ -63,6 +65,37 @@ for (const doc of docs) {
   ok(
     `legal/${doc.id}.md → AST  (${doc.secciones.length} secciones, ${bloques} bloques)  ` +
       `#${doc.astHash.slice(0, 7)}`
+  )
+}
+
+// ─── Nada a medio llenar sale a produccion ──────────────────────────────────
+
+// Los marcadores «PENDIENTE» se pintan LITERALMENTE en la pagina: son datos del
+// responsable que solo el dueno puede dar. Un aviso de privacidad que dice
+// «PENDIENTE: RFC» donde deberia ir el RFC no identifica al responsable, que es
+// justo lo que la ley exige que haga.
+//
+// Por eso esto tumba `npm run build` (produccion) pero no `npm run dev`: se puede
+// seguir trabajando con el borrador, no se puede desplegarlo.
+const pendientes = docs.flatMap((doc) => {
+  const crudo = fs.readFileSync(path.join(ROOT, 'legal', `${doc.id}.md`), 'utf8')
+  return [...crudo.matchAll(/«PENDIENTE:[^»]*»/g)].map((m) => `${doc.id}.md — ${m[0]}`)
+})
+
+if (pendientes.length) {
+  const lista = [...new Set(pendientes)].map((p) => `    ${p}`).join('\n')
+  if (PUBLICABLE && process.env.LEGAL_PERMITIR_PENDIENTES !== '1') {
+    die(
+      `el texto legal tiene ${pendientes.length} marcadores sin llenar:\n\n${lista}\n\n` +
+        '  Se pintan tal cual en la pagina. Un aviso que no identifica al responsable\n' +
+        '  no cumple, asi que esto no se despliega.\n\n' +
+        '  Llenalos en legal/*.md, corre `npm run legal:build` y vuelve a intentar.\n' +
+        '  Para construir igualmente (no lo subas): LEGAL_PERMITIR_PENDIENTES=1 npm run build'
+    )
+  }
+  aviso(
+    `${pendientes.length} marcadores «PENDIENTE» sin llenar ` +
+      `(tumban "npm run build"):\n${lista}`
   )
 }
 

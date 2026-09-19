@@ -10,11 +10,14 @@ import Perfil from './pages/Perfil'
 import Cupones from './pages/Cupones'
 import Ranking from './pages/Ranking'
 import Misiones from './pages/Misiones'
-import Terminos from './pages/Terminos'
 import NotFound from './pages/NotFound'
 import BottomNav from './components/layout/BottomNav'
 import { useStore } from './lib/store'
 import { trackPageview } from './lib/analytics'
+
+// El texto legal es largo y casi nadie lo abre: que sea su propio chunk.
+const Terminos = lazy(() => import('./pages/Terminos'))
+const Privacidad = lazy(() => import('./pages/Privacidad'))
 
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
@@ -25,6 +28,15 @@ function AdminFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-brand-azul">
       <Loader2 className="w-8 h-8 animate-spin text-white" />
+    </div>
+  )
+}
+
+// El de admin es azul a pantalla completa; sobre papel eso sería un fogonazo.
+function LegalFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-brand-papel">
+      <Loader2 className="w-8 h-8 animate-spin text-brand-azul" />
     </div>
   )
 }
@@ -82,7 +94,15 @@ export default function App() {
         <Route path="/misiones" element={<ProtectedMember><Misiones /></ProtectedMember>} />
         {/* Ruta histórica: /cuenta se dividió en /perfil y /cupones */}
         <Route path="/cuenta" element={<Navigate to="/perfil" replace />} />
-        <Route path="/terminos" element={<Terminos />} />
+        {/* Públicas y sin guard: el aviso tiene que leerse antes de crear la cuenta. */}
+        <Route path="/terminos" element={
+          <Suspense fallback={<LegalFallback />}><Terminos /></Suspense>
+        } />
+        <Route path="/privacidad" element={
+          <Suspense fallback={<LegalFallback />}><Privacidad /></Suspense>
+        } />
+        {/* El nombre que la gente teclea. */}
+        <Route path="/aviso-de-privacidad" element={<Navigate to="/privacidad" replace />} />
         <Route path="/admin" element={
           <Suspense fallback={<AdminFallback />}><AdminLogin /></Suspense>
         } />

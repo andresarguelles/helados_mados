@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/legal-check.mjs",
+    "prebuild": "node scripts/legal-check.mjs --publicable",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "legal:build": "node scripts/legal-build.mjs",

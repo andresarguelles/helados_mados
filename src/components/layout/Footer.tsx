@@ -37,9 +37,15 @@ export default function Footer() {
           ))}
         </div>
 
-        <Link to="/terminos" className="text-sm font-body hover:text-white transition-colors">
-          Términos y Condiciones
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-body">
+          <Link to="/terminos" className="hover:text-white transition-colors">
+            Términos y Condiciones
+          </Link>
+          <span aria-hidden className="text-white/40">·</span>
+          <Link to="/privacidad" className="hover:text-white transition-colors">
+            Aviso de Privacidad
+          </Link>
+        </div>
 
         <div className="flex flex-col items-center gap-0.5 text-xs text-white/70 font-body">
           <p>Helados Mados · Todos los derechos reservados · 2026</p>

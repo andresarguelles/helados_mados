@@ -169,6 +169,15 @@
     transform: rotate(2deg);
   }
 
+  /* Pastilla de alcance del texto legal — «esto describe la otra plataforma».
+     Nunca oculta el bloque, solo lo etiqueta: por eso es informativa (azul de
+     marca sobre papel) y no una alerta. Tiene un gemelo 1:1 en Android. */
+  .legal-scope {
+    @apply inline-flex w-fit items-center rounded-full border-2 border-brand-ingravidez
+           bg-brand-papel px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wide
+           text-brand-azul;
+  }
+
   /* Tarjeta comic estándar (§4) */
   .card-comic {
     @apply bg-white border-4 border-brand-azul rounded-[20px] shadow-card;
