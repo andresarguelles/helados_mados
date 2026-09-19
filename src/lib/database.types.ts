@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletions: {
+        Row: {
+          deleted_at: string
+          executed_by: string
+          id: string
+          user_id: string
+          username: string | null
+          via: string
+        }
+        Insert: {
+          deleted_at?: string
+          executed_by: string
+          id?: string
+          user_id: string
+          username?: string | null
+          via: string
+        }
+        Update: {
+          deleted_at?: string
+          executed_by?: string
+          id?: string
+          user_id?: string
+          username?: string | null
+          via?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           created_at: string
