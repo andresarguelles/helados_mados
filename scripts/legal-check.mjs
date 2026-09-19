@@ -39,6 +39,13 @@ const aviso = (msg) => console.log(`⚠ ${msg}`)
 
 const REGENERA = '\n\n  Corre:  npm run legal:build'
 
+/**
+ * Los artefactos se emiten con LF y sus hashes se calculan sobre eso, pero en Windows
+ * git puede dejarlos en el disco con CRLF. Sin esto, un clon nuevo daria falsa alarma
+ * en todas las comprobaciones. `.gitattributes` tambien lo fija; esto es el cinturon.
+ */
+const leerLf = (f) => fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n')
+
 // ─── El texto compila ───────────────────────────────────────────────────────
 
 const docs = cargarDocs()
@@ -70,7 +77,7 @@ if (android) esperados.push([android.ruta, SALIDA_KT, emitirKotlin(docs)])
 for (const [raiz, rel, contenido] of esperados) {
   const destino = path.join(raiz, rel)
   if (!fs.existsSync(destino)) die(`falta el artefacto generado ${rel}${REGENERA}`)
-  if (fs.readFileSync(destino, 'utf8') !== contenido) {
+  if (leerLf(destino) !== contenido) {
     die(
       `${rel} no corresponde al texto de legal/.\n\n` +
         '  O editaste el archivo generado a mano (no se hace: se regenera), o cambiaste\n' +
@@ -86,7 +93,7 @@ if (android) ok('artefactos android coinciden con legal/')
 
 const lockLocal = path.join(ROOT, LOCK)
 if (!fs.existsSync(lockLocal)) die(`falta ${LOCK}${REGENERA}`)
-const lockDisco = fs.readFileSync(lockLocal, 'utf8')
+const lockDisco = leerLf(lockLocal)
 const lockPrevio = JSON.parse(lockDisco)
 
 // Los hashes de los artefactos android salen del lock cuando no tenemos el repo
@@ -108,7 +115,7 @@ if (!android) {
 
 const lockAndroid = path.join(android.ruta, LOCK)
 if (!fs.existsSync(lockAndroid)) die(`el repo Android no tiene ${LOCK}${REGENERA}`)
-if (fs.readFileSync(lockAndroid, 'utf8') !== lockDisco) {
+if (leerLf(lockAndroid) !== lockDisco) {
   die(
     `los dos ${LOCK} difieren: los repos estan en versiones distintas del texto legal.\n\n` +
       `  web:     ${ROOT}\n  android: ${android.ruta}` +

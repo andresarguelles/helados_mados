@@ -1,0 +1,9 @@
+# El texto legal y sus artefactos generados van SIEMPRE con LF.
+#
+# El `legal.lock.json` se compara byte a byte contra su gemelo del repo Android, y los
+# hashes de los artefactos se calculan sobre contenido con LF. Si git los dejara con
+# CRLF en el disco de una maquina Windows, el verificador daria falsa alarma en cada
+# clon nuevo. Esto tiene que estar igual en los dos repos.
+legal/**            text eol=lf
+legal.lock.json     text eol=lf
+src/content/legal/generated/** text eol=lf
