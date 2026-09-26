@@ -1,5 +1,26 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/cuenta", "destination": "/perfil", "permanent": true },
+    { "source": "/aviso-de-privacidad", "destination": "/privacidad", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/perfil", "destination": "/spa" },
+    { "source": "/cupones", "destination": "/spa" },
+    { "source": "/ranking", "destination": "/spa" },
+    { "source": "/misiones", "destination": "/spa" },
+    { "source": "/bienvenida", "destination": "/spa" },
+    { "source": "/auth/callback", "destination": "/spa" },
+    { "source": "/admin", "destination": "/spa" },
+    { "source": "/admin/:path*", "destination": "/spa" }
+  ],
+  "headers": [
+    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/(perfil|cupones|ranking|misiones|bienvenida|spa|404)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
+    { "source": "/auth/:path*", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
+    { "source": "/admin", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/admin/:path*", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
   ]
 }

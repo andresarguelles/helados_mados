@@ -9,10 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['Bungee', 'cursive'],
-        subheading: ['"Baloo 2"', 'sans-serif'],
-        body: ['"Nunito Sans"', 'sans-serif'],
-        mono: ['"Space Mono"', 'monospace'],
+        // Cada familia real va seguida de su reserva con métricas ajustadas (ver
+        // `src/styles/fonts.css`, bloque GENERATED:FALLBACKS) y del genérico como último
+        // recurso — así el navegador nunca cae directo a `cursive`/`sans-serif`/`monospace`
+        // con métricas muy distintas mientras el woff2 real todavía no llega.
+        heading: ['Bungee', 'Bungee Fallback', 'cursive'],
+        subheading: ['"Baloo 2"', '"Baloo 2 Fallback"', 'sans-serif'],
+        body: ['"Nunito Sans"', '"Nunito Sans Fallback"', 'sans-serif'],
+        mono: ['"Space Mono"', '"Space Mono Fallback"', 'monospace'],
       },
       colors: {
         // Brand palette — agencia espacial Mados

@@ -4,7 +4,7 @@ import { supabase } from './supabaseClient'
 import { Profile, Dynamic, Coupon } from './types'
 import type { Database } from './database.types'
 import { saveAuthIntent, clearAuthIntent } from './authIntent'
-import { LEGAL_DOCS } from '../content/legal/generated/legalContent'
+import { LEGAL_META } from '../content/legal/generated/legalMeta'
 
 /** La plataforma que queda registrada en cada aceptación del texto legal. */
 const PLATAFORMA = 'web'
@@ -19,7 +19,7 @@ const PLATAFORMA = 'web'
  * reconoce. Tienen que ir todos, o responde `legal_incomplete`.
  */
 const documentosParaAceptar = () =>
-  Object.values(LEGAL_DOCS).map((doc) => ({
+  Object.values(LEGAL_META).map((doc) => ({
     doc_id: doc.id,
     version: doc.version,
     ast_hash: doc.astHash,

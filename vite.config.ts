@@ -65,7 +65,7 @@ function printSupabaseRedirectUrls(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), printSupabaseRedirectUrls()],
   server: {
     port: 3000,
@@ -76,4 +76,12 @@ export default defineConfig({
     open: true,
     host: true,
   },
-});
+  build: {
+    // Solo para el build del cliente: scripts/prerender.mjs lo lee (dist/.vite/manifest.json)
+    // para saber que chunk le toca a cada ruta con lazyWithPreload y mandarle un
+    // <link rel="modulepreload"> desde su HTML — asi ese chunk baja en paralelo con el
+    // principal en vez de esperar a que el JS ya corriendo llegue al import() dinamico. El
+    // build --ssr no lo necesita (dist-ssr/ no se despliega); isSsrBuild lo evita ahi.
+    manifest: !isSsrBuild,
+  },
+}));

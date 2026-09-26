@@ -1,0 +1,75 @@
+/**
+ * Fuentes autohospedadas — antes se pedían dos veces a Google (`index.html` y este archivo
+ * importaban `fonts.googleapis.com`), ahora se sirven desde `dist/assets` como el resto de los
+ * estáticos: menos orígenes en la primera carga y sin depender de que Google Fonts responda.
+ *
+ * Solo el subset `latin` de cada paquete: cubre U+0000-00FF (incluye á é í ó ú ñ ü ¿ ¡, todo el
+ * español de México) sin arrastrar el subset `latin-ext` que no usamos. Los pesos son
+ * exactamente los que ya se cargaban: Bungee 400, Baloo 2 800, Nunito Sans 400/900 y
+ * Space Mono 400/700. Los nombres de familia (`Bungee`, `"Baloo 2"`, `"Nunito Sans"`,
+ * `"Space Mono"`) tienen que coincidir con `tailwind.config.ts` → `fontFamily`.
+ */
+@import '@fontsource/bungee/latin-400.css';
+@import '@fontsource/baloo-2/latin-800.css';
+@import '@fontsource/nunito-sans/latin-400.css';
+@import '@fontsource/nunito-sans/latin-900.css';
+@import '@fontsource/space-mono/latin-400.css';
+@import '@fontsource/space-mono/latin-700.css';
+
+/**
+ * Fuentes de reserva con métricas ajustadas — bajan el CLS del cambio de fuente.
+ *
+ * Sin esto, mientras el woff2 real no ha llegado el navegador usa el genérico de la pila
+ * (`cursive` para Bungee, `sans-serif` para Baloo 2/Nunito Sans, `monospace` para Space Mono),
+ * cuyas métricas (ascenso, descenso, ancho medio) no se parecen en nada a las reales — el
+ * texto reflowea al hidratar la fuente de verdad. Estas caras usan una fuente ya instalada en
+ * el sistema (nunca se descargan) con `size-adjust`/`ascent-override`/`descent-override`/
+ * `line-gap-override` calculados para que ocupen la misma caja que la fuente real, así que el
+ * cambio de fuente no mueve el layout.
+ *
+ * Se colocan justo después de cada fuente real en `tailwind.config.ts` → `fontFamily`, antes
+ * del genérico final.
+ */
+/* GENERATED:FALLBACKS:START — no editar a mano, ver tools/brand-assets/scripts/font-fallbacks.mjs */
+
+/* Bungee → Bungee Fallback — calculado por tools/brand-assets/scripts/font-fallbacks.mjs, no editar a mano */
+@font-face {
+  font-family: "Bungee Fallback";
+  src: local("Arial Black"), local("Arial");
+  size-adjust: 111.7091%;
+  ascent-override: 91.3086%;
+  descent-override: 26.8555%;
+  line-gap-override: 0%;
+}
+
+/* Baloo 2 → Baloo 2 Fallback — calculado por tools/brand-assets/scripts/font-fallbacks.mjs, no editar a mano */
+@font-face {
+  font-family: "Baloo 2 Fallback";
+  src: local("Arial");
+  size-adjust: 102.5122%;
+  ascent-override: 105.1583%;
+  descent-override: 51.1159%;
+  line-gap-override: 0%;
+}
+
+/* Nunito Sans → Nunito Sans Fallback — calculado por tools/brand-assets/scripts/font-fallbacks.mjs, no editar a mano */
+@font-face {
+  font-family: "Nunito Sans Fallback";
+  src: local("Arial");
+  size-adjust: 101.3906%;
+  ascent-override: 99.7134%;
+  descent-override: 34.8159%;
+  line-gap-override: 0%;
+}
+
+/* Space Mono → Space Mono Fallback — calculado por tools/brand-assets/scripts/font-fallbacks.mjs, no editar a mano */
+@font-face {
+  font-family: "Space Mono Fallback";
+  src: local("Courier New");
+  size-adjust: 101.9834%;
+  ascent-override: 109.8218%;
+  descent-override: 35.3979%;
+  line-gap-override: 0%;
+}
+
+/* GENERATED:FALLBACKS:END */

@@ -25,6 +25,7 @@ import {
   type ConsentimientoMedicion,
 } from '../../lib/analytics'
 import { useBottomNavVisible } from '../layout/BottomNav'
+import { useHydrated } from '../../lib/useHydrated'
 import { cn } from '../../lib/utils'
 
 // Apertura manual desde el pie de página. Es estado de una sola barra montada en App,
@@ -57,14 +58,21 @@ export function abrirPreferenciasCookies() {
 const CLASE_ENLACE = 'text-brand-azul font-bold underline'
 
 export default function CookieBanner() {
-  const consentimiento = useSyncExternalStore(suscribirConsentimiento, leerConsentimiento)
-  const abierto = useSyncExternalStore(suscribirApertura, leerApertura)
+  // Sin `getServerSnapshot`, `useSyncExternalStore` LANZA en el servidor (no hay
+  // `localStorage` que leer ahí). El valor que se le da —null / cerrado— es además el
+  // correcto: en el HTML prerenderizado nunca debe aparecer el banner.
+  const consentimiento = useSyncExternalStore(suscribirConsentimiento, leerConsentimiento, () => null)
+  const abierto = useSyncExternalStore(suscribirApertura, leerApertura, () => false)
+  const hidratado = useHydrated()
   const navVisible = useBottomNavVisible()
   const location = useLocation()
 
-  // Sin ID de medición no hay nada que consentir; con decisión tomada, solo se ve si
-  // la persona vuelve a abrirla desde el pie.
-  if (!medicionConfigurada()) return null
+  // La compuerta de hidratación va primero: aunque el snapshot de servidor ya diera
+  // `null`/`false`, sin ella el primer render del cliente podría leer el `localStorage`
+  // real antes de que React termine de comparar contra el HTML que llegó del servidor,
+  // y eso sí es un desajuste de hidratación. Sin ID de medición tampoco hay nada que
+  // consentir; con decisión tomada, solo se ve si la persona vuelve a abrirla desde el pie.
+  if (!hidratado || !medicionConfigurada()) return null
   if (consentimiento !== null && !abierto) return null
 
   const decidir = (valor: ConsentimientoMedicion) => {

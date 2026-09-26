@@ -1,22 +1,20 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-MX">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/astronauta_mados_nuevo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#3C5DDC" />
-    <meta name="description" content="Helados Mados — agencia espacial de helados. Despega por un helado: gana medallas canjeando la palabra secreta del TikTok Live y compite por ser Comandante." />
-    <title>Helados Mados — Despega por un Helado</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@800&family=Nunito+Sans:wght@400;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <!-- Título y metadatos por ruta: los completa el prerender en build (scripts/prerender.mjs,
+         con src/seo/routes.ts + head.ts) y, en dev o tras hidratar, applyHead() en el cliente.
+         No pongas aquí title/description/og estáticos: duplicarían lo que ya sale por ruta. -->
+    <!--seo:start--><title>Helados Mados</title><!--seo:end-->
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Helados Mados — Despega por un Helado" />
-    <meta property="og:description" content="Únete al TikTok Live, canjea la palabra secreta y gana medallas en la estación más cercana." />
-    <meta property="og:type" content="website" />
+    <!-- Iconos y manifest: los genera A3 en public/ con estos nombres fijos. -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <!-- Aquí vivía el tag de Google Analytics, que se cargaba solo y sin preguntar.
          Ahora lo inyecta src/lib/analytics.ts, y únicamente después de que la persona

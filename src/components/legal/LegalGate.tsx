@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom'
 import { Loader2, Scale } from 'lucide-react'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
-import { LEGAL_DOCS } from '../../content/legal/generated/legalContent'
+import { LEGAL_META } from '../../content/legal/generated/legalMeta'
 import ErrorAlert from '../ui/ErrorAlert'
 
 const RUTAS: Record<string, string> = { privacidad: '/privacidad', terminos: '/terminos' }
@@ -70,7 +70,7 @@ export default function LegalGate({ children }: { children: React.ReactNode }) {
   // y un parpadeo en cada carga sería peor que enseñar la compuerta medio segundo tarde.
   if (estado !== 'pendiente') return <>{children}</>
 
-  const nombres = pendientes.map((id) => LEGAL_DOCS[id]?.titulo ?? id)
+  const nombres = pendientes.map((id) => LEGAL_META[id]?.titulo ?? id)
 
   return (
     <div className="min-h-screen bg-brand-papel flex items-center justify-center px-4 py-10">
@@ -94,7 +94,7 @@ export default function LegalGate({ children }: { children: React.ReactNode }) {
                 target="_blank"
                 className="lb-row font-body text-sm text-brand-azul font-bold underline"
               >
-                {LEGAL_DOCS[id]?.titulo ?? id}
+                {LEGAL_META[id]?.titulo ?? id}
               </Link>
             </li>
           ))}
