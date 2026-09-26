@@ -1,0 +1,17 @@
+{
+  "name": "seo-audit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Herramienta de auditoria SEO/rendimiento reproducible para Helados Mados. Aislada del package.json raiz a proposito: nunca se instala nada aqui desde el build de la app.",
+  "scripts": {
+    "audit": "node audit.mjs",
+    "compare": "node compare.mjs"
+  },
+  "dependencies": {
+    "chrome-launcher": "1.2.1",
+    "lighthouse": "13.5.0",
+    "node-html-parser": "9.0.4",
+    "playwright-core": "1.63.0"
+  }
+}

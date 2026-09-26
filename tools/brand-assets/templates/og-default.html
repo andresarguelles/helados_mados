@@ -1,0 +1,155 @@
+<!--
+  Plantilla de la imagen social por defecto (1200×630) — `build-og-image.mjs` reemplaza los
+  tokens `{{...}}` con los woff2 reales de `node_modules/@fontsource` incrustados como `data:`
+  URI base64 (nunca `file://`: la página se monta con `page.setContent()`, que la deja en el
+  origen opaco `about:blank`, y Chromium bloquea que un documento así busque un recurso `file://`
+  aunque la ruta sea absoluta y exista — el font-face falla en silencio y cae a la reserva del
+  sistema sin lanzar ningún error visible) y con el contenido de los SVG de marca, y renderiza el
+  resultado con el Chromium de Playwright.
+
+  Diseño: fondo azul de marca con la trama de puntos (mismo patrón que `.bg-dots-azul` en
+  `src/index.css`), el astronauta sangrando por el borde derecho, el logo horizontal arriba,
+  el eslogan "Despega por un helado" en Bungee con la sombra dura del "trazo cómic" (offset sin
+  blur), la estación en Space Mono dentro de una pastilla ladeada y el dominio al pie. Todo el
+  texto que importa queda dentro del área segura central: WhatsApp y Facebook recortan los bordes
+  al generar su miniatura, así que nada crítico toca los primeros/últimos ~60px.
+-->
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: 'Bungee';
+    font-style: normal;
+    font-weight: 400;
+    src: url({{FONT_BUNGEE_400}}) format('woff2');
+  }
+  @font-face {
+    font-family: 'Space Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url({{FONT_SPACE_MONO_400}}) format('woff2');
+  }
+  @font-face {
+    font-family: 'Space Mono';
+    font-style: normal;
+    font-weight: 700;
+    src: url({{FONT_SPACE_MONO_700}}) format('woff2');
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+  }
+
+  body {
+    position: relative;
+    background-color: #3C5DDC;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .logo {
+    position: absolute;
+    top: 44px;
+    left: 64px;
+    height: 88px;
+    width: auto;
+  }
+
+  .astronauta {
+    position: absolute;
+    right: -70px;
+    top: 46px;
+    height: 620px;
+    width: auto;
+    transform: rotate(6deg);
+    filter: drop-shadow(-14px 14px 0 #1C2440);
+  }
+
+  .kicker {
+    position: absolute;
+    top: 162px;
+    left: 64px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 4px solid #1C2440;
+    border-radius: 999px;
+    padding: 10px 22px;
+    transform: rotate(-3deg);
+    box-shadow: 8px 8px 0 #1C2440;
+  }
+
+  .kicker span {
+    font-family: 'Space Mono', monospace;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #3C5DDC;
+    white-space: nowrap;
+  }
+
+  .headline {
+    position: absolute;
+    top: 250px;
+    left: 64px;
+    width: 760px;
+    font-family: 'Bungee', cursive;
+    font-size: 92px;
+    line-height: 1.04;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow:
+      2px 2px 0 #1C2440,
+      4px 4px 0 #1C2440,
+      6px 6px 0 #1C2440,
+      8px 8px 0 #1C2440,
+      10px 10px 0 #1C2440;
+  }
+
+  .headline .acento {
+    color: #C8FD5F;
+  }
+
+  .footer {
+    position: absolute;
+    left: 64px;
+    bottom: 52px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .footer .dominio {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  .footer .separador {
+    color: #C8FD5F;
+    font-size: 30px;
+  }
+</style>
+</head>
+<body>
+  {{ASTRONAUT_SVG}}
+  {{LOGO_SVG}}
+  <div class="kicker"><span>{{KICKER_TEXT}}</span></div>
+  <div class="headline">DESPEGA POR<br/><span class="acento">UN HELADO</span></div>
+  <div class="footer">
+    <span class="dominio">heladosmados.com</span>
+  </div>
+</body>
+</html>

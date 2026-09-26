@@ -1,0 +1,23 @@
+{
+  "name": "mados-brand-assets",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Herramientas locales (fuera de la instalacion raiz) para regenerar los assets de marca: metricas de fuentes de reserva, optimizacion de SVG e imagen social og-default.png. No se publica ni se importa desde la app.",
+  "type": "module",
+  "scripts": {
+    "font-fallbacks": "node scripts/font-fallbacks.mjs",
+    "optimize-svgs": "node scripts/optimize-svgs.mjs",
+    "svg-fidelity": "node scripts/svg-fidelity.mjs",
+    "og-image": "node --import tsx/esm scripts/build-og-image.mjs",
+    "icons": "node scripts/build-icons.mjs",
+    "build-all": "npm run optimize-svgs && npm run svg-fidelity && npm run icons && npm run og-image"
+  },
+  "devDependencies": {
+    "fontaine": "^1.0.0",
+    "pixelmatch": "^6.0.0",
+    "playwright-core": "^1.55.1",
+    "pngjs": "^7.0.0",
+    "svgo": "^3.3.2",
+    "tsx": "^4.23.15"
+  }
+}
