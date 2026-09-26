@@ -2,8 +2,8 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.2.0
-actualizado: 2026-09-19
+version: 2.2.1
+actualizado: 2026-09-26
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
@@ -133,7 +133,7 @@ En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera v
 
 En el sitio web usamos Google Analytics, de Google LLC, para entender cómo se usa el sitio y mejorarlo. Recoge las páginas que visita, el tiempo que pasa en ellas, el tipo de dispositivo y de navegador, y una ubicación aproximada derivada de su dirección IP, que no es una dirección postal. Esta herramienta solo se carga si usted acepta las cookies de medición.
 
-En el sitio web hay además dos servicios de Google que se cargan siempre, y que nunca habíamos declarado. Las tipografías del sitio se descargan de Google Fonts, y la página de inicio muestra un mapa de Google con la ubicación de la tienda. Por el solo hecho de mostrarlos, Google recibe su dirección IP. No son herramientas de medición nuestras y no podemos desactivarlas sin dejar de mostrar el mapa y las tipografías.
+En el sitio web hay un servicio de Google que se carga siempre: la página de inicio muestra un mapa de Google con la ubicación de la tienda. Por el solo hecho de mostrarlo, Google recibe su dirección IP. No es una herramienta de medición nuestra y no podemos desactivarla sin dejar de mostrar el mapa. Las tipografías del sitio ya no vienen de Google Fonts: ahora se sirven desde nuestro propio servidor, y por eso dejaron de compartir su dirección IP con Google.
 :::
 
 ## En la aplicación Android {#aplicacion icono=QrCode}
@@ -152,7 +152,7 @@ No vendemos sus datos personales. Los compartimos solo con quien hace falta para
 
 - **Supabase.** Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor.
 - **Vercel.** Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, en claro y sin pasar por el procedimiento descrito más arriba.
-- **Google.** Interviene en el inicio de sesión y, en el sitio web, en la medición, las tipografías y el mapa de la tienda.
+- **Google.** Interviene en el inicio de sesión y, en el sitio web, en la medición y el mapa de la tienda.
 
 Supabase y Vercel actúan como encargados: tratan los datos por nuestra cuenta, siguiendo nuestras instrucciones, y no pueden usarlos para fines propios. Para la ley mexicana eso es una remisión y no requiere su consentimiento aparte.
 

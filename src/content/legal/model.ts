@@ -74,3 +74,19 @@ export const ETIQUETA_ALCANCE: Record<Exclude<LegalAlcance, 'ambas'>, string> = 
   web: 'Solo en el sitio web',
   android: 'Solo en la aplicación Android',
 }
+
+/**
+ * Los metadatos de un documento sin su AST ni sus iconos: lo que necesita quien solo
+ * pregunta "¿qué versión es esta?" o "¿cómo se llama este documento?" (la compuerta de
+ * re-aceptación, el `lastmod` del SEO, la terna que se manda al servidor al aceptar).
+ * Vive en un artefacto aparte (`legalMeta.ts`) para que esos consumidores no arrastren
+ * los dos documentos completos — con sus componentes de `lucide-react` — al bundle
+ * inicial. Mismo razonamiento que `AVISO_SIMPLIFICADO` en `legalSimplificado.ts`.
+ */
+export interface LegalMeta {
+  id: string
+  titulo: string
+  version: string
+  actualizado: string
+  astHash: string
+}

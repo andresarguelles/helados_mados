@@ -19,11 +19,13 @@ import {
   NO_ENCUENTRO_ANDROID,
   SALIDA_KT,
   SALIDA_TS,
+  SALIDA_TS_META,
   SALIDA_TS_SIMPLE,
   cargarDocs,
   construirLock,
   emitirKotlin,
   emitirTs,
+  emitirTsMeta,
   emitirTsSimplificado,
   leerIconosAndroid,
   resolverRepoAndroid,
@@ -104,6 +106,7 @@ if (pendientes.length) {
 const esperados = [
   [ROOT, SALIDA_TS, emitirTs(docs)],
   [ROOT, SALIDA_TS_SIMPLE, emitirTsSimplificado(docs)],
+  [ROOT, SALIDA_TS_META, emitirTsMeta(docs)],
 ]
 if (android) esperados.push([android.ruta, SALIDA_KT, emitirKotlin(docs)])
 
@@ -165,7 +168,7 @@ if (!CROSS) {
 // ─── Nada legal sin commitear ───────────────────────────────────────────────
 
 const sucios = [
-  ['web', ROOT, ['legal', SALIDA_TS, SALIDA_TS_SIMPLE, LOCK]],
+  ['web', ROOT, ['legal', SALIDA_TS, SALIDA_TS_SIMPLE, SALIDA_TS_META, LOCK]],
   ['android', android.ruta, [SALIDA_KT, LOCK]],
 ].flatMap(([nombre, raiz, rutas]) => {
   const res = spawnSync('git', ['status', '--porcelain', '--', ...rutas], {

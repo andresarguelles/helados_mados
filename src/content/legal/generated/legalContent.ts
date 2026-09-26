@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "2.2.0",
-    actualizado: "2026-09-19",
-    astHash: "6ea075bcc3c17b2309c77e3ed443c958b5e49e084f9fc28a0b2b395b01fc3b0f",
+    version: "2.2.1",
+    actualizado: "2026-09-26",
+    astHash: "67bb968e551db7a7b2205f80c0aef2e87fbc2dcbf23524832d7d7561ca1e226e",
     secciones: [
       {
         id: "aviso-corto",
@@ -176,7 +176,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         bloques: [
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web usamos cookies y tecnologías parecidas. Al entrar por primera vez verá un aviso de cookies: las de medición solo se cargan si usted las acepta. Puede cambiar de opinión cuando quiera desde el enlace " }, { t: 'fuerte', v: "Cookies" }, { t: 'texto', v: " que está al pie de cada página, y puede borrar las cookies desde la configuración de su navegador." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web usamos Google Analytics, de Google LLC, para entender cómo se usa el sitio y mejorarlo. Recoge las páginas que visita, el tiempo que pasa en ellas, el tipo de dispositivo y de navegador, y una ubicación aproximada derivada de su dirección IP, que no es una dirección postal. Esta herramienta solo se carga si usted acepta las cookies de medición." }] },
-          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web hay además dos servicios de Google que se cargan siempre, y que nunca habíamos declarado. Las tipografías del sitio se descargan de Google Fonts, y la página de inicio muestra un mapa de Google con la ubicación de la tienda. Por el solo hecho de mostrarlos, Google recibe su dirección IP. No son herramientas de medición nuestras y no podemos desactivarlas sin dejar de mostrar el mapa y las tipografías." }] },
+          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web hay un servicio de Google que se carga siempre: la página de inicio muestra un mapa de Google con la ubicación de la tienda. Por el solo hecho de mostrarlo, Google recibe su dirección IP. No es una herramienta de medición nuestra y no podemos desactivarla sin dejar de mostrar el mapa. Las tipografías del sitio ya no vienen de Google Fonts: ahora se sirven desde nuestro propio servidor, y por eso dejaron de compartir su dirección IP con Google." }] },
         ],
       },
       {
@@ -202,7 +202,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'fuerte', v: "Supabase." }, { t: 'texto', v: " Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor." }],
               [{ t: 'fuerte', v: "Vercel." }, { t: 'texto', v: " Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, en claro y sin pasar por el procedimiento descrito más arriba." }],
-              [{ t: 'fuerte', v: "Google." }, { t: 'texto', v: " Interviene en el inicio de sesión y, en el sitio web, en la medición, las tipografías y el mapa de la tienda." }],
+              [{ t: 'fuerte', v: "Google." }, { t: 'texto', v: " Interviene en el inicio de sesión y, en el sitio web, en la medición y el mapa de la tienda." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Supabase y Vercel actúan como encargados: tratan los datos por nuestra cuenta, siguiendo nuestras instrucciones, y no pueden usarlos para fines propios. Para la ley mexicana eso es una remisión y no requiere su consentimiento aparte." }] },
@@ -698,4 +698,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "fe3efca7a665a2b0517c3837b424832c04d0a1ed18c5f5c5befcbdd0a6b84de0"
+export const LEGAL_BUNDLE_HASH = "55fee0b0bb0dabc23e883f61e9b316755c6313b5498e31c49bca3b1369e3a8f7"

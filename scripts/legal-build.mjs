@@ -17,11 +17,13 @@ import {
   NO_ENCUENTRO_ANDROID,
   SALIDA_KT,
   SALIDA_TS,
+  SALIDA_TS_META,
   SALIDA_TS_SIMPLE,
   cargarDocs,
   construirLock,
   emitirKotlin,
   emitirTs,
+  emitirTsMeta,
   emitirTsSimplificado,
   leerIconosAndroid,
   resolverRepoAndroid,
@@ -80,6 +82,7 @@ if (lockPrevio) {
 const salidas = [
   [ROOT, SALIDA_TS, emitirTs(docs)],
   [ROOT, SALIDA_TS_SIMPLE, emitirTsSimplificado(docs)],
+  [ROOT, SALIDA_TS_META, emitirTsMeta(docs)],
   [android.ruta, SALIDA_KT, emitirKotlin(docs)],
 ]
 

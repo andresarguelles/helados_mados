@@ -23,6 +23,7 @@ export const LOCK = 'legal.lock.json'
 
 export const SALIDA_TS = 'src/content/legal/generated/legalContent.ts'
 export const SALIDA_TS_SIMPLE = 'src/content/legal/generated/legalSimplificado.ts'
+export const SALIDA_TS_META = 'src/content/legal/generated/legalMeta.ts'
 export const SALIDA_KT = 'app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt'
 
 const CABECERA = [
@@ -442,6 +443,39 @@ export function emitirTs(docs) {
     `export const LEGAL_DOCS: Record<string, LegalDoc> = {\n${cuerpo}\n}\n\n` +
     docs.map((d) => `export const ${simbolo(d.id)} = LEGAL_DOCS.${d.id}\n`).join('') +
     `\nexport const LEGAL_BUNDLE_HASH = ${ts(bundleHash(docs))}\n`
+  )
+}
+
+/**
+ * Solo id/titulo/version/actualizado/astHash de cada documento, sin AST ni iconos. Modulo
+ * aparte a proposito: `store.ts` (las ternas para aceptar), `LegalGate.tsx` (los titulos
+ * de la compuerta de re-aceptacion) y `src/seo/routes.ts` (el `lastmod`/`dateModified`)
+ * solo necesitan esto, y sin este artefacto arrastraban los dos documentos completos —
+ * con sus componentes de `lucide-react` — al bundle inicial aunque nunca los pintaran.
+ * Mismo patron que `emitirTsSimplificado`.
+ */
+export function emitirTsMeta(docs) {
+  const cuerpo = docs
+    .map(
+      (d) =>
+        `  ${d.id}: {\n` +
+        `    id: ${ts(d.id)},\n` +
+        `    titulo: ${ts(d.titulo)},\n` +
+        `    version: ${ts(d.version)},\n` +
+        `    actualizado: ${ts(d.actualizado)},\n` +
+        `    astHash: ${ts(d.astHash)},\n` +
+        `  },`
+    )
+    .join('\n')
+  return (
+    `${CABECERA}\n` +
+    `//\n` +
+    `// Modulo aparte a proposito: quien solo necesita el titulo, la version, la fecha o\n` +
+    `// el hash de un documento no debe arrastrar el AST completo de los dos documentos\n` +
+    `// (ni sus iconos de lucide-react) al bundle inicial. Mismo patron que\n` +
+    `// legalSimplificado.ts.\n\n` +
+    `import type { LegalMeta } from '../model'\n\n` +
+    `export const LEGAL_META: Record<string, LegalMeta> = {\n${cuerpo}\n}\n`
   )
 }
 
