@@ -41,12 +41,23 @@ export default function HallOfFame() {
       </div>
 
       {!loaded ? (
-        <div className="flex items-end justify-center gap-3 py-4">
-          {[0, 1, 2].map(i => (
-            <div key={i} className="relative overflow-hidden w-20 h-24 rounded-2xl bg-white/10">
-              <div className="absolute inset-0 shimmer" />
-            </div>
-          ))}
+        // Mismo alto aproximado que podio + 4º/5º lugar ya cargados, para no saltar (CLS)
+        // cuando llega la respuesta.
+        <div className="flex flex-col gap-5" aria-hidden="true">
+          <div className="flex items-end justify-center gap-3">
+            {['h-28', 'h-32', 'h-28'].map((h, i) => (
+              <div key={i} className={cn('relative overflow-hidden w-24 rounded-2xl bg-white/10', h)}>
+                <div className="absolute inset-0 shimmer" />
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2">
+            {[0, 1].map(i => (
+              <div key={i} className="relative overflow-hidden w-full h-11 rounded-2xl bg-white/10">
+                <div className="absolute inset-0 shimmer" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : entries.length === 0 ? (
         <div className="text-center py-6 text-white/70">

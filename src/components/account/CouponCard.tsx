@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Coupon, Dynamic } from '../../lib/types'
 import { useStore } from '../../lib/store'
-import { formatDate, formatCountdown } from '../../lib/utils'
-import { cn } from '../../lib/utils'
+import { formatDate } from '../../lib/fechas'
+import { formatCountdown, cn } from '../../lib/utils'
 import { Clock, CheckCircle2, XCircle, ChevronDown, ChevronUp, Gift } from 'lucide-react'
 
 interface CouponCardProps {

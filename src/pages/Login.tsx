@@ -23,12 +23,20 @@ export default function Login() {
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState(
-    params.get('auth') === 'error' ? 'No pudimos completar el acceso con Google. Intenta de nuevo.' : ''
-  )
+  // `?auth=error` es un parámetro de la URL: en el prerender no hay `location`, así que el
+  // estado inicial tiene que ser el mismo en servidor y cliente. El mensaje llega en un efecto.
+  const [error, setError] = useState('')
   // Se enciende cuando alguien falla escribiendo un apodo: puede ser una cuenta nacida con Google.
   const [showGoogleHint, setShowGoogleHint] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (params.get('auth') === 'error') {
+      setError('No pudimos completar el acceso con Google. Intenta de nuevo.')
+    }
+    // Solo nos interesa el valor al llegar a la pantalla, no reaccionar a cada cambio de params.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (profile) return null
 
@@ -61,13 +69,13 @@ export default function Login() {
       <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-4 py-8 pt-24">
         {/* Header */}
         <div className="flex flex-col items-center text-center gap-3 mb-8">
-          <span className="inline-flex items-center gap-1.5 bg-brand-azul/10 text-brand-azul font-mono text-[10px] uppercase tracking-wide px-3 py-1.5 rounded-full">
+          <span className="inline-flex items-center gap-1.5 bg-brand-azul/10 text-brand-noche font-mono text-[10px] uppercase tracking-wide px-3 py-1.5 rounded-full">
             <User className="w-3 h-3" />
             Acceso cadete
           </span>
           <div>
             <h1 className="font-heading text-brand-sombra text-3xl">Bienvenido</h1>
-            <p className="text-brand-gris text-sm font-body mt-1">
+            <p className="text-brand-sombra/70 text-sm font-body mt-1">
               Ingresa para ver tus puntos y cupones
             </p>
           </div>
@@ -84,7 +92,7 @@ export default function Login() {
         */}
         <div className="mt-4 flex gap-2.5 rounded-2xl bg-brand-amarillo/15 border border-brand-amarillo px-4 py-3">
           <AlertTriangle className="w-4 h-4 text-brand-sombra shrink-0 mt-0.5" />
-          <p className="text-[11px] text-brand-gris font-body leading-relaxed">
+          <p className="text-[11px] text-brand-sombra/70 font-body leading-relaxed">
             ¿Ya eras cadete? Entra abajo con tu apodo y vincula Google desde tu perfil, así no
             pierdes tus puntos.
           </p>
@@ -93,7 +101,7 @@ export default function Login() {
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-brand-sombra/10" />
-          <span className="text-xs text-brand-gris font-body">¿Ya tienes apodo y contraseña?</span>
+          <span className="text-xs text-brand-sombra/70 font-body">¿Ya tienes apodo y contraseña?</span>
           <div className="flex-1 h-px bg-brand-sombra/10" />
         </div>
 
@@ -169,7 +177,7 @@ export default function Login() {
         {/* Divider */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-brand-sombra/10" />
-          <span className="text-xs text-brand-gris font-body">¿Quieres ganar puntos?</span>
+          <span className="text-xs text-brand-sombra/70 font-body">¿Quieres ganar puntos?</span>
           <div className="flex-1 h-px bg-brand-sombra/10" />
         </div>
 

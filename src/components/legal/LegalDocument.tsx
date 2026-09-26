@@ -15,7 +15,9 @@ export default function LegalDocument({ doc }: { doc: LegalDoc }) {
 
   return (
     // `pt-20` deja pasar la navbar fija; por eso cada ancla necesita `scroll-mt-20`.
-    <div className="flex-1 w-full max-w-lg mx-auto px-4 pt-20 pb-8">
+    // <main> y no <div>: Terminos y Privacidad solo renderizan este componente entre
+    // Navbar y Footer, así que el landmark vive aquí una sola vez para las dos páginas.
+    <main className="flex-1 w-full max-w-lg mx-auto px-4 pt-20 pb-8">
       <header className="mb-6 pt-4">
         <div className="flex items-center gap-3">
           <IconoDoc className="w-8 h-8 shrink-0 text-brand-azul" />
@@ -24,7 +26,7 @@ export default function LegalDocument({ doc }: { doc: LegalDoc }) {
         {/* La linea que se compara a ojo contra la de Android. Va a todo el ancho
             y no sangrada bajo el icono: a 375px, sangrada, el hash cae solo a la
             segunda linea y parece un error. */}
-        <p className="font-mono text-xs text-brand-gris mt-2">{pieDeVersion(doc)}</p>
+        <p className="font-mono text-xs text-brand-sombra/70 mt-2">{pieDeVersion(doc)}</p>
       </header>
 
       <nav id="indice" aria-labelledby="indice-titulo" className="paper-card rounded-3xl p-5 scroll-mt-20 mb-5">
@@ -53,7 +55,7 @@ export default function LegalDocument({ doc }: { doc: LegalDoc }) {
           <Seccion key={seccion.id} seccion={seccion} />
         ))}
       </div>
-    </div>
+    </main>
   )
 }
 

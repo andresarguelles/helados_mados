@@ -1,158 +1,206 @@
+import { Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import LeaderboardTabs from '../components/leaderboard/LeaderboardTabs'
 import HallOfFame from '../components/leaderboard/HallOfFame'
-import { useNavigate } from 'react-router-dom'
 import { useStore } from '../lib/store'
+import { cn } from '../lib/utils'
+import { NEGOCIO } from '../content/negocio'
+import { FAQ } from '../content/faq'
 import { Zap, Gift, Trophy, Sparkles, Rocket, User, MapPin, Navigation } from 'lucide-react'
 
 export default function Home() {
-  const navigate = useNavigate()
   const { getCurrentUser } = useStore()
   const user = getCurrentUser()
+  const authReady = useStore(s => s.authReady)
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-papel">
       <Navbar />
 
-      {/* Hero — la nave nodriza */}
-      <section className="bg-brand-azul bg-dots-azul pt-24 pb-12 px-4">
-        <div className="max-w-lg mx-auto flex flex-col items-center text-center gap-6">
-          {/* Headline */}
+      <main className="flex-1 flex flex-col">
+        {/* Hero — la nave nodriza */}
+        <section className="bg-brand-azul bg-dots-azul pt-24 pb-12 px-4">
+          <div className="max-w-lg mx-auto flex flex-col items-center text-center gap-6">
+            {/* Headline */}
+            <div>
+              <h1 className="font-heading text-white text-4xl leading-tight">
+                <span className="block font-mono uppercase text-white text-[11px] tracking-widest mb-2">
+                  {NEGOCIO.nombre} · Estación {NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}
+                </span>
+                Gana medallas
+                <span className="block text-brand-verde">despega por un helado</span>
+              </h1>
+              <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
+                Únete al TikTok Live, ingresa la palabra secreta
+                y canjea tu medalla en tu estación. ¡Compite por ser Comandante!
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col items-center gap-2.5">
+              <Link
+                id="cta-redeem"
+                to="/canjear"
+                className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
+              >
+                <Zap className="w-4 h-4" />
+                Canjear palabra secreta
+              </Link>
+
+              {!user && (
+                <Link
+                  id="cta-login"
+                  to="/login"
+                  className={cn('btn-tinta', !authReady && 'invisible')}
+                >
+                  <User className="w-4 h-4" />
+                  Iniciar sesión
+                </Link>
+              )}
+            </div>
+
+            {/* Trust pills */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                { icon: <Rocket className="w-3.5 h-3.5" />, text: 'Sé parte de la tripulación' },
+                { icon: <Zap className="w-3.5 h-3.5" />, text: 'Puntos al instante' },
+                { icon: <Trophy className="w-3.5 h-3.5" />, text: 'Compite en el ranking' },
+              ].map((pill, i) => (
+                <span
+                  key={pill.text}
+                  className={i % 2 === 0 ? 'badge-tilt' : 'badge-tilt badge-tilt-alt'}
+                >
+                  {pill.icon} {pill.text}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Drip edge into the leaderboard section below */}
+          <div className="scallop-divider mt-10 -mb-12" />
+        </section>
+
+        {/* Leaderboard section */}
+        <section className="flex-1 px-4 pt-6 pb-6 max-w-lg mx-auto w-full flex flex-col gap-6">
+          <HallOfFame />
+
           <div>
-            <h1 className="font-heading text-white text-4xl leading-tight">
-              Gana medallas
-              <span className="block text-brand-verde">despega por un helado</span>
-            </h1>
-            <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
-              Únete al TikTok Live, ingresa la palabra secreta
-              y canjea tu medalla en tu estación. ¡Compite por ser Comandante!
-            </p>
+            <div className="flex items-center gap-2 mb-4">
+              <Trophy className="w-5 h-5 text-brand-azul" />
+              <h2 className="font-heading text-brand-sombra text-xl">Tabla de líderes</h2>
+            </div>
+            <div className="paper-card rounded-3xl p-4">
+              <LeaderboardTabs />
+            </div>
           </div>
+        </section>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col items-center gap-2.5">
-            <button
-              id="cta-redeem"
-              onClick={() => navigate('/canjear')}
-              className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
-            >
-              <Zap className="w-4 h-4" />
-              Canjear palabra secreta
-            </button>
-
-            {!user && (
-              <button
-                id="cta-login"
-                onClick={() => navigate('/login')}
-                className="btn-tinta"
-              >
-                <User className="w-4 h-4" />
-                Iniciar sesión
-              </button>
-            )}
-          </div>
-
-          {/* Trust pills */}
-          <div className="flex flex-wrap justify-center gap-2">
+        {/* How it works */}
+        <section className="px-4 pb-8 max-w-lg mx-auto w-full">
+          <h2 className="font-heading text-brand-sombra text-xl mb-4">¿Cómo funciona?</h2>
+          <div className="grid grid-cols-1 gap-3">
             {[
-              { icon: <Rocket className="w-3.5 h-3.5" />, text: 'Sé parte de la tripulación' },
-              { icon: <Zap className="w-3.5 h-3.5" />, text: 'Puntos al instante' },
-              { icon: <Trophy className="w-3.5 h-3.5" />, text: 'Compite en el ranking' },
-            ].map((pill, i) => (
-              <span
-                key={pill.text}
-                className={i % 2 === 0 ? 'badge-tilt' : 'badge-tilt badge-tilt-alt'}
-              >
-                {pill.icon} {pill.text}
-              </span>
+              { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
+              { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y canjea la palabra para obtener +1 punto digital.' },
+              { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe tu medalla. ¡Suma +10 puntos!' },
+              { icon: <Trophy className="w-5 h-5" />, title: 'Compite y gana', desc: 'Sube en la tabla de líderes y compite por el primer lugar.' },
+            ].map((step, i) => (
+              <div key={i} className="flex items-start gap-3 paper-card rounded-2xl p-4">
+                <div className="w-10 h-10 bg-brand-azul/10 rounded-xl flex items-center justify-center text-brand-azul shrink-0">
+                  {step.icon}
+                </div>
+                <div>
+                  <h3 className="font-heading text-brand-sombra text-sm uppercase">{step.title}</h3>
+                  <p className="font-body text-brand-gris text-xs mt-0.5 leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Drip edge into the leaderboard section below */}
-        <div className="scallop-divider mt-10 -mb-12" />
-      </section>
-
-      {/* Leaderboard section */}
-      <section className="flex-1 px-4 pt-6 pb-6 max-w-lg mx-auto w-full flex flex-col gap-6">
-        <HallOfFame />
-
-        <div>
+        {/* Quiénes somos */}
+        <section className="px-4 pb-8 max-w-lg mx-auto w-full">
           <div className="flex items-center gap-2 mb-4">
-            <Trophy className="w-5 h-5 text-brand-azul" />
-            <h2 className="font-heading text-brand-sombra text-xl">Tabla de líderes</h2>
+            <Rocket className="w-5 h-5 text-brand-azul" />
+            <h2 className="font-heading text-brand-sombra text-xl">Quiénes somos</h2>
           </div>
-          <div className="paper-card rounded-3xl p-4">
-            <LeaderboardTabs />
+          <div className="paper-card rounded-3xl p-5">
+            <p className="font-body text-brand-gris text-sm leading-relaxed">
+              {NEGOCIO.nombre} es la agencia espacial de los helados tradicionales de la CDMX.
+              Nuestra estación fija está en Av. Centenario 1229, {NEGOCIO.direccion.alcaldia}, y
+              salimos con estaciones móviles a la salida de las escuelas. Lo que ves en el TikTok
+              Live lo vives en persona: la palabra secreta, los puntos, la medalla en tus manos.
+              Aquí no hay pantalla de por medio: hay fila, risas y helado de verdad.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* How it works */}
-      <section className="px-4 pb-8 max-w-lg mx-auto w-full">
-        <h2 className="font-heading text-brand-sombra text-xl mb-4">¿Cómo funciona?</h2>
-        <div className="grid grid-cols-1 gap-3">
-          {[
-            { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
-            { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y canjea la palabra para obtener +1 punto digital.' },
-            { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe tu medalla. ¡Suma +10 puntos!' },
-            { icon: <Trophy className="w-5 h-5" />, title: 'Compite y gana', desc: 'Sube en la tabla de líderes y compite por el primer lugar.' },
-          ].map((step, i) => (
-            <div key={i} className="flex items-start gap-3 paper-card rounded-2xl p-4">
-              <div className="w-10 h-10 bg-brand-azul/10 rounded-xl flex items-center justify-center text-brand-azul shrink-0">
-                {step.icon}
-              </div>
-              <div>
-                <p className="font-heading text-brand-sombra text-sm uppercase">{step.title}</p>
-                <p className="font-body text-brand-gris text-xs mt-0.5 leading-relaxed">{step.desc}</p>
-              </div>
+        {/* Location */}
+        <section className="px-4 pb-8 max-w-lg mx-auto w-full">
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-5 h-5 text-brand-azul" />
+            <h2 className="font-heading text-brand-sombra text-xl">
+              Nuestra estación en {NEGOCIO.direccion.alcaldia}
+            </h2>
+          </div>
+
+          <div className="paper-card rounded-3xl p-5 relative">
+            <span className="badge-tilt absolute -top-4 left-5 z-10">
+              <Rocket className="w-3.5 h-3.5" /> Aquí aterrizamos
+            </span>
+
+            <div className="rounded-2xl overflow-hidden border-2 border-brand-sombra">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.26441043479386!2d-99.2322540358465!3d19.35916671342604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d20129e128dee9%3A0x61b458884230a946!2sHelados%20Mados!5e0!3m2!1ses!2smx!4v1788845906381!5m2!1ses!2smx"
+                title="Ubicación de Helados Mados en Google Maps"
+                className="w-full h-56 sm:h-64 border-0"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Location */}
-      <section className="px-4 pb-8 max-w-lg mx-auto w-full">
-        <div className="flex items-center gap-2 mb-4">
-          <MapPin className="w-5 h-5 text-brand-azul" />
-          <h2 className="font-heading text-brand-sombra text-xl">Nuestra estación</h2>
-        </div>
+            <address className="font-body text-brand-gris text-sm leading-relaxed mt-4 not-italic">
+              {NEGOCIO.direccion.calle}, {NEGOCIO.direccion.colonia}<br />
+              {NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}, C.P. {NEGOCIO.direccion.codigoPostal}
+              <br />
+              <a href={`tel:${NEGOCIO.telefonoE164}`} className="text-brand-azul font-bold">
+                {NEGOCIO.telefono}
+              </a>
+            </address>
 
-        <div className="paper-card rounded-3xl p-5 relative">
-          <span className="badge-tilt absolute -top-4 left-5 z-10">
-            <Rocket className="w-3.5 h-3.5" /> Aquí aterrizamos
-          </span>
-
-          <div className="rounded-2xl overflow-hidden border-2 border-brand-sombra">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235.26441043479386!2d-99.2322540358465!3d19.35916671342604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d20129e128dee9%3A0x61b458884230a946!2sHelados%20Mados!5e0!3m2!1ses!2smx!4v1788845906381!5m2!1ses!2smx"
-              title="Ubicación de Helados Mados en Google Maps"
-              className="w-full h-56 sm:h-64 border-0"
-              loading="lazy"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
+            <a
+              /* Coordenadas y no la direccion escrita: Google resuelve el texto, no el pin, y una
+                 calle tecleada vuelve a poder equivocarse. El punto ya esta verificado. */
+              href={NEGOCIO.comoLlegarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-tinta text-xs px-6 py-2.5 mt-4"
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              Cómo llegar
+            </a>
           </div>
+        </section>
 
-          <address className="font-body text-brand-gris text-sm leading-relaxed mt-4 not-italic">
-            Avenida Centenario 1229, Reacomodo Valentín Gómez Farías<br />
-            Álvaro Obregón, CDMX, C.P. 01569
-          </address>
-
-          <a
-            /* Coordenadas y no la direccion escrita: Google resuelve el texto, no el pin, y una
-               calle tecleada vuelve a poder equivocarse. El punto ya esta verificado. */
-            href="https://www.google.com/maps/dir/?api=1&destination=19.35916671342604,-99.2322540358465"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-tinta text-xs px-6 py-2.5 mt-4"
-          >
-            <Navigation className="w-3.5 h-3.5" />
-            Cómo llegar
-          </a>
-        </div>
-      </section>
+        {/* FAQ */}
+        <section className="px-4 pb-8 max-w-lg mx-auto w-full">
+          <h2 className="font-heading text-brand-sombra text-xl mb-4">Preguntas frecuentes</h2>
+          <div className="flex flex-col gap-3">
+            {FAQ.map(item => (
+              <details key={item.pregunta} className="paper-card rounded-2xl p-4">
+                <summary className="font-heading text-brand-sombra text-sm cursor-pointer">
+                  {item.pregunta}
+                </summary>
+                <p className="font-body text-brand-gris text-sm mt-2 leading-relaxed">
+                  {item.respuesta}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

@@ -123,9 +123,13 @@ function Bloque({ bloque, conPastilla }: { bloque: LegalBloque; conPastilla: boo
 const llevaPastilla = (bloques: LegalBloque[], i: number) =>
   bloques[i].alcance !== 'ambas' && (i === 0 || bloques[i - 1].alcance !== bloques[i].alcance)
 
+// text-brand-gris a secas da ~4.48:1 sobre el fondo semitransparente del aviso
+// simplificado de /bienvenida (bg-brand-papel/60 sobre paper-card) — por debajo de
+// AA; /70 lo sube por encima de 4.5:1 ahí y en el resto de usos (nav/sección de
+// LegalDocument, siempre sobre blanco).
 export default function LegalBlocks({ bloques }: { bloques: LegalBloque[] }) {
   return (
-    <div className="font-body text-brand-gris text-sm leading-relaxed flex flex-col gap-3">
+    <div className="font-body text-brand-sombra/70 text-sm leading-relaxed flex flex-col gap-3">
       {bloques.map((bloque, i) => (
         <Bloque key={i} bloque={bloque} conPastilla={llevaPastilla(bloques, i)} />
       ))}

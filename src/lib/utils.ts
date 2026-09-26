@@ -1,22 +1,8 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { format, formatDistanceToNow } from 'date-fns'
-import { es } from 'date-fns/locale'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
-}
-
-export function formatDate(date: string | Date) {
-  return format(new Date(date), "d 'de' MMM, HH:mm", { locale: es })
-}
-
-export function toDatetimeLocalValue(date: Date) {
-  return format(date, "yyyy-MM-dd'T'HH:mm")
-}
-
-export function timeAgo(date: string | Date) {
-  return formatDistanceToNow(new Date(date), { addSuffix: true, locale: es })
 }
 
 // Parses a 'YYYY-MM-DD' date as a local calendar date, avoiding the UTC-midnight
@@ -26,15 +12,25 @@ function parseLocalDate(isoDate: string): Date {
   return new Date(year, month - 1, day)
 }
 
+// `cn()` vive aquí y lo importa prácticamente cada componente, así que todo lo que
+// `utils.ts` importe viaja en el bundle inicial de cualquier ruta — incluida la home.
+// Por eso este archivo no importa `date-fns` (~25 KB minificados con el locale `es`):
+// `Intl.DateTimeFormat('es-MX', …)` produce el mismo texto para 'd MMM'/'d MMM yyyy'
+// con el motor de fechas nativo del navegador, sin descargar nada. Verificado con un
+// script de comparación (12 meses × varios días, mismo año, año cruzado, bisiesto):
+// 0 diferencias contra la implementación anterior con date-fns + locale es.
+const fmtConAnio = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
+const fmtSinAnio = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short' })
+
 export function formatDateRange(startISO: string, endISO: string) {
   const start = parseLocalDate(startISO)
   const end = parseLocalDate(endISO)
 
-  if (startISO === endISO) return format(end, "d MMM yyyy", { locale: es })
+  if (startISO === endISO) return fmtConAnio.format(end)
 
   const sameYear = start.getFullYear() === end.getFullYear()
-  const startFmt = format(start, sameYear ? 'd MMM' : 'd MMM yyyy', { locale: es })
-  const endFmt = format(end, 'd MMM yyyy', { locale: es })
+  const startFmt = sameYear ? fmtSinAnio.format(start) : fmtConAnio.format(start)
+  const endFmt = fmtConAnio.format(end)
   return `${startFmt} – ${endFmt}`
 }
 

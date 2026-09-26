@@ -50,106 +50,123 @@ export default function LeaderboardTabs() {
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-2xl border border-brand-grisclaro/60 overflow-hidden">
-        <div className="flex items-center justify-between gap-1 p-1 bg-brand-sombra/10">
+        <div role="tablist" aria-label="Periodo del marcador" className="flex items-center justify-between gap-1 p-1 bg-brand-sombra/10">
           {TABS.map(tab => (
             <button
               key={tab.key}
+              type="button"
+              role="tab"
+              id={`lb-tab-${tab.key}`}
+              aria-selected={active === tab.key}
+              aria-controls="lb-tabpanel"
               onClick={() => setActive(tab.key)}
               className={cn(
                 'min-w-0 flex items-center justify-center py-2 px-2 rounded-xl text-xs font-heading whitespace-nowrap transition-all duration-200',
                 active === tab.key
                   ? 'bg-brand-sombra text-white shadow-md'
-                  : 'text-brand-gris hover:text-brand-sombra'
+                  // text-brand-gris a secas daba 3.86:1 aquí — por debajo de AA; /70 lo sube a ~5.2:1.
+                  : 'text-brand-sombra/70 hover:text-brand-sombra'
               )}
             >
               <span className="truncate">{tab.label}</span>
             </button>
           ))}
         </div>
-        <div className="flex items-center justify-center gap-1.5 py-1.5 bg-brand-papel border-t border-brand-grisclaro/40 text-brand-gris text-[11px] font-body">
+        <div className="flex items-center justify-center gap-1.5 py-1.5 bg-brand-papel border-t border-brand-grisclaro/40 text-brand-sombra/70 text-[11px] font-body">
           <Calendar className="w-3 h-3 shrink-0" />
           <span>{active === 'all' ? 'Todo el tiempo' : range ? formatDateRange(range.start, range.end) : ' '}</span>
         </div>
       </div>
 
-      {/* Tu posición — antes vivía en una barra fija al pie; ahora la navegación ocupa ese espacio. */}
-      {haySesion && loaded && (
-        <div className="flex items-center gap-3 bg-brand-sombra rounded-2xl px-4 py-3">
-          {myEntry ? (
-            <>
-              <div className="rank-badge text-xs bg-brand-verde text-brand-sombra border-brand-verde shrink-0">
-                {myEntry.rank}
-              </div>
-              <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">
-                Tu posición
+      <div id="lb-tabpanel" role="tabpanel" aria-labelledby={`lb-tab-${active}`} className="flex flex-col gap-4">
+        {/* Tu posición — antes vivía en una barra fija al pie; ahora la navegación ocupa ese espacio. */}
+        {haySesion && loaded && (
+          <div className="flex items-center gap-3 bg-brand-sombra rounded-2xl px-4 py-3">
+            {myEntry ? (
+              <>
+                <div className="rank-badge text-xs bg-brand-verde text-brand-sombra border-brand-verde shrink-0">
+                  {myEntry.rank}
+                </div>
+                <p className="flex-1 min-w-0 font-heading text-white text-sm truncate">
+                  Tu posición
+                </p>
+                <span className="points-chip">{myEntry.points} pts</span>
+              </>
+            ) : (
+              <p className="flex-1 font-body text-white/70 text-xs text-center">
+                {isAdmin
+                  ? 'Los administradores no participan en el ranking'
+                  : 'Aún no sumas puntos en este período'}
               </p>
-              <span className="points-chip">{myEntry.points} pts</span>
-            </>
-          ) : (
-            <p className="flex-1 font-body text-white/70 text-xs text-center">
-              {isAdmin
-                ? 'Los administradores no participan en el ranking'
-                : 'Aún no sumas puntos en este período'}
-            </p>
-          )}
-        </div>
-      )}
-
-      {!loaded ? (
-        <div className="flex flex-col items-center gap-2 py-10">
-          <div className="relative overflow-hidden w-40 h-4 rounded-full bg-brand-sombra/10">
-            <div className="absolute inset-0 shimmer" />
+            )}
           </div>
-          <div className="relative overflow-hidden w-28 h-3 rounded-full bg-brand-sombra/10">
-            <div className="absolute inset-0 shimmer" />
-          </div>
-        </div>
-      ) : entries.length === 0 ? (
-        <div className="text-center py-10 text-brand-gris">
-          <Star className="w-10 h-10 mx-auto mb-2 opacity-30" />
-          <p className="font-heading text-sm">Sin actividad aún</p>
-          <p className="text-xs mt-1 font-body">¡Sé el primero en el tablero!</p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1">
-          {entries.slice(0, 30).map((entry, i) => {
-            const rank = i + 1
-            const medal = MEDAL_STYLES[rank]
-            const isMe = entry.esTuFila
+        )}
 
-            return (
-              <div
-                key={entry.username}
-                className={cn(
-                  'lb-row',
-                  medal ? medal.row : isMe && 'bg-brand-azul/10 border border-brand-azul/30',
-                  medal && isMe && 'ring-2 ring-brand-azul'
-                )}
-              >
-                <div className={cn('rank-badge text-xs', medal ? medal.badge : 'bg-brand-azul/10 text-brand-azul')}>
-                  {medal ? <Medal className="w-3.5 h-3.5" /> : rank}
+        {!loaded ? (
+          // Cinco filas del mismo alto que `.lb-row`: se acerca a la altura real de la
+          // tabla cargada y evita el salto (CLS) cuando llegan los datos.
+          <div className="flex flex-col gap-1" aria-hidden="true">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="lb-row">
+                <div className="relative overflow-hidden w-8 h-8 rounded-full bg-brand-sombra/10 shrink-0">
+                  <div className="absolute inset-0 shimmer" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-heading text-brand-sombra text-sm truncate">
-                    {entry.username}
-                    {isMe && <span className="text-brand-azul text-xs ml-1 font-body">(Tú)</span>}
-                  </p>
+                <div className="flex-1 min-w-0 relative overflow-hidden h-4 rounded-full bg-brand-sombra/10">
+                  <div className="absolute inset-0 shimmer" />
                 </div>
-                <span className="points-chip">{entry.points} pts</span>
+                <div className="relative overflow-hidden w-14 h-5 rounded-full bg-brand-sombra/10 shrink-0">
+                  <div className="absolute inset-0 shimmer" />
+                </div>
               </div>
-            )
-          })}
+            ))}
+          </div>
+        ) : entries.length === 0 ? (
+          <div className="text-center py-10 text-brand-gris">
+            <Star className="w-10 h-10 mx-auto mb-2 opacity-30" />
+            <p className="font-heading text-sm">Sin actividad aún</p>
+            <p className="text-xs mt-1 font-body">¡Sé el primero en el tablero!</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {entries.slice(0, 30).map((entry, i) => {
+              const rank = i + 1
+              const medal = MEDAL_STYLES[rank]
+              const isMe = entry.esTuFila
 
-          {entries.length > 30 && (
-            <div className="flex flex-col items-center gap-1 pt-3">
-              <span className="badge-tilt">
-                <Rocket className="w-3.5 h-3.5" /> Tripulación Top 30
-              </span>
-              <p className="text-xs text-brand-gris font-body">Hay más compitiendo por su lugar</p>
-            </div>
-          )}
-        </div>
-      )}
+              return (
+                <div
+                  key={entry.username}
+                  className={cn(
+                    'lb-row',
+                    medal ? medal.row : isMe && 'bg-brand-azul/10 border border-brand-azul/30',
+                    medal && isMe && 'ring-2 ring-brand-azul'
+                  )}
+                >
+                  <div className={cn('rank-badge text-xs', medal ? medal.badge : 'bg-brand-azul/10 text-brand-azul')}>
+                    {medal ? <Medal className="w-3.5 h-3.5" /> : rank}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-heading text-brand-sombra text-sm truncate">
+                      {entry.username}
+                      {isMe && <span className="text-brand-azul text-xs ml-1 font-body">(Tú)</span>}
+                    </p>
+                  </div>
+                  <span className="points-chip">{entry.points} pts</span>
+                </div>
+              )
+            })}
+
+            {entries.length > 30 && (
+              <div className="flex flex-col items-center gap-1 pt-3">
+                <span className="badge-tilt">
+                  <Rocket className="w-3.5 h-3.5" /> Tripulación Top 30
+                </span>
+                <p className="text-xs text-brand-gris font-body">Hay más compitiendo por su lugar</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

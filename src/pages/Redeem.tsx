@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
@@ -6,10 +6,14 @@ import GoogleButton from '../components/auth/GoogleButton'
 import { useStore, loginErrorMessage } from '../lib/store'
 import { cn } from '../lib/utils'
 import { savePendingRedeem, readPendingRedeem, clearPendingRedeem } from '../lib/pendingRedeem'
-import { QRCodeSVG as QRCode } from 'qrcode.react'
-import confetti from 'canvas-confetti'
 import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
+
+// El QR solo se pinta en el paso de éxito, así que separarlo del bundle inicial
+// no cuesta nada de UX y sí aligera lo que carga cualquiera que solo va a canjear.
+const QRCode = lazy(() =>
+  import('qrcode.react').then(mod => ({ default: mod.QRCodeSVG }))
+)
 
 type Step = 'keyword' | 'choice' | 'auth' | 'success'
 // El registro con contraseña ya no existe: un cadete nuevo entra por Google.
@@ -80,6 +84,8 @@ export default function Redeem() {
     setPrizeLabel(dynamic?.prize_label ?? 'Medalla')
     setCouponId(result.coupon.id)
 
+    // Import dinámico: nadie necesita el peso de canvas-confetti hasta este instante.
+    const { default: confetti } = await import('canvas-confetti')
     confetti({
       particleCount: 120,
       spread: 80,
@@ -140,6 +146,7 @@ export default function Redeem() {
 
     setLoading(false)
 
+    const { default: confetti } = await import('canvas-confetti')
     confetti({
       particleCount: 50,
       spread: 60,
@@ -178,7 +185,7 @@ export default function Redeem() {
     <div className="min-h-screen flex flex-col bg-brand-papel">
       <Navbar />
 
-      <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 pt-20 pb-8">
+      <main className="flex-1 flex flex-col max-w-lg mx-auto w-full px-4 pt-20 pb-8">
 
         {/* Back button */}
         {step !== 'success' && (
@@ -188,7 +195,7 @@ export default function Redeem() {
               if (step === 'choice') { setStep('keyword'); return }
               setStep('choice')
             }}
-            className="flex items-center gap-1.5 text-brand-gris hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
+            className="flex items-center gap-1.5 text-brand-sombra/70 hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {step === 'keyword' ? 'Inicio' : step === 'choice' ? 'Cambiar palabra' : 'Cambiar opción'}
@@ -203,7 +210,7 @@ export default function Redeem() {
                 Ingresa la
                 <span className="block text-brand-azul">palabra secreta</span>
               </h1>
-              <p className="font-body text-brand-gris text-sm mt-2">
+              <p className="font-body text-brand-sombra/70 text-sm mt-2">
                 La palabra se revela durante el TikTok Live de Helados Mados.
               </p>
             </div>
@@ -211,6 +218,9 @@ export default function Redeem() {
             <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
               <div className="flex items-center gap-3 bg-brand-amarillo/25 rounded-2xl px-4 py-3 border-2 border-brand-sombra/10">
                 <Key className="w-5 h-5 text-brand-azul shrink-0" />
+                <label htmlFor="keyword-input" className="sr-only">
+                  Palabra secreta
+                </label>
                 <input
                   id="keyword-input"
                   type="text"
@@ -240,11 +250,11 @@ export default function Redeem() {
 
             <div className="text-center">
               {profile ? (
-                <p className="text-xs text-brand-gris font-body">
+                <p className="text-xs text-brand-sombra/70 font-body">
                   Canjearás como <span className="font-bold text-brand-azul">{profile.username}</span>
                 </p>
               ) : (
-                <p className="text-xs text-brand-gris font-body">
+                <p className="text-xs text-brand-sombra/70 font-body">
                   ¿Ya tienes cuenta?{' '}
                   <Link to="/login" className="text-brand-azul font-bold">
                     Inicia sesión primero
@@ -267,7 +277,7 @@ export default function Redeem() {
               <h1 className="font-heading text-brand-sombra text-3xl mt-2">
                 ¡Acertaste!
               </h1>
-              <p className="font-body text-brand-gris text-sm mt-1">
+              <p className="font-body text-brand-sombra/70 text-sm mt-1">
                 Ahora solo inicia sesión. ¡Estás cerca de tu punto!
               </p>
             </div>
@@ -290,7 +300,7 @@ export default function Redeem() {
                 </div>
                 <div className="flex-1">
                   <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy cadete</p>
-                  <p className="font-body text-brand-gris text-xs mt-0.5">Ya tengo apodo y contraseña</p>
+                  <p className="font-body text-brand-sombra/70 text-xs mt-0.5">Ya tengo apodo y contraseña</p>
                 </div>
                 {authMode === 'login' && <CheckCircle2 className="w-5 h-5 text-brand-sombra shrink-0" />}
               </button>
@@ -312,7 +322,7 @@ export default function Redeem() {
                 </div>
                 <div className="flex-1">
                   <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy nuevo cadete</p>
-                  <p className="font-body text-brand-gris text-xs mt-0.5">Creo mi cuenta con Google</p>
+                  <p className="font-body text-brand-sombra/70 text-xs mt-0.5">Creo mi cuenta con Google</p>
                 </div>
                 {authMode === 'google' && <CheckCircle2 className="w-5 h-5 text-brand-azul shrink-0" />}
               </button>
@@ -331,7 +341,7 @@ export default function Redeem() {
               <h1 className="font-heading text-brand-sombra text-3xl">
                 {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
               </h1>
-              <p className="font-body text-brand-gris text-sm mt-1">
+              <p className="font-body text-brand-sombra/70 text-sm mt-1">
                 {authMode === 'google'
                   ? 'Con Google es un toque: no tienes que inventar contraseña.'
                   : 'Inicia sesión para recibir tu punto y tu cupón de medalla.'}
@@ -417,12 +427,12 @@ export default function Redeem() {
           <div className="animate-scale-in flex flex-col items-center gap-6 pt-4">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2.5">
-                <img src="/astronauta_mados_nuevo.svg" alt="" className="w-10 h-auto" />
+                <img src="/astronauta_mados_nuevo.svg" alt="" width={40} height={50} className="w-10 h-auto" />
                 <h1 className="font-heading text-brand-sombra text-3xl">
                   ¡+1 punto!
                 </h1>
               </div>
-              <p className="font-body text-brand-gris text-sm mt-2">
+              <p className="font-body text-brand-sombra/70 text-sm mt-2">
                 Tu cupón está listo. Preséntalo en mostrador para recibir tu medalla.
               </p>
             </div>
@@ -430,7 +440,7 @@ export default function Redeem() {
             {/* Prize banner */}
             <div className="w-full bg-brand-amarillo/25 border-2 border-brand-sombra rounded-3xl px-5 py-4 text-center">
               <p className="font-heading text-brand-sombra text-xl">{prizeLabel}</p>
-              <p className="text-xs text-brand-gris mt-1 font-body">Medalla canjeable con este QR</p>
+              <p className="text-xs text-brand-sombra/70 mt-1 font-body">Medalla canjeable con este QR</p>
             </div>
 
             {/* QR Ticket */}
@@ -438,13 +448,17 @@ export default function Redeem() {
               <p className="font-heading text-brand-sombra text-sm uppercase tracking-wider">
                 Cupón QR
               </p>
-              <QRCode
-                value={couponId}
-                size={200}
-                level="H"
-                fgColor="#1C2440"
-                bgColor="#FFFFFF"
-              />
+              <Suspense
+                fallback={<div className="relative overflow-hidden w-[200px] h-[200px] rounded-xl bg-brand-sombra/10"><div className="absolute inset-0 shimmer" /></div>}
+              >
+                <QRCode
+                  value={couponId}
+                  size={200}
+                  level="H"
+                  fgColor="#1C2440"
+                  bgColor="#FFFFFF"
+                />
+              </Suspense>
               <div className="flex items-center gap-2 bg-brand-amarillo/30 rounded-xl px-3 py-1.5">
                 <Key className="w-3.5 h-3.5 text-brand-azul" />
                 <span className="font-heading text-brand-azul text-sm tracking-wider">{keyword}</span>
@@ -474,7 +488,7 @@ export default function Redeem() {
             </div>
           </div>
         )}
-      </div>
+      </main>
 
       <Footer />
     </div>

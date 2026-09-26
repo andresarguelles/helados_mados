@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../../lib/store'
 import { Profile } from '../../lib/types'
-import { formatDate } from '../../lib/utils'
+import { formatDate } from '../../lib/fechas'
 import { cn } from '../../lib/utils'
 import AdminHeader from '../../components/admin/AdminHeader'
 import { formatPhone } from '../../lib/phone'

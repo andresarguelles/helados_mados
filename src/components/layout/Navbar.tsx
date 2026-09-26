@@ -18,48 +18,50 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-brand-azul/95 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img src="/mados-logo-full.svg" alt="Helados Mados" className="h-9 w-auto" />
-        </Link>
+    <header>
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-brand-azul/95 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <img src="/mados-logo-full.svg" alt="Helados Mados" width={81} height={36} className="h-9 w-auto" />
+          </Link>
 
-        {/* La navegación con sesión vive en la barra inferior; aquí solo identidad y salida. */}
-        {user ? (
-          <div className="flex items-center gap-3">
-            <Link
-              to="/perfil"
-              className="flex items-center gap-1.5 text-white/90 hover:text-white font-body text-sm transition-colors min-w-0"
-            >
-              <User className="w-4 h-4 shrink-0" />
-              <span className="font-semibold truncate max-w-[8rem]">{user.username}</span>
-            </Link>
-            <button
-              onClick={() => setConfirmOpen(true)}
-              aria-label="Cerrar sesión"
-              className="text-white/75 hover:text-brand-rosa transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3.5">
-            {SOCIAL_LINKS.map(({ href, label, Icon }) => (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
+          {/* La navegación con sesión vive en la barra inferior; aquí solo identidad y salida. */}
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/perfil"
+                className="flex items-center gap-1.5 text-white/90 hover:text-white font-body text-sm transition-colors min-w-0"
+              >
+                <User className="w-4 h-4 shrink-0" />
+                <span className="font-semibold truncate max-w-[8rem]">{user.username}</span>
+              </Link>
+              <button
+                onClick={() => setConfirmOpen(true)}
+                aria-label="Cerrar sesión"
                 className="text-white/75 hover:text-brand-rosa transition-colors"
               >
-                <Icon className="w-5 h-5" />
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3.5">
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-white/75 hover:text-brand-rosa transition-colors"
+                >
+                  <Icon className="w-5 h-5" />
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </nav>
 
       <ConfirmDialog
         open={confirmOpen}
@@ -70,6 +72,6 @@ export default function Navbar() {
         onConfirm={handleLogout}
         onCancel={() => setConfirmOpen(false)}
       />
-    </nav>
+    </header>
   )
 }

@@ -1,7 +1,9 @@
 import type { ComponentType, SVGProps } from 'react'
+import { NEGOCIO } from '../../content/negocio'
 
 // Fuente única de verdad para los iconos y URLs de redes sociales: los usan
-// tanto el footer como el header (para invitados).
+// tanto el footer como el header (para invitados). Las URLs salen de `negocio.ts`
+// para que no existan dos copias que puedan desincronizarse.
 function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -35,8 +37,8 @@ function YouTubeIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 export const SOCIAL_LINKS: { href: string; label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }[] = [
-  { href: 'https://www.tiktok.com/@heladosmados', label: 'TikTok de Helados Mados', Icon: TikTokIcon },
-  { href: 'https://www.instagram.com/heladosmados', label: 'Instagram de Helados Mados', Icon: InstagramIcon },
-  { href: 'https://www.facebook.com/profile.php?id=61557533391525', label: 'Facebook de Helados Mados', Icon: FacebookIcon },
-  { href: 'https://www.youtube.com/@heladosmados', label: 'YouTube de Helados Mados', Icon: YouTubeIcon },
+  { href: NEGOCIO.redes.tiktok, label: 'TikTok de Helados Mados', Icon: TikTokIcon },
+  { href: NEGOCIO.redes.instagram, label: 'Instagram de Helados Mados', Icon: InstagramIcon },
+  { href: NEGOCIO.redes.facebook, label: 'Facebook de Helados Mados', Icon: FacebookIcon },
+  { href: NEGOCIO.redes.youtube, label: 'YouTube de Helados Mados', Icon: YouTubeIcon },
 ]
