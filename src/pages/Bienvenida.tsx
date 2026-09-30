@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AlertTriangle, Check, CheckCircle2, Loader2, LogOut, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, Check, CheckCircle2, ChevronDown, Loader2, LogOut, Shield, Sparkles, X } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
 import { normalizePhone, DEFAULT_COUNTRY } from '../lib/phone'
 import PhoneField from '../components/ui/PhoneField'
 import { readPendingRedeem } from '../lib/pendingRedeem'
 import ErrorAlert from '../components/ui/ErrorAlert'
+import Modal from '../components/ui/Modal'
+import { useBottomNavVisible } from '../components/layout/BottomNav'
 import LegalBlocks from '../components/legal/LegalBlocks'
 import { AVISO_SIMPLIFICADO } from '../content/legal/generated/legalSimplificado'
 
@@ -29,6 +31,12 @@ const CHECK_DEBOUNCE_MS = 400
  * mensajes, va aparte y es OPCIONAL: es tratamiento de datos para publicidad, y condicionar el
  * alta a aceptarlo haría que el consentimiento no fuera libre. Hasta la migración 0023 era
  * obligatorio, y ese era el punto más atacable de todo el producto.
+ *
+ * NADA LARGO A LA VISTA. Es la pantalla con más abandono del embudo, así que el aviso corto y
+ * el aviso a cadetes legacy están a un toque, y cada casilla cabe en una o dos líneas. Las
+ * casillas no se pueden quitar sin publicar una versión legal nueva: los Términos dicen que se
+ * marca una casilla para declarar la edad, y el Aviso, que el permiso de WhatsApp se da (o no)
+ * marcando otra al crear la cuenta.
  */
 export default function Bienvenida() {
   const navigate = useNavigate()
@@ -37,11 +45,13 @@ export default function Bienvenida() {
   const completeSignup = useStore(s => s.completeSignup)
   const isUsernameAvailable = useStore(s => s.isUsernameAvailable)
   const logout = useStore(s => s.logout)
+  const navVisible = useBottomNavVisible()
 
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
   const [optIn, setOptIn] = useState(false)
   const [aceptaLegal, setAceptaLegal] = useState(false)
+  const [avisoAbierto, setAvisoAbierto] = useState(false)
   const [availability, setAvailability] = useState<Availability>('idle')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -138,7 +148,7 @@ export default function Bienvenida() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-papel">
+    <div className={cn('min-h-screen flex flex-col bg-brand-papel', navVisible && 'pb-24')}>
       <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-4 py-10">
 
         {/* Cabecera */}
@@ -204,27 +214,25 @@ export default function Bienvenida() {
             {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. El número es
                 requisito por antifraude —un número, una cuenta—, no por mandarte publicidad. */}
             <p className="text-[11px] text-brand-gris font-body mt-1.5 leading-relaxed">
-              Nos sirve para que nadie abra varias cuentas.{' '}
-              <span className="font-bold text-brand-sombra">Revísalo bien: después no se puede cambiar.</span>
+              Un número por cuenta.{' '}
+              <span className="font-bold text-brand-sombra">Revísalo bien: no se puede cambiar.</span>
             </p>
           </div>
 
           {/*
-            El aviso simplificado, en el punto exacto donde se recolectan los datos. Sale del
-            mismo documento que /privacidad, así que no puede divergir de él.
-
-            Va siempre visible y no plegado: esta pantalla ya tiene abandono medido y cada línea
-            cuesta altas, pero "puesto a disposición" quiere decir que se vea, no que se pueda
-            encontrar. Es el precio de pedir un teléfono y una fecha de nacimiento.
+            El aviso simplificado, a un toque y en el punto donde se recolectan los datos: después
+            de pedirlos y antes de "Empezar". Sale del mismo documento que /privacidad, así que no
+            puede divergir de él. Estuvo abierto por omisión y eran seis párrafos entre el teléfono
+            y el botón; plegarlo fue decisión del dueño por el abandono de esta pantalla.
           */}
-          <details open className="rounded-2xl border-2 border-brand-sombra/15 bg-brand-papel/60 px-3.5 py-3">
-            <summary className="font-heading text-brand-sombra text-[11px] uppercase cursor-pointer list-none">
-              {AVISO_SIMPLIFICADO.titulo} · cómo tratamos tus datos
-            </summary>
-            <div className="mt-2 text-[11px]">
-              <LegalBlocks bloques={AVISO_SIMPLIFICADO.bloques} />
-            </div>
-          </details>
+          <button
+            type="button"
+            onClick={() => setAvisoAbierto(true)}
+            className="self-start inline-flex items-center gap-1.5 text-xs font-body font-bold text-brand-azul underline"
+          >
+            <Shield className="w-3.5 h-3.5" />
+            Aviso de privacidad en corto
+          </button>
 
           {/* OBLIGATORIA. Junta edad y aceptación porque las dos son términos del contrato. */}
           <label className="flex items-start gap-3 cursor-pointer">
@@ -238,9 +246,9 @@ export default function Bienvenida() {
               {aceptaLegal && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
             <span className="text-xs text-brand-gris font-body leading-relaxed">
-              Tengo 18 años cumplidos y acepto los{' '}
+              Tengo 18 años o más y acepto los{' '}
               <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
-                Términos y Condiciones
+                Términos
               </Link>{' '}
               y el{' '}
               <Link to="/privacidad" target="_blank" className="text-brand-azul font-bold underline">
@@ -265,8 +273,7 @@ export default function Bienvenida() {
               {optIn && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
             <span className="text-xs text-brand-gris font-body leading-relaxed">
-              <span className="font-bold text-brand-sombra">Opcional:</span> quiero que me avisen de
-              las dinámicas y promos por WhatsApp. Puedo cancelarlo cuando quiera desde mi perfil.
+              <span className="font-bold text-brand-sombra">Opcional:</span> avísenme de promos por WhatsApp.
             </span>
           </label>
 
@@ -292,16 +299,19 @@ export default function Bienvenida() {
           Un cadete legacy que entra con Google sin haber vinculado primero termina en una cuenta
           nueva con 0 puntos: su email sintético nunca coincide con su Gmail, así que Supabase no
           puede auto-vincular. Este aviso es la única defensa antes de que se lleve la sorpresa.
+          Va plegado a una pregunta: quien lo necesita se reconoce en ella, y los demás —casi
+          todos— no cargan con el párrafo.
         */}
-        <div className="mt-6 rounded-3xl border-2 border-brand-amarillo bg-brand-amarillo/15 p-4 flex gap-3">
-          <AlertTriangle className="w-5 h-5 text-brand-sombra shrink-0 mt-0.5" />
-          <div className="flex flex-col gap-2">
-            <p className="font-heading text-brand-sombra text-xs uppercase tracking-wide">
-              ¿Ya eras cadete?
-            </p>
+        <details className="group mt-6 rounded-3xl border-2 border-brand-amarillo bg-brand-amarillo/15 px-4 py-3">
+          <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden font-heading text-brand-sombra text-xs">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span className="flex-1">¿Ya tenías cuenta con apodo y contraseña?</span>
+            <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-2 pl-6 flex flex-col gap-2">
             <p className="text-xs text-brand-gris font-body leading-relaxed">
-              Si ya tenías cuenta con apodo y contraseña, esta es una cuenta nueva y tus puntos no
-              están aquí. Sal, entra con tu apodo de siempre y vincula Google desde tu perfil.
+              Esta es una cuenta nueva y tus puntos no están aquí. Sal, entra con tu apodo de
+              siempre y vincula Google desde tu perfil.
             </p>
             <button
               onClick={handleLogout}
@@ -311,8 +321,32 @@ export default function Bienvenida() {
               Salir y entrar con mi apodo
             </button>
           </div>
-        </div>
+        </details>
       </div>
+
+      <Modal open={avisoAbierto} onClose={() => setAvisoAbierto(false)} labelledBy="aviso-corto-titulo">
+        <div className="relative bg-brand-papel w-full max-w-sm rounded-3xl border-2 border-brand-sombra shadow-sticker-lg p-6 flex flex-col gap-4 max-h-[85vh] overflow-y-auto animate-scale-in">
+          <div className="flex items-start justify-between gap-4">
+            <h2 id="aviso-corto-titulo" className="font-heading text-brand-sombra text-lg">
+              {AVISO_SIMPLIFICADO.titulo} · cómo tratamos tus datos
+            </h2>
+            <button
+              onClick={() => setAvisoAbierto(false)}
+              aria-label="Cerrar"
+              className="text-brand-gris hover:text-brand-sombra transition-colors shrink-0"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* En pestaña nueva: seguir el enlace al integral aquí desmontaría el formulario. */}
+          <LegalBlocks bloques={AVISO_SIMPLIFICADO.bloques} enlacesLegalesEnPestanaNueva />
+
+          <button onClick={() => setAvisoAbierto(false)} className="btn-fresa mt-1">
+            Entendido
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

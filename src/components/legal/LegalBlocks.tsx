@@ -22,7 +22,7 @@ function rutaLegal(doc: string): string {
 
 const CLASE_ENLACE = 'text-brand-azul font-bold underline'
 
-function Span({ span }: { span: LegalSpan }) {
+function Span({ span, pestanaNueva }: { span: LegalSpan; pestanaNueva: boolean }) {
   switch (span.t) {
     case 'texto':
       return <>{span.v}</>
@@ -46,7 +46,11 @@ function Span({ span }: { span: LegalSpan }) {
 
     case 'enlaceLegal':
       return (
-        <Link to={rutaLegal(span.doc)} className={CLASE_ENLACE}>
+        <Link
+          to={rutaLegal(span.doc)}
+          className={CLASE_ENLACE}
+          {...(pestanaNueva ? { target: '_blank' } : {})}
+        >
           {span.v}
         </Link>
       )
@@ -58,22 +62,22 @@ function Span({ span }: { span: LegalSpan }) {
   }
 }
 
-function Spans({ spans }: { spans: LegalSpan[] }) {
+function Spans({ spans, pestanaNueva }: { spans: LegalSpan[]; pestanaNueva: boolean }) {
   return (
     <>
       {spans.map((span, i) => (
-        <Span key={i} span={span} />
+        <Span key={i} span={span} pestanaNueva={pestanaNueva} />
       ))}
     </>
   )
 }
 
-function contenidoDelBloque(bloque: LegalBloque) {
+function contenidoDelBloque(bloque: LegalBloque, pestanaNueva: boolean) {
   switch (bloque.tipo) {
     case 'parrafo':
       return (
         <p>
-          <Spans spans={bloque.spans} />
+          <Spans spans={bloque.spans} pestanaNueva={pestanaNueva} />
         </p>
       )
 
@@ -85,7 +89,7 @@ function contenidoDelBloque(bloque: LegalBloque) {
         <ul className="list-disc list-outside pl-5 flex flex-col gap-1.5">
           {bloque.items.map((item, i) => (
             <li key={i}>
-              <Spans spans={item} />
+              <Spans spans={item} pestanaNueva={pestanaNueva} />
             </li>
           ))}
         </ul>
@@ -98,15 +102,23 @@ function contenidoDelBloque(bloque: LegalBloque) {
   }
 }
 
-function Bloque({ bloque, conPastilla }: { bloque: LegalBloque; conPastilla: boolean }) {
+function Bloque({
+  bloque,
+  conPastilla,
+  pestanaNueva,
+}: {
+  bloque: LegalBloque
+  conPastilla: boolean
+  pestanaNueva: boolean
+}) {
   // El alcance NUNCA oculta: el bloque se pinta igual, con una pastilla que avisa
   // de que ese parrafo describe la otra plataforma. Ver `legal/README.md`.
-  if (bloque.alcance === 'ambas' || !conPastilla) return contenidoDelBloque(bloque)
+  if (bloque.alcance === 'ambas' || !conPastilla) return contenidoDelBloque(bloque, pestanaNueva)
 
   return (
     <div className="flex flex-col gap-1.5">
       <span className="legal-scope">{ETIQUETA_ALCANCE[bloque.alcance]}</span>
-      {contenidoDelBloque(bloque)}
+      {contenidoDelBloque(bloque, pestanaNueva)}
     </div>
   )
 }
@@ -123,15 +135,28 @@ function Bloque({ bloque, conPastilla }: { bloque: LegalBloque; conPastilla: boo
 const llevaPastilla = (bloques: LegalBloque[], i: number) =>
   bloques[i].alcance !== 'ambas' && (i === 0 || bloques[i - 1].alcance !== bloques[i].alcance)
 
-// text-brand-gris a secas da ~4.48:1 sobre el fondo semitransparente del aviso
-// simplificado de /bienvenida (bg-brand-papel/60 sobre paper-card) — por debajo de
-// AA; /70 lo sube por encima de 4.5:1 ahí y en el resto de usos (nav/sección de
-// LegalDocument, siempre sobre blanco).
-export default function LegalBlocks({ bloques }: { bloques: LegalBloque[] }) {
+// text-brand-gris a secas se queda por debajo de AA sobre los fondos papel
+// (~4.48:1); /70 lo sube por encima de 4.5:1 en todos los usos.
+//
+// `enlacesLegalesEnPestanaNueva` es para cuando se pinta dentro de un formulario a
+// medio llenar (el alta): ahi, seguir el enlace al aviso integral en la misma pestana
+// desmonta la pagina y se pierde lo ya escrito.
+export default function LegalBlocks({
+  bloques,
+  enlacesLegalesEnPestanaNueva = false,
+}: {
+  bloques: LegalBloque[]
+  enlacesLegalesEnPestanaNueva?: boolean
+}) {
   return (
     <div className="font-body text-brand-sombra/70 text-sm leading-relaxed flex flex-col gap-3">
       {bloques.map((bloque, i) => (
-        <Bloque key={i} bloque={bloque} conPastilla={llevaPastilla(bloques, i)} />
+        <Bloque
+          key={i}
+          bloque={bloque}
+          conPastilla={llevaPastilla(bloques, i)}
+          pestanaNueva={enlacesLegalesEnPestanaNueva}
+        />
       ))}
     </div>
   )
