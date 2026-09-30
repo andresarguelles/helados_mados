@@ -13,9 +13,9 @@ export const LEGAL_META: Record<string, LegalMeta> = {
   privacidad: {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
-    version: "2.2.1",
-    actualizado: "2026-09-26",
-    astHash: "67bb968e551db7a7b2205f80c0aef2e87fbc2dcbf23524832d7d7561ca1e226e",
+    version: "2.2.2",
+    actualizado: "2026-09-29",
+    astHash: "f2c700ccd0a1351245d4feed046c23d87e1a4c6c2c6ee3fda7c4ab3840ff3cdb",
   },
   terminos: {
     id: "terminos",

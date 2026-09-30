@@ -2,15 +2,13 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.2.1
-actualizado: 2026-09-26
+version: 2.2.2
+actualizado: 2026-09-29
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
 
-Marcos Roldán Moreno, que opera bajo el nombre Helados Mados, con domicilio en Avenida Centenario No. 1229, Colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569, es responsable de sus datos personales.
-
-Tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible.
+En Helados Mados tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible.
 
 Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte.
 
@@ -19,6 +17,8 @@ Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpl
 Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com.
+
+Responsable de sus datos: Helados Mados (Marcos Roldán Moreno), con domicilio en Av. Centenario No. 1229, Col. Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569.
 
 ## Quién es el responsable {#responsable icono=MapPin}
 

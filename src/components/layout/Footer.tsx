@@ -44,19 +44,14 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* NAP completo: el mismo nombre, dirección y teléfono que la ficha de Google Maps. */}
+        {/* Solo la zona y el correo, a propósito. La calle, el C.P. y el teléfono son el domicilio
+            fiscal y la línea del responsable, que es una persona física: se quedan en la sección de
+            ubicación de la home, en los avisos legales y en el JSON-LD, no en el pie de cada página. */}
         <address className="not-italic flex flex-col items-center gap-0.5 text-sm font-body text-center">
-          <span>{NEGOCIO.direccion.calle}, {NEGOCIO.direccion.colonia}</span>
-          <span>{NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}, C.P. {NEGOCIO.direccion.codigoPostal}</span>
-          <span className="flex flex-wrap items-center justify-center gap-x-2">
-            <a href={`tel:${NEGOCIO.telefonoE164}`} className="hover:text-white transition-colors">
-              {NEGOCIO.telefono}
-            </a>
-            <span aria-hidden className="text-white/40">·</span>
-            <a href={`mailto:${NEGOCIO.email}`} className="hover:text-white transition-colors">
-              {NEGOCIO.email}
-            </a>
-          </span>
+          <span>{NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}</span>
+          <a href={`mailto:${NEGOCIO.email}`} className="hover:text-white transition-colors">
+            {NEGOCIO.email}
+          </a>
         </address>
 
         <nav aria-label="Enlaces del pie" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-body">
