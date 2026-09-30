@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AlertTriangle, Check, CheckCircle2, ChevronDown, Loader2, LogOut, Shield, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, Check, ChevronDown, Loader2, LogOut, Shield, Sparkles, X } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
 import { normalizePhone, DEFAULT_COUNTRY } from '../lib/phone'
@@ -8,6 +8,7 @@ import PhoneField from '../components/ui/PhoneField'
 import { readPendingRedeem } from '../lib/pendingRedeem'
 import ErrorAlert from '../components/ui/ErrorAlert'
 import Modal from '../components/ui/Modal'
+import Checkbox from '../components/ui/Checkbox'
 import { useBottomNavVisible } from '../components/layout/BottomNav'
 import LegalBlocks from '../components/legal/LegalBlocks'
 import { AVISO_SIMPLIFICADO } from '../content/legal/generated/legalSimplificado'
@@ -235,47 +236,25 @@ export default function Bienvenida() {
           </button>
 
           {/* OBLIGATORIA. Junta edad y aceptación porque las dos son términos del contrato. */}
-          <label className="flex items-start gap-3 cursor-pointer">
-            <div
-              onClick={() => { setAceptaLegal(v => !v); setError('') }}
-              className={cn(
-                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                aceptaLegal ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 hover:border-brand-azul'
-              )}
-            >
-              {aceptaLegal && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-            </div>
-            <span className="text-xs text-brand-gris font-body leading-relaxed">
-              Tengo 18 años o más y acepto los{' '}
-              <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
-                Términos
-              </Link>{' '}
-              y el{' '}
-              <Link to="/privacidad" target="_blank" className="text-brand-azul font-bold underline">
-                Aviso de Privacidad
-              </Link>.
-            </span>
-          </label>
+          <Checkbox checked={aceptaLegal} onChange={v => { setAceptaLegal(v); setError('') }}>
+            Tengo 18 años o más y acepto los{' '}
+            <Link to="/terminos" target="_blank" className="text-brand-azul font-bold underline">
+              Términos
+            </Link>{' '}
+            y el{' '}
+            <Link to="/privacidad" target="_blank" className="text-brand-azul font-bold underline">
+              Aviso de Privacidad
+            </Link>.
+          </Checkbox>
 
           {/*
             OPCIONAL, y esa es la diferencia que importa. Condicionar el alta a aceptar publicidad
             haría que el consentimiento no fuera libre, y un consentimiento no libre no es
             consentimiento: arrastraría a todo el aviso. Ver la migración 0023.
           */}
-          <label className="flex items-start gap-3 cursor-pointer">
-            <div
-              onClick={() => { setOptIn(v => !v); setError('') }}
-              className={cn(
-                'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                optIn ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 hover:border-brand-azul'
-              )}
-            >
-              {optIn && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-            </div>
-            <span className="text-xs text-brand-gris font-body leading-relaxed">
-              <span className="font-bold text-brand-sombra">Opcional:</span> avísenme de promos por WhatsApp.
-            </span>
-          </label>
+          <Checkbox checked={optIn} onChange={v => { setOptIn(v); setError('') }}>
+            <span className="font-bold text-brand-sombra">Opcional:</span> avísenme de promos por WhatsApp.
+          </Checkbox>
 
           {error && <ErrorAlert msg={error} />}
 

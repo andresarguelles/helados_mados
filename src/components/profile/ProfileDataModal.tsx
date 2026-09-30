@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Loader2, X } from 'lucide-react'
+import { Loader2, X } from 'lucide-react'
 import Modal from '../ui/Modal'
 import ErrorAlert from '../ui/ErrorAlert'
+import Checkbox from '../ui/Checkbox'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import { normalizePhone, parsePhone, DEFAULT_COUNTRY } from '../../lib/phone'
@@ -192,20 +193,12 @@ export default function ProfileDataModal({
         />
 
         {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad. */}
-        <label className="flex items-start gap-3 cursor-pointer">
-          <div
-            onClick={() => { setForm(f => ({ ...f, whatsappOptIn: !f.whatsappOptIn })); setError('') }}
-            className={cn(
-              'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-              form.whatsappOptIn ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 hover:border-brand-azul'
-            )}
-          >
-            {form.whatsappOptIn && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-          </div>
-          <span className="text-xs text-brand-gris font-body leading-relaxed">
-            Quiero recibir promociones de Helados Mados por WhatsApp. Puedo cancelarlo cuando quiera.
-          </span>
-        </label>
+        <Checkbox
+          checked={form.whatsappOptIn}
+          onChange={v => { setForm(f => ({ ...f, whatsappOptIn: v })); setError('') }}
+        >
+          Quiero recibir promociones de Helados Mados por WhatsApp. Puedo cancelarlo cuando quiera.
+        </Checkbox>
 
         {error && <ErrorAlert msg={error} />}
 
