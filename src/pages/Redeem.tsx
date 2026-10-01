@@ -3,10 +3,9 @@ import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import GoogleButton from '../components/auth/GoogleButton'
-import { useStore, loginErrorMessage } from '../lib/store'
-import { cn } from '../lib/utils'
+import { useStore } from '../lib/store'
 import { savePendingRedeem, readPendingRedeem, clearPendingRedeem } from '../lib/pendingRedeem'
-import { ArrowLeft, Key, User, UserPlus, Eye, EyeOff, CheckCircle2, Loader2 } from 'lucide-react'
+import { ArrowLeft, Key, CheckCircle2, Loader2 } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
 // El QR solo se pinta en el paso de éxito, así que separarlo del bundle inicial
@@ -15,15 +14,13 @@ const QRCode = lazy(() =>
   import('qrcode.react').then(mod => ({ default: mod.QRCodeSVG }))
 )
 
-type Step = 'keyword' | 'choice' | 'auth' | 'success'
-// El registro con contraseña ya no existe: un cadete nuevo entra por Google.
-type AuthMode = 'login' | 'google'
+// Sin paso de "¿eres cadete o nuevo?": desde el 2026-09-30 solo se entra con Google, y el mismo
+// botón sirve para entrar y para crear cuenta.
+type Step = 'keyword' | 'auth' | 'success'
 
 /**
- * Va en las dos ramas del paso de autenticación, no solo en la de Google. Entrar con
- * apodo también canja: crea un cupón, suma un punto y manda un hash de la IP a
- * `ip_redemption_logs`. Lo que se acepta al continuar es lo mismo por los dos caminos,
- * y que el aviso apareciera solo en una hacía pensar lo contrario.
+ * Lo que se acepta al continuar: canjear crea un cupón, suma un punto y manda un hash de la IP
+ * a `ip_redemption_logs`, aunque la cuenta ya existiera.
  *
  * `target="_blank"` aunque sea un `Link`: `keyword` y `step` viven en el estado de React
  * y salir de /canjear los borra. React Router no intercepta un click con target, así que
@@ -47,16 +44,12 @@ function AvisoLegal() {
 
 export default function Redeem() {
   const navigate = useNavigate()
-  const { getActiveDynamic, login, redeemKeyword } = useStore()
+  const { getActiveDynamic, redeemKeyword } = useStore()
   const profile = useStore(s => s.profile)
   const authReady = useStore(s => s.authReady)
 
   const [step, setStep] = useState<Step>('keyword')
-  const [authMode, setAuthMode] = useState<AuthMode>('google')
   const [keyword, setKeyword] = useState('')
-  const [identifier, setIdentifier] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [couponId, setCouponId] = useState('')
@@ -154,26 +147,7 @@ export default function Redeem() {
       colors: ['#C8FD5F', '#3C5DDC', '#FFD447', '#FF4F8B'],
     })
 
-    setStep('choice')
-  }
-
-  // ─── Step 3: Login + Redeem ─────────────────────────────────
-  const handleAuth = async () => {
-    setError('')
-
-    const value = identifier.trim()
-    if (!value || !password) { setError('Completa todos los campos'); return }
-
-    setLoading(true)
-
-    const result = await login(value, password)
-    if (!result.success) {
-      setError(loginErrorMessage(result.reason, value))
-      setLoading(false)
-      return
-    }
-
-    await attemptRedeem(keyword.trim().toUpperCase())
+    setStep('auth')
   }
 
   // Última oportunidad de guardar el canje antes de que el navegador se vaya a Google.
@@ -192,13 +166,12 @@ export default function Redeem() {
           <button
             onClick={() => {
               if (step === 'keyword') { navigate('/'); return }
-              if (step === 'choice') { setStep('keyword'); return }
-              setStep('choice')
+              setStep('keyword')
             }}
             className="flex items-center gap-1.5 text-brand-sombra/70 hover:text-brand-sombra text-sm font-body mt-4 mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {step === 'keyword' ? 'Inicio' : step === 'choice' ? 'Cambiar palabra' : 'Cambiar opción'}
+            {step === 'keyword' ? 'Inicio' : 'Cambiar palabra'}
           </button>
         )}
 
@@ -265,8 +238,8 @@ export default function Redeem() {
           </div>
         )}
 
-        {/* ── Step 2: Choice ──────────────────────────────── */}
-        {step === 'choice' && (
+        {/* ── Step 2: Auth ───────────────────────────────── */}
+        {step === 'auth' && (
           <div className="animate-slide-up flex flex-col gap-6">
             <div>
               <div className="flex items-center gap-1.5 mb-1 animate-scale-in">
@@ -278,151 +251,25 @@ export default function Redeem() {
                 ¡Acertaste!
               </h1>
               <p className="font-body text-brand-sombra/70 text-sm mt-1">
-                Ahora solo inicia sesión. ¡Estás cerca de tu punto!
+                Entra con Google para recibir tu punto. Si no tienes cuenta, se crea al momento.
               </p>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={() => setAuthMode('login')}
-                className={cn(
-                  'flex items-center gap-4 p-4 rounded-3xl border-2 text-left transition-all',
-                  authMode === 'login'
-                    ? 'border-brand-sombra bg-brand-sombra/5 shadow-card'
-                    : 'border-brand-sombra/10 hover:border-brand-sombra/30'
-                )}
-              >
-                <div className={cn(
-                  'w-11 h-11 rounded-2xl flex items-center justify-center shrink-0',
-                  authMode === 'login' ? 'bg-brand-sombra text-white' : 'bg-brand-sombra/10 text-brand-sombra'
-                )}>
-                  <User className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy cadete</p>
-                  <p className="font-body text-brand-sombra/70 text-xs mt-0.5">Ya tengo apodo y contraseña</p>
-                </div>
-                {authMode === 'login' && <CheckCircle2 className="w-5 h-5 text-brand-sombra shrink-0" />}
-              </button>
-
-              <button
-                onClick={() => setAuthMode('google')}
-                className={cn(
-                  'flex items-center gap-4 p-4 rounded-3xl border-2 text-left transition-all',
-                  authMode === 'google'
-                    ? 'border-brand-azul bg-brand-azul/5 shadow-card'
-                    : 'border-brand-sombra/10 hover:border-brand-sombra/30'
-                )}
-              >
-                <div className={cn(
-                  'w-11 h-11 rounded-2xl flex items-center justify-center shrink-0',
-                  authMode === 'google' ? 'bg-brand-azul text-white' : 'bg-brand-sombra/10 text-brand-sombra'
-                )}>
-                  <UserPlus className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-heading text-brand-sombra text-sm uppercase tracking-wide">Soy nuevo cadete</p>
-                  <p className="font-body text-brand-sombra/70 text-xs mt-0.5">Creo mi cuenta con Google</p>
-                </div>
-                {authMode === 'google' && <CheckCircle2 className="w-5 h-5 text-brand-azul shrink-0" />}
-              </button>
-            </div>
-
-            <button onClick={() => setStep('auth')} className="btn-fresa">
-              Siguiente
-            </button>
-          </div>
-        )}
-
-        {/* ── Step 3: Auth ───────────────────────────────── */}
-        {step === 'auth' && (
-          <div className="animate-slide-up flex flex-col gap-6">
-            <div>
-              <h1 className="font-heading text-brand-sombra text-3xl">
-                {authMode === 'login' ? '¡Bienvenido!' : 'Crea tu cuenta'}
-              </h1>
-              <p className="font-body text-brand-sombra/70 text-sm mt-1">
-                {authMode === 'google'
-                  ? 'Con Google es un toque: no tienes que inventar contraseña.'
-                  : 'Inicia sesión para recibir tu punto y tu cupón de medalla.'}
+            <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
+              <GoogleButton
+                next="/canjear"
+                onBeforeRedirect={persistBeforeGoogle}
+              />
+              <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
+                Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
+                al volver, tu canje sigue solo.
               </p>
+              <AvisoLegal />
             </div>
-
-            {authMode === 'google' ? (
-              <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
-                <GoogleButton
-                  next="/canjear"
-                  onBeforeRedirect={persistBeforeGoogle}
-                />
-                <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
-                  Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
-                  al volver, tu canje sigue solo.
-                </p>
-                <AvisoLegal />
-              </div>
-            ) : (
-              <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
-                {/* Apodo para los legacy; correo para quien nació con Google y ya tiene contraseña. */}
-                <div>
-                  <label htmlFor="username-input" className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                    Apodo o correo
-                  </label>
-                  <input
-                    id="username-input"
-                    type="text"
-                    value={identifier}
-                    onChange={e => { setIdentifier(e.target.value); setError('') }}
-                    placeholder="Ej. IceKingXL"
-                    maxLength={60}
-                    className="field-input"
-                    autoComplete="username"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="password-input" className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                    Contraseña
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="password-input"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={e => { setPassword(e.target.value); setError('') }}
-                      onKeyDown={e => e.key === 'Enter' && !loading && handleAuth()}
-                      placeholder="••••••••"
-                      className="field-input pr-10"
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(s => !s)}
-                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-gris hover:text-brand-sombra transition-colors"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                {error && <ErrorAlert msg={error} />}
-
-                <button
-                  id="auth-submit"
-                  onClick={handleAuth}
-                  disabled={loading}
-                  className={cn('btn-tinta', loading && 'opacity-70 cursor-not-allowed')}
-                >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  {loading ? 'Procesando...' : 'Canjear +1 punto'}
-                </button>
-                <AvisoLegal />
-              </div>
-            )}
           </div>
         )}
 
-        {/* ── Step 4: Success ─────────────────────────────── */}
+        {/* ── Step 3: Success ─────────────────────────────── */}
         {step === 'success' && (
           <div className="animate-scale-in flex flex-col items-center gap-6 pt-4">
             <div className="text-center">

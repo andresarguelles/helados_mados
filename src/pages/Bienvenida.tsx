@@ -275,11 +275,11 @@ export default function Bienvenida() {
         </div>
 
         {/*
-          Un cadete legacy que entra con Google sin haber vinculado primero termina en una cuenta
-          nueva con 0 puntos: su email sintético nunca coincide con su Gmail, así que Supabase no
-          puede auto-vincular. Este aviso es la única defensa antes de que se lleve la sorpresa.
-          Va plegado a una pregunta: quien lo necesita se reconoce en ella, y los demás —casi
-          todos— no cargan con el párrafo.
+          Desde el 2026-09-30 solo se entra con Google. Un cadete antiguo que nunca vinculó Google
+          llega aquí con una cuenta nueva y se topa con que su apodo de siempre "ya está en uso": es
+          el de su propia cuenta anterior, que sigue existiendo pero ya no tiene forma de entrar.
+          Esto le explica por qué, sin prometerle nada: quien quiera algo de la suya escribe a
+          contacto@, y eso se atiende caso por caso.
         */}
         <details className="group mt-6 rounded-3xl border-2 border-brand-amarillo bg-brand-amarillo/15 px-4 py-3">
           <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden font-heading text-brand-sombra text-xs">
@@ -287,20 +287,20 @@ export default function Bienvenida() {
             <span className="flex-1">¿Ya tenías cuenta con apodo y contraseña?</span>
             <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
           </summary>
-          <div className="mt-2 pl-6 flex flex-col gap-2">
-            <p className="text-xs text-brand-gris font-body leading-relaxed">
-              Esta es una cuenta nueva y tus puntos no están aquí. Sal, entra con tu apodo de
-              siempre y vincula Google desde tu perfil.
-            </p>
-            <button
-              onClick={handleLogout}
-              className="self-start inline-flex items-center gap-2 font-heading text-[11px] uppercase tracking-wide text-brand-azul underline"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Salir y entrar con mi apodo
-            </button>
-          </div>
+          <p className="mt-2 pl-6 text-xs text-brand-gris font-body leading-relaxed">
+            Ese acceso ya no existe: ahora se entra solo con Google. Esta es una cuenta nueva, y tu
+            apodo anterior sigue apartado, así que elige otro.
+          </p>
         </details>
+
+        {/* Para quien entró con la cuenta de Google equivocada: sin esto no hay salida de aquí. */}
+        <button
+          onClick={handleLogout}
+          className="mt-4 self-center inline-flex items-center gap-1.5 font-body text-xs text-brand-gris underline hover:text-brand-sombra transition-colors"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          Usar otra cuenta de Google
+        </button>
       </div>
 
       <Modal open={avisoAbierto} onClose={() => setAvisoAbierto(false)} labelledBy="aviso-corto-titulo">

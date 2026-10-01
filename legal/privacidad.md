@@ -2,8 +2,8 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.2.2
-actualizado: 2026-09-29
+version: 2.2.3
+actualizado: 2026-09-30
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
@@ -172,9 +172,9 @@ Cuando usted entra con Google, Google nos comparte cuatro cosas: su correo elect
 
 El uso que damos a esa información se apega a la Política de Datos de Usuario de los Servicios de API de Google, incluidos sus requisitos de Uso Limitado. En concreto: usamos esos datos solo para que usted pueda entrar y para mostrarle su propia cuenta, no los vendemos, no los cedemos a intermediarios de datos ni a anunciantes, y no los usamos para publicidad. Puede consultar esa política en [el sitio de desarrolladores de Google](https://developers.google.com/terms/api-services-user-data-policy).
 
-Si usted desvincula su cuenta de Google, **el correo que ya habíamos guardado se conserva** en nuestra base de datos. Si quiere que lo eliminemos, pídanoslo o borre su cuenta.
+Google es la única forma de entrar, así que su cuenta no se puede desvincular de Google. Si quiere que eliminemos el correo que guardamos, pídanoslo o borre su cuenta.
 
-Vincular Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación.
+Entrar por primera vez con Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación.
 
 ## Sus derechos ARCO {#arco icono=Pencil}
 
@@ -255,7 +255,7 @@ Tenemos medidas administrativas, técnicas y físicas para proteger sus datos. S
 - Todo el tráfico entre su dispositivo y nuestros servidores va cifrado.
 - La base de datos aplica reglas de acceso fila por fila: una cuenta solo puede leer y escribir lo suyo.
 - Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas.
-- No guardamos contraseñas en claro. Las cuentas antiguas con contraseña la tienen almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla.
+- No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google.
 - Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor.
 - El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor.
 - Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted.

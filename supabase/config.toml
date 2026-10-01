@@ -180,8 +180,9 @@ enable_signup = true
 # Allow/disallow anonymous sign-ins to your project.
 enable_anonymous_sign_ins = false
 # Allow/disallow testing manual linking of accounts
-# linkIdentity(): es lo que deja a un cadete legacy vincular Google conservando sus puntos.
-enable_manual_linking = true
+# linkIdentity() servía para que un cadete legacy vinculara Google sin perder sus puntos. Desde el
+# 2026-09-30 el acceso es solo con Google y el cliente ya no vincula nada, así que va apagado.
+enable_manual_linking = false
 # Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
 minimum_password_length = 6
 # Passwords that do not meet the following requirements will be rejected as weak. Supported values
@@ -223,13 +224,13 @@ web3 = 30
 [auth.email]
 # Allow/disallow new user signups via email to your project.
 # OJO: esta clave se traduce a `external_email_enabled` en el proyecto hosted, o sea al interruptor
-# "Enable Email provider" del dashboard — NO a un permiso de alta por separado. Apagarla no cierra
-# solo el registro por correo: apaga el proveedor entero y GoTrue empieza a rechazar también
-# signInWithPassword con 422 `email_provider_disabled`, dejando fuera a los 175 cadetes legacy (y a
-# quien nació con Google y se puso contraseña). Ya pasó una vez; tiene que quedarse en true.
-# El candado de "solo Google crea cuentas" vive en la migración 0020 (hook before_user_created),
-# que sí sabe distinguir crear cuenta de iniciar sesión.
-enable_signup = true
+# "Enable Email provider" del dashboard — NO a un permiso de alta por separado. Apagarla apaga el
+# proveedor entero: GoTrue rechaza signInWithPassword con 422 `email_provider_disabled`.
+# Desde el 2026-09-30 eso es justo lo que se quiere: el acceso es solo con Google, y las cuentas que
+# nunca vincularon Google se quedan sin forma de entrar. Va en false a propósito; volver a ponerla
+# en true reabre el acceso con contraseña a esas cuentas, cuyas contraseñas siguen guardadas.
+# El candado de "solo Google crea cuentas" sigue en la migración 0020 (hook before_user_created).
+enable_signup = false
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -290,8 +291,9 @@ max_frequency = "5s"
 
 # This hook runs before a new user is created and allows developers to reject the request based on the incoming user object.
 # El candado de "solo Google crea cuentas" (migración 0020). Corre únicamente al crear un usuario
-# nuevo, así que no toca signInWithPassword, linkIdentity() ni setPassword(). En el proyecto hosted
-# hay que activarlo aparte en Authentication -> Hooks -> Before User Created; esto solo cubre local.
+# nuevo. Con el proveedor Email apagado ya no hay otro camino de alta, pero se queda como segunda
+# llave. En el proyecto hosted hay que activarlo aparte en Authentication -> Hooks -> Before User
+# Created; esto solo cubre local.
 [auth.hook.before_user_created]
 enabled = true
 uri = "pg-functions://postgres/public/hook_google_only_signup"

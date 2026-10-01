@@ -9,7 +9,7 @@ import { readAuthIntent, clearAuthIntent } from '../lib/authIntent'
 const EXCHANGE_TIMEOUT_MS = 8000
 
 /**
- * Aterrizaje del redirect de Google, tanto para iniciar sesión como para vincular.
+ * Aterrizaje del redirect de Google, tanto para entrar como para crear cuenta.
  * No tiene UI propia: solo decide a dónde mandar al usuario.
  */
 export default function AuthCallback() {
@@ -63,10 +63,7 @@ export default function AuthCallback() {
         return
       }
 
-      navigate(intent?.next ?? '/perfil', {
-        replace: true,
-        state: { pointsAwarded, linked: intent?.linking === true },
-      })
+      navigate(intent?.next ?? '/perfil', { replace: true, state: { pointsAwarded } })
     }
 
     void run()

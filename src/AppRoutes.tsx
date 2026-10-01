@@ -115,7 +115,7 @@ export const routeElements = (
     <Route path="/" element={<Home />} />
     <Route path="/login" element={<Login />} />
     <Route path="/canjear" element={<Redeem />} />
-    {/* Aterrizaje del redirect de Google (login y vinculación). */}
+    {/* Aterrizaje del redirect de Google (entrar y crear cuenta). */}
     <Route path="/auth/callback" element={<AuthCallback />} />
     {/* Fuera de ProtectedMember a propósito: es justo donde se elige el apodo que falta. */}
     <Route path="/bienvenida" element={

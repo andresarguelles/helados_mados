@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { PostgrestError, Session, UserIdentity } from '@supabase/supabase-js'
+import type { PostgrestError, Session } from '@supabase/supabase-js'
 import { supabase } from './supabaseClient'
 import { Profile, Dynamic, Coupon } from './types'
 import type { Database } from './database.types'
@@ -24,19 +24,6 @@ const documentosParaAceptar = () =>
     version: doc.version,
     ast_hash: doc.astHash,
   }))
-
-// GoTrue rejects RFC 2606/6762 reserved TLDs (.local, .test, .invalid, ...), so this needs to
-// look like a real domain even though it's never used to send or receive mail.
-const EMAIL_DOMAIN = 'accounts.helados-mados.app'
-const usernameToEmail = (username: string) => `${username.trim().toLowerCase()}@${EMAIL_DOMAIN}`
-
-// Desde que el registro es solo con Google conviven dos clases de email primario: el sintético de los
-// cadetes legacy y el Gmail real de quien nació con Google y luego se puso contraseña. Por eso el campo
-// del formulario acepta apodo o correo: si trae '@' es un correo y se usa tal cual.
-const toLoginEmail = (identifier: string) => {
-  const trimmed = identifier.trim()
-  return trimmed.includes('@') ? trimmed.toLowerCase() : usernameToEmail(trimmed)
-}
 
 // Postgres SQLSTATE 23P01 = exclusion_violation, thrown by dynamics_no_overlapping_keyword
 // when the same keyword is active during an overlapping date range.
@@ -103,26 +90,6 @@ interface LeaderboardRange {
   end: string
 }
 
-// 'provider_disabled': el proveedor Email está apagado en el dashboard, así que GoTrue rechaza el
-// intento sin llegar a mirar la contraseña. No es culpa de quien escribe, y decirle "contraseña
-// incorrecta" lo manda a resetearla en vano.
-export type LoginFailureReason = 'invalid_credentials' | 'provider_disabled' | 'error'
-
-type LoginResult =
-  | { success: true; user: Profile }
-  | { success: false; reason: LoginFailureReason }
-
-// Los tres puntos de entrada con contraseña (Login, el paso auth de Redeem y AdminLogin) comparten
-// este texto para no volver a divergir. 'provider_disabled' importa: mandar a alguien a revisar su
-// contraseña cuando el servidor ni la miró lo deja dando vueltas — pasó con los 175 legacy cuando
-// se apagó el proveedor Email.
-export function loginErrorMessage(reason: LoginFailureReason, identifier: string): string {
-  if (reason === 'provider_disabled') {
-    return 'El acceso con contraseña está temporalmente deshabilitado. Entra con Google o inténtalo más tarde.'
-  }
-  return identifier.includes('@') ? 'Correo o contraseña incorrectos' : 'Usuario o contraseña incorrectos'
-}
-
 type DynamicWriteResult = { success: true } | { success: false; error: string }
 
 type RedeemResult =
@@ -177,11 +144,7 @@ type UpdateProfileResult =
   | { success: true; pointsAwarded: number }
   | { success: false; reason: UpdateProfileReason }
 
-type OAuthResult = { success: true } | { success: false; reason: 'already_linked' | 'error' }
-
-type PasswordResult = { success: true } | { success: false; reason: 'weak_password' | 'error' }
-
-type UnlinkResult = { success: true } | { success: false; reason: 'needs_password' | 'not_linked' | 'error' }
+type OAuthResult = { success: true } | { success: false; reason: 'error' }
 
 // ─── Store State ──────────────────────────────────────────────────────────────
 
@@ -189,37 +152,24 @@ interface AppState {
   profile: Profile | null
   isAdmin: boolean
   authReady: boolean
-  /** Proveedores vinculados a la cuenta ('email' para los legacy, 'google' tras vincular). */
-  identities: UserIdentity[]
-  /** Si es false, desvincular Google dejaría al usuario sin ninguna forma de entrar. */
-  hasPassword: boolean
   dynamics: Dynamic[]
   coupons: Coupon[]
   profiles: Profile[]
 
   // Auth
   initAuth: () => () => void
-  /** `identifier` es un apodo (legacy) o un correo (nacido con Google + contraseña). */
-  login: (identifier: string, password: string) => Promise<LoginResult>
   logout: () => Promise<void>
   getCurrentUser: () => Profile | null
   refreshProfile: () => Promise<void>
 
-  // Google
+  // Google: la única forma de entrar y de crear cuenta.
   signInWithGoogle: (next?: string) => Promise<OAuthResult>
-  linkGoogle: () => Promise<OAuthResult>
-  unlinkGoogle: () => Promise<UnlinkResult>
-  isGoogleLinked: () => boolean
-  googleEmail: () => string | null
-  /** Con qué se entra usando contraseña: el apodo (legacy) o el correo (nacido con Google). */
-  loginIdentifier: () => string | null
   claimGoogleBonus: () => Promise<number>
 
   // Perfil
   isUsernameAvailable: (username: string) => Promise<boolean | null>
   completeSignup: (input: SignupInput) => Promise<CompleteSignupResult>
   updateMyProfile: (data: ProfileDataInput) => Promise<UpdateProfileResult>
-  setPassword: (password: string) => Promise<PasswordResult>
 
   // Admin: customers
   fetchAllProfiles: () => Promise<void>
@@ -256,19 +206,6 @@ async function loadProfile(): Promise<Profile | null> {
   return data
 }
 
-async function loadIdentities(): Promise<UserIdentity[]> {
-  const { data, error } = await supabase.auth.getUserIdentities()
-  if (error || !data) return []
-  return data.identities
-}
-
-// GoTrue no expone "este usuario tiene contraseña". Los legacy sí la tienen y se delatan por su
-// identidad 'email'; a los de Google se la marcamos en user_metadata al momento de crearla.
-function derivePasswordFlag(session: Session, identities: UserIdentity[]): boolean {
-  if (identities.some(i => i.provider === 'email')) return true
-  return session.user.user_metadata?.has_password === true
-}
-
 // El redirectTo debe coincidir CARACTER POR CARACTER con una entrada de Redirect URLs del dashboard,
 // query string incluido. Por eso va limpio: lo que haya que recordar entre saltos viaja en
 // sessionStorage (ver authIntent.ts). Si no coincide, GoTrue lo descarta en silencio y manda al
@@ -293,8 +230,6 @@ export const useStore = create<AppState>()((set, get) => ({
   profile: null,
   isAdmin: false,
   authReady: false,
-  identities: [],
-  hasPassword: false,
   dynamics: [],
   coupons: [],
   profiles: [],
@@ -304,17 +239,11 @@ export const useStore = create<AppState>()((set, get) => ({
   initAuth: () => {
     const hydrate = async (session: Session | null) => {
       if (!session) {
-        set({ profile: null, isAdmin: false, identities: [], hasPassword: false, authReady: true })
+        set({ profile: null, isAdmin: false, authReady: true })
         return
       }
-      const [profile, identities] = await Promise.all([loadProfile(), loadIdentities()])
-      set({
-        profile,
-        isAdmin: profile?.is_admin ?? false,
-        identities,
-        hasPassword: derivePasswordFlag(session, identities),
-        authReady: true,
-      })
+      const profile = await loadProfile()
+      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => { void hydrate(session) })
@@ -326,30 +255,9 @@ export const useStore = create<AppState>()((set, get) => ({
     return () => subscription.unsubscribe()
   },
 
-  login: async (identifier, password) => {
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email: toLoginEmail(identifier),
-      password,
-    })
-    if (error) {
-      const disabled = error.code === 'email_provider_disabled'
-      return { success: false, reason: disabled ? 'provider_disabled' : 'invalid_credentials' }
-    }
-
-    const [profile, identities] = await Promise.all([loadProfile(), loadIdentities()])
-    if (!profile) return { success: false, reason: 'error' }
-    set({
-      profile,
-      isAdmin: profile.is_admin,
-      identities,
-      hasPassword: authData.session ? derivePasswordFlag(authData.session, identities) : true,
-    })
-    return { success: true, user: profile }
-  },
-
   logout: async () => {
     await supabase.auth.signOut()
-    set({ profile: null, isAdmin: false, identities: [], hasPassword: false })
+    set({ profile: null, isAdmin: false })
   },
 
   getCurrentUser: () => get().profile,
@@ -360,9 +268,14 @@ export const useStore = create<AppState>()((set, get) => ({
   },
 
   // ── Google ────────────────────────────────────────────────────────────
+  //
+  // Es el único acceso. El de apodo y contraseña se retiró el 2026-09-30: el proveedor Email está
+  // apagado en el dashboard (GoTrue responde 422 `email_provider_disabled`) y las cuentas que nunca
+  // vincularon Google se quedaron como estaban, con su apodo y sus puntos, pero sin forma de entrar.
+  // Tampoco hay vincular ni desvincular: sin contraseña, desvincular dejaría a cualquiera fuera.
 
   signInWithGoogle: async (next) => {
-    saveAuthIntent({ next: next ?? '/perfil', linking: false })
+    saveAuthIntent({ next: next ?? '/perfil' })
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: oauthRedirectTo() },
@@ -376,59 +289,11 @@ export const useStore = create<AppState>()((set, get) => ({
     return { success: true }
   },
 
-  linkGoogle: async () => {
-    saveAuthIntent({ next: '/perfil', linking: true })
-    const { error } = await supabase.auth.linkIdentity({
-      provider: 'google',
-      options: { redirectTo: oauthRedirectTo() },
-    })
-    if (error) {
-      clearAuthIntent()
-      const alreadyLinked = /already|exists|registered/i.test(error.message)
-      return { success: false, reason: alreadyLinked ? 'already_linked' : 'error' }
-    }
-    return { success: true }
-  },
-
-  unlinkGoogle: async () => {
-    // Sin contraseña, desvincular Google deja al usuario sin ninguna forma de entrar.
-    if (!get().hasPassword) return { success: false, reason: 'needs_password' }
-
-    const identities = await loadIdentities()
-    const google = identities.find(i => i.provider === 'google')
-    if (!google) return { success: false, reason: 'not_linked' }
-
-    const { error } = await supabase.auth.unlinkIdentity(google)
-    if (error) return { success: false, reason: 'error' }
-
-    set({ identities: await loadIdentities() })
-    return { success: true }
-  },
-
-  isGoogleLinked: () => get().identities.some(i => i.provider === 'google'),
-
-  googleEmail: () => {
-    const google = get().identities.find(i => i.provider === 'google')
-    const email = google?.identity_data?.email
-    return typeof email === 'string' ? email : null
-  },
-
-  loginIdentifier: () => {
-    const { identities, profile } = get()
-    // Un legacy tiene identidad 'email' y su email primario es el sintetico derivado del apodo,
-    // asi que signInWithPassword solo funciona escribiendo el apodo. Quien nacio con Google tiene
-    // su Gmail real como email primario y entra con el correo. Confundirlos deja al usuario
-    // intentando entrar con un dato que nunca va a funcionar.
-    const isLegacy = identities.some(i => i.provider === 'email')
-    return (isLegacy ? profile?.username : profile?.email) ?? null
-  },
-
   claimGoogleBonus: async () => {
     const { data, error } = await supabase.rpc('claim_google_bonus')
     if (error || !data) return 0
     const result = data as { success: boolean; points_awarded?: number }
     await get().refreshProfile()
-    set({ identities: await loadIdentities() })
     return result.success ? (result.points_awarded ?? 0) : 0
   },
 
@@ -478,18 +343,6 @@ export const useStore = create<AppState>()((set, get) => ({
     if (!result.success) return { success: false, reason: result.reason ?? 'error' }
     await get().refreshProfile()
     return { success: true, pointsAwarded: result.points_awarded ?? 0 }
-  },
-
-  setPassword: async (password) => {
-    // El flag en user_metadata es lo único que nos deja saber después si un usuario de Google
-    // ya se puso contraseña (GoTrue no lo expone).
-    const { error } = await supabase.auth.updateUser({ password, data: { has_password: true } })
-    if (error) {
-      const weak = /password/i.test(error.message)
-      return { success: false, reason: weak ? 'weak_password' : 'error' }
-    }
-    set({ hasPassword: true })
-    return { success: true }
   },
 
   // ── Admin: customers ──────────────────────────────────────────────────
@@ -634,7 +487,7 @@ export const useStore = create<AppState>()((set, get) => ({
     // La sesión apunta a un usuario que ya no existe: limpiarla aquí evita que la app
     // quede en un estado donde hay token pero no hay perfil.
     await supabase.auth.signOut()
-    set({ profile: null, isAdmin: false, identities: [], hasPassword: false })
+    set({ profile: null, isAdmin: false })
     return { success: true }
   },
 

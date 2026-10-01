@@ -209,6 +209,17 @@ export default function AdminUsers() {
                       {/* Un registro con Google a medias todavía no tiene apodo. */}
                       {customer.username ?? <span className="text-white/50">Sin apodo</span>}
                     </p>
+                    {/*
+                      Sin correo = nunca vinculó Google (`profiles.email` solo lo escribe
+                      handle_identity_linked). Desde que el acceso es solo con Google, esa cuenta ya
+                      no tiene forma de entrar. Sirve para reconocer a quien escriba al correo. Va en
+                      su propia línea: al lado del apodo lo cortaba, y el apodo es lo que se busca.
+                    */}
+                    {!customer.email && (
+                      <span className="inline-block mt-1 font-mono text-[10px] uppercase tracking-wide text-white/70 bg-white/10 rounded-full px-2 py-0.5">
+                        Sin acceso
+                      </span>
+                    )}
                     {fullName(customer) && (
                       <p className="text-white/85 text-xs font-body mt-0.5 truncate">{fullName(customer)}</p>
                     )}

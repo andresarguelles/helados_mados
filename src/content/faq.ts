@@ -22,7 +22,7 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Cuántos puntos puedo ganar?',
     respuesta:
-      'Ganas +1 punto al canjear la palabra secreta, +10 cuando presentas tu cupón QR en la estación y te lo escaneamos, y dos bonos de +5 que se dan una sola vez: uno por completar tu perfil (nombre, apellido, fecha de nacimiento y teléfono) y otro por vincular tu cuenta de Google.',
+      'Ganas +1 punto al canjear la palabra secreta, +10 cuando presentas tu cupón QR en la estación y te lo escaneamos, y dos bonos de +5 que se dan una sola vez: uno por completar tu perfil (nombre, apellido, fecha de nacimiento y teléfono) y otro al entrar por primera vez con tu cuenta de Google.',
   },
   {
     pregunta: '¿Dónde canjeo mi cupón?',

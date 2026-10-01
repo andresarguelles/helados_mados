@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "2.2.2",
-    actualizado: "2026-09-29",
-    astHash: "f2c700ccd0a1351245d4feed046c23d87e1a4c6c2c6ee3fda7c4ab3840ff3cdb",
+    version: "2.2.3",
+    actualizado: "2026-09-30",
+    astHash: "98cbed9a0e0e089afa6dab1be2e705ce809e6de405942743e44e3d878c27a734",
     secciones: [
       {
         id: "aviso-corto",
@@ -221,8 +221,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cuando usted entra con Google, Google nos comparte cuatro cosas: su correo electrónico, su nombre, su apellido y la dirección de su foto de perfil." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Nunca recibimos su contraseña de Google" }, { t: 'texto', v: ", ni su agenda, ni sus correos, ni sus archivos, ni ningún otro dato de su cuenta de Google." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El uso que damos a esa información se apega a la Política de Datos de Usuario de los Servicios de API de Google, incluidos sus requisitos de Uso Limitado. En concreto: usamos esos datos solo para que usted pueda entrar y para mostrarle su propia cuenta, no los vendemos, no los cedemos a intermediarios de datos ni a anunciantes, y no los usamos para publicidad. Puede consultar esa política en " }, { t: 'enlace', v: "el sitio de desarrolladores de Google", href: "https://developers.google.com/terms/api-services-user-data-policy" }, { t: 'texto', v: "." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si usted desvincula su cuenta de Google, " }, { t: 'fuerte', v: "el correo que ya habíamos guardado se conserva" }, { t: 'texto', v: " en nuestra base de datos. Si quiere que lo eliminemos, pídanoslo o borre su cuenta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Vincular Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Google es la única forma de entrar, así que su cuenta no se puede desvincular de Google. Si quiere que eliminemos el correo que guardamos, pídanoslo o borre su cuenta." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Entrar por primera vez con Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación." }] },
         ],
       },
       {
@@ -346,7 +346,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Todo el tráfico entre su dispositivo y nuestros servidores va cifrado." }],
               [{ t: 'texto', v: "La base de datos aplica reglas de acceso fila por fila: una cuenta solo puede leer y escribir lo suyo." }],
               [{ t: 'texto', v: "Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas." }],
-              [{ t: 'texto', v: "No guardamos contraseñas en claro. Las cuentas antiguas con contraseña la tienen almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla." }],
+              [{ t: 'texto', v: "No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google." }],
               [{ t: 'texto', v: "Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor." }],
               [{ t: 'texto', v: "El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor." }],
               [{ t: 'texto', v: "Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted." }],
@@ -420,9 +420,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "2.2.0",
-    actualizado: "2026-09-19",
-    astHash: "9aa39da1218e502be4a6d5f5a50996fcb54fe20db14027aae279cfe76f4aa99a",
+    version: "2.3.0",
+    actualizado: "2026-09-30",
+    astHash: "6d6dcd515bd781ba537a8cd1c351ffff82e82957b9656becf0ab758498472205",
     secciones: [
       {
         id: "aceptacion",
@@ -488,8 +488,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Por eso mismo, " }, { t: 'fuerte', v: "el teléfono no se puede cambiar después" }, { t: 'texto', v: ". Una vez guardado queda fijo. Si lo escribió mal, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda." }] },
-          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web existe un segundo método de acceso. Las personas que se registraron antes de que las cuentas fueran solo con Google conservan su apodo y su contraseña, y pueden seguir entrando así. La aplicación Android solo ofrece el acceso con Google." }] },
-          { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web, si usted tiene una cuenta antigua y quiere empezar a usar Google, vincúlela desde su perfil antes de intentar entrar con Google. Si entra primero con Google se crea una cuenta nueva y vacía, y sus puntos se quedan en la anterior." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Solo se puede entrar con Google" }, { t: 'texto', v: ", tanto en el sitio web como en la aplicación." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Hasta el 30 de septiembre de 2026, el sitio web tuvo un segundo acceso, con apodo y contraseña, para las cuentas creadas antes de que el registro fuera solo con Google. Ese acceso ya no existe. Las cuentas antiguas que nunca se vincularon con Google se conservan como estaban, con su apodo, sus puntos y sus cupones, pero ya no tienen forma de iniciar sesión." }] },
         ],
       },
       {
@@ -539,7 +539,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "Un punto" }, { t: 'texto', v: " por canjear una palabra secreta." }],
               [{ t: 'fuerte', v: "Diez puntos" }, { t: 'texto', v: " cuando presenta su cupón QR en el mostrador y lo escaneamos." }],
               [{ t: 'fuerte', v: "Cinco puntos" }, { t: 'texto', v: ", una sola vez, por completar su nombre, su apellido, su fecha de nacimiento y su teléfono." }],
-              [{ t: 'fuerte', v: "Cinco puntos" }, { t: 'texto', v: ", una sola vez, por vincular su cuenta de Google." }],
+              [{ t: 'fuerte', v: "Cinco puntos" }, { t: 'texto', v: ", una sola vez, al entrar por primera vez con su cuenta de Google." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Y ahora lo importante, dicho sin rodeos:" }] },
@@ -698,4 +698,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "432e7bb867623faf8b700887df5d5262a287cd1bdba6e9f1914db19df5a1a641"
+export const LEGAL_BUNDLE_HASH = "f367b365186072cda955b86b3aa50fc483fdcb6f60c60c486e763da40730ff6a"

@@ -2,8 +2,8 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 2.2.0
-actualizado: 2026-09-19
+version: 2.3.0
+actualizado: 2026-09-30
 ---
 
 ## Lo que acepta al usar Helados Mados {#aceptacion icono=Shield}
@@ -56,11 +56,9 @@ El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o reti
 
 Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda.
 
-:::alcance web
-En el sitio web existe un segundo método de acceso. Las personas que se registraron antes de que las cuentas fueran solo con Google conservan su apodo y su contraseña, y pueden seguir entrando así. La aplicación Android solo ofrece el acceso con Google.
+**Solo se puede entrar con Google**, tanto en el sitio web como en la aplicación.
 
-En el sitio web, si usted tiene una cuenta antigua y quiere empezar a usar Google, vincúlela desde su perfil antes de intentar entrar con Google. Si entra primero con Google se crea una cuenta nueva y vacía, y sus puntos se quedan en la anterior.
-:::
+Hasta el 30 de septiembre de 2026, el sitio web tuvo un segundo acceso, con apodo y contraseña, para las cuentas creadas antes de que el registro fuera solo con Google. Ese acceso ya no existe. Las cuentas antiguas que nunca se vincularon con Google se conservan como estaban, con su apodo, sus puntos y sus cupones, pero ya no tienen forma de iniciar sesión.
 
 ## Cómo funciona la promoción {#promocion icono=Ticket}
 
@@ -95,7 +93,7 @@ Usted acumula puntos así:
 - **Un punto** por canjear una palabra secreta.
 - **Diez puntos** cuando presenta su cupón QR en el mostrador y lo escaneamos.
 - **Cinco puntos**, una sola vez, por completar su nombre, su apellido, su fecha de nacimiento y su teléfono.
-- **Cinco puntos**, una sola vez, por vincular su cuenta de Google.
+- **Cinco puntos**, una sola vez, al entrar por primera vez con su cuenta de Google.
 
 Y ahora lo importante, dicho sin rodeos:
 

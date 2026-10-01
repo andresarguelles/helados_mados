@@ -1,4 +1,4 @@
-// A dónde volver después de un viaje a Google, y si ese viaje era para vincular.
+// A dónde volver después de un viaje a Google.
 //
 // Por qué no va en la URL: el `redirectTo` que se manda a Supabase tiene que coincidir EXACTAMENTE
 // con una entrada de la lista blanca de Redirect URLs, y la comparación incluye el query string.
@@ -12,8 +12,6 @@ const KEY = 'mados:auth-intent'
 export interface AuthIntent {
   /** Ruta interna a la que volver. */
   next: string
-  /** true cuando el viaje fue para vincular Google a una cuenta que ya existía. */
-  linking: boolean
 }
 
 /** sessionStorage es editable desde devtools, así que `next` se valida igual al leerlo. */
@@ -37,7 +35,7 @@ export function readAuthIntent(): AuthIntent | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<AuthIntent>
     if (!isInternalPath(parsed.next)) return null
-    return { next: parsed.next, linking: parsed.linking === true }
+    return { next: parsed.next }
   } catch {
     return null
   }
