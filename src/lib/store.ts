@@ -582,8 +582,12 @@ export const useStore = create<AppState>()((set, get) => ({
     // canales con el mismo tema se estorban.
     const canal = supabase
       .channel(`estacion-${Math.random().toString(36).slice(2)}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'estacion' }, ({ new: fila }) => {
-        set({ estacion: aEstadoEstacion(fila as FilaEstacion) })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'estacion' }, ({ new: fila, errors }) => {
+        // Realtime avisa del cambio aunque no pueda entregar la fila: con el token vencido
+        // llega `new: {}` y `errors: ["Error 401: Unauthorized"]`. Aplicar eso dejaría la
+        // pantalla en "todos los sabores, histórico"; se relee la fila en su lugar.
+        if (errors?.length || !fila || !('periodo_ranking' in fila)) recargar()
+        else set({ estacion: aEstadoEstacion(fila as FilaEstacion) })
       })
       .subscribe(estado => { if (estado === 'SUBSCRIBED') recargar() })
 
