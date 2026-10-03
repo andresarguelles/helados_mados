@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
 import { formatDate, toDatetimeLocalValue } from '../../lib/fechas'
@@ -10,14 +9,7 @@ import ConfirmDialog from '../../components/ui/ConfirmDialog'
 import {
   Plus, QrCode, Pencil, Trash2, X,
   Package, ChevronRight, ChevronDown, Loader2, AlertCircle, Clock, ArrowRight,
-  Monitor, Trophy, IceCreamCone,
 } from 'lucide-react'
-
-// Se abren en el navegador del monitor vertical de la Estación, en modo quiosco.
-const PANTALLAS = [
-  { to: '/admin/leaderboard', label: 'Ranking', icon: Trophy },
-  { to: '/admin/flavors', label: 'Sabores', icon: IceCreamCone },
-]
 
 type ModalMode = 'create' | 'edit' | null
 type StatusGroupKey = 'active' | 'upcoming' | 'expired'
@@ -340,25 +332,6 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
-
-        <div className="flex flex-col gap-3">
-          <h2 className="flex items-center gap-2 font-heading text-xs uppercase tracking-wide text-white/70">
-            <Monitor className="w-3.5 h-3.5" />
-            Pantallas de mostrador
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {PANTALLAS.map(({ to, label, icon: Icon }) => (
-              <Link
-                key={to}
-                to={to}
-                className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 flex items-center gap-2 font-heading text-sm text-white hover:bg-white/10 transition-colors"
-              >
-                <Icon className="w-4 h-4 text-brand-amarillo shrink-0" />
-                <span className="truncate">{label}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Modal */}

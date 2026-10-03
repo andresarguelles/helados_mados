@@ -290,6 +290,16 @@ const ADMIN_USERS: SeoRoute = {
   robots: 'noindex,nofollow',
 }
 
+// El panel de control de las pantallas de mostrador.
+const ADMIN_ESTACION: SeoRoute = {
+  path: '/admin/estacion',
+  kind: 'spa',
+  title: 'Estación — Helados Mados',
+  description: 'Control de las pantallas de mostrador de la Estación de Helados Mados.',
+  index: false,
+  robots: 'noindex,nofollow',
+}
+
 // Pantallas de mostrador: monitores verticales en modo quiosco dentro de la Estación.
 const ADMIN_LEADERBOARD: SeoRoute = {
   path: '/admin/leaderboard',
@@ -357,6 +367,7 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
   ADMIN_DASHBOARD,
   ADMIN_SCANNER,
   ADMIN_USERS,
+  ADMIN_ESTACION,
   ADMIN_LEADERBOARD,
   ADMIN_FLAVORS,
 ]

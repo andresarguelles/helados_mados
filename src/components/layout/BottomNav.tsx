@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils'
 import { esRutaKiosco } from '../../lib/kiosco'
 import {
   Home, User, Trophy, Rocket, Ticket,
-  LayoutGrid, Users, QrCode,
+  LayoutGrid, Users, QrCode, Store,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -27,6 +27,7 @@ const ADMIN_ITEMS: NavItem[] = [
   { to: '/admin/dashboard', label: 'Entrenamientos', icon: LayoutGrid },
   { to: '/admin/users',     label: 'Clientes',       icon: Users },
   { to: '/admin/scanner',   label: 'Escáner',        icon: QrCode },
+  { to: '/admin/estacion',  label: 'Estación',       icon: Store },
 ]
 
 // Fuente única de verdad para saber si la barra está en pantalla: las páginas la usan

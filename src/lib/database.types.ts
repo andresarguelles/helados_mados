@@ -125,6 +125,30 @@ export type Database = {
         }
         Relationships: []
       }
+      estacion: {
+        Row: {
+          actualizado_en: string
+          actualizado_por: string | null
+          id: boolean
+          periodo_ranking: string
+          sabores_ocultos: string[]
+        }
+        Insert: {
+          actualizado_en?: string
+          actualizado_por?: string | null
+          id?: boolean
+          periodo_ranking?: string
+          sabores_ocultos?: string[]
+        }
+        Update: {
+          actualizado_en?: string
+          actualizado_por?: string | null
+          id?: boolean
+          periodo_ranking?: string
+          sabores_ocultos?: string[]
+        }
+        Relationships: []
+      }
       ip_redemption_logs: {
         Row: {
           count: number
@@ -284,6 +308,12 @@ export type Database = {
           p_username: string
           p_whatsapp_opt_in: boolean
         }
+        Returns: Json
+      }
+      estacion_mostrar_todos: { Args: never; Returns: Json }
+      estacion_set_periodo: { Args: { p_periodo: string }; Returns: Json }
+      estacion_set_sabor: {
+        Args: { p_sabor: string; p_visible: boolean }
         Returns: Json
       }
       get_leaderboard: {

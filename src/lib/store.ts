@@ -87,6 +87,31 @@ type AdminDeleteResult =
   | { success: true; username: string | null }
   | { success: false; reason: AdminDeleteReason }
 
+/**
+ * Lo que muestran las pantallas de mostrador (/admin/leaderboard y /admin/flavors). Lo decide
+ * el personal en /admin/estacion y vive en la tabla `estacion` (una fila), que Realtime empuja
+ * a las pantallas en cuanto cambia.
+ */
+export interface EstadoEstacion {
+  periodoRanking: LeaderboardPeriod
+  /** Ids de `src/content/sabores.ts` que no se muestran. Un sabor nuevo aparece solo. */
+  saboresOcultos: string[]
+}
+
+type FilaEstacion = Database['public']['Tables']['estacion']['Row']
+
+const PERIODOS: readonly LeaderboardPeriod[] = ['day', 'week', 'month', 'all']
+
+function aEstadoEstacion(fila: Pick<FilaEstacion, 'periodo_ranking' | 'sabores_ocultos'>): EstadoEstacion {
+  const periodo = PERIODOS.find(p => p === fila.periodo_ranking) ?? 'all'
+  return { periodoRanking: periodo, saboresOcultos: fila.sabores_ocultos ?? [] }
+}
+
+/** Las RPC de la estación responden `{ success }`; cualquier otra cosa cuenta como fallo. */
+function rpcExitosa({ data, error }: { data: unknown; error: unknown }): boolean {
+  return !error && (data as { success?: boolean } | null)?.success === true
+}
+
 interface LeaderboardRange {
   start: string
   end: string
@@ -157,6 +182,7 @@ interface AppState {
   dynamics: Dynamic[]
   coupons: Coupon[]
   profiles: Profile[]
+  estacion: EstadoEstacion | null
 
   // Auth
   initAuth: () => () => void
@@ -193,6 +219,14 @@ interface AppState {
   /** Como `getLeaderboard`, pero `null` si la consulta falla: una lista vacía no es un error. */
   fetchLeaderboard: (period: LeaderboardPeriod) => Promise<LeaderboardEntry[] | null>
   getLeaderboardRange: (period: 'day' | 'week' | 'month') => Promise<LeaderboardRange | null>
+
+  // Estación: lo que muestran las pantallas de mostrador
+  /** Lee la fila y escucha sus cambios en vivo. Devuelve la función para dejar de escuchar. */
+  suscribirEstacion: () => () => void
+  recargarEstacion: () => Promise<void>
+  setPeriodoRanking: (periodo: LeaderboardPeriod) => Promise<boolean>
+  setSaborVisible: (saborId: string, visible: boolean) => Promise<boolean>
+  mostrarTodosLosSabores: () => Promise<boolean>
 
   // Texto legal
   getLegalStatus: () => Promise<LegalStatus>
@@ -237,6 +271,7 @@ export const useStore = create<AppState>()((set, get) => ({
   dynamics: [],
   coupons: [],
   profiles: [],
+  estacion: null,
 
   // ── Auth ──────────────────────────────────────────────────────────────
 
@@ -527,5 +562,82 @@ export const useStore = create<AppState>()((set, get) => ({
     const row = data?.[0]
     if (error || !row || !row.range_start || !row.range_end) return null
     return { start: row.range_start, end: row.range_end }
+  },
+
+  // ── Estación ──────────────────────────────────────────────────────────
+  //
+  // Las pantallas no preguntan cada rato si hay algo nuevo: abren un canal de Realtime y
+  // Postgres les empuja la fila en cuanto el panel la cambia. Leer la fila aparte sigue
+  // haciendo falta: al arrancar, y al reconectar, porque lo que cambió sin conexión no llega
+  // por el canal.
+
+  recargarEstacion: async () => {
+    const { data, error } = await supabase.from('estacion').select('periodo_ranking, sabores_ocultos').maybeSingle()
+    if (!error && data) set({ estacion: aEstadoEstacion(data) })
+  },
+
+  suscribirEstacion: () => {
+    const recargar = () => void get().recargarEstacion()
+    // Nombre único por suscripción: en desarrollo StrictMode monta el efecto dos veces, y dos
+    // canales con el mismo tema se estorban.
+    const canal = supabase
+      .channel(`estacion-${Math.random().toString(36).slice(2)}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'estacion' }, ({ new: fila }) => {
+        set({ estacion: aEstadoEstacion(fila as FilaEstacion) })
+      })
+      .subscribe(estado => { if (estado === 'SUBSCRIBED') recargar() })
+
+    recargar()
+    const alVolver = () => { if (document.visibilityState === 'visible') recargar() }
+    document.addEventListener('visibilitychange', alVolver)
+    // Red de seguridad para un monitor que pasa días encendido: si el canal se cayera sin
+    // avisar, en unos minutos vuelve a cuadrar. Es una lectura de una fila.
+    const respaldo = window.setInterval(recargar, 180_000)
+
+    return () => {
+      document.removeEventListener('visibilitychange', alVolver)
+      window.clearInterval(respaldo)
+      void supabase.removeChannel(canal)
+    }
+  },
+
+  // Las tres acciones son optimistas: el panel cambia al instante y la RPC confirma. Si
+  // falla, se regresa a lo que había (aunque tampoco haya red para releer) y luego se relee
+  // la fila, para no mostrar algo que no se guardó.
+
+  setPeriodoRanking: async (periodo) => {
+    const actual = get().estacion
+    if (actual) set({ estacion: { ...actual, periodoRanking: periodo } })
+    const ok = rpcExitosa(await supabase.rpc('estacion_set_periodo', { p_periodo: periodo }))
+    if (!ok) {
+      set({ estacion: actual })
+      await get().recargarEstacion()
+    }
+    return ok
+  },
+
+  setSaborVisible: async (saborId, visible) => {
+    const actual = get().estacion
+    if (actual) {
+      const sinEste = actual.saboresOcultos.filter(id => id !== saborId)
+      set({ estacion: { ...actual, saboresOcultos: visible ? sinEste : [...sinEste, saborId] } })
+    }
+    const ok = rpcExitosa(await supabase.rpc('estacion_set_sabor', { p_sabor: saborId, p_visible: visible }))
+    if (!ok) {
+      set({ estacion: actual })
+      await get().recargarEstacion()
+    }
+    return ok
+  },
+
+  mostrarTodosLosSabores: async () => {
+    const actual = get().estacion
+    if (actual) set({ estacion: { ...actual, saboresOcultos: [] } })
+    const ok = rpcExitosa(await supabase.rpc('estacion_mostrar_todos'))
+    if (!ok) {
+      set({ estacion: actual })
+      await get().recargarEstacion()
+    }
+    return ok
   },
 }))

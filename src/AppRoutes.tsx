@@ -41,6 +41,8 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'))
 // Pantallas de mostrador (monitores verticales en modo quiosco), ver lib/kiosco.ts.
 const AdminLeaderboard = lazy(() => import('./pages/admin/AdminLeaderboard'))
 const AdminFlavors = lazy(() => import('./pages/admin/AdminFlavors'))
+// El panel de control de esas dos pantallas.
+const AdminEstacion = lazy(() => import('./pages/admin/AdminEstacion'))
 
 /**
  * Qué precargar antes de hidratar cada ruta prerenderizada que cuelga de
@@ -183,6 +185,11 @@ export const routeElements = (
     <Route path="/admin/users" element={
       <Suspense fallback={<AdminFallback />}>
         <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
+      </Suspense>
+    } />
+    <Route path="/admin/estacion" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedAdmin><AdminEstacion /></ProtectedAdmin>
       </Suspense>
     } />
     <Route path="/admin/leaderboard" element={

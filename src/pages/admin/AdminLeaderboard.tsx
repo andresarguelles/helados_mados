@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
 import { Sparkle } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useStore, type LeaderboardEntry, type LeaderboardPeriod } from '../../lib/store'
 import { cn } from '../../lib/utils'
-import { NEGOCIO, SITE_URL } from '../../content/negocio'
+import { SITE_URL } from '../../content/negocio'
 import { KioscoMarco } from '../../components/kiosco/KioscoShell'
+import BarraSuperior from '../../components/kiosco/BarraSuperior'
 import { tamanoQueCabe } from '../../components/kiosco/tamano'
 import { Card } from '../../components/ui/Card'
 import { ScrollArea } from '../../components/ui/ScrollArea'
@@ -16,41 +16,21 @@ const REFRESCO_MS = 60_000
 /** Top 10: tres en el podio y siete en la lista, sin desplazarse. */
 const FILAS = 10
 
-// Lo que se teclea en la URL de cada monitor: /admin/leaderboard?periodo=semana.
-const PERIODOS: { clave: string; period: LeaderboardPeriod; pestana: string; encabezado: string }[] = [
-  { clave: 'hoy', period: 'day', pestana: 'Hoy', encabezado: 'Ranking de hoy' },
-  { clave: 'semana', period: 'week', pestana: 'Semana', encabezado: 'Ranking de la semana' },
-  { clave: 'mes', period: 'month', pestana: 'Mes', encabezado: 'Ranking del mes' },
-  { clave: 'historico', period: 'all', pestana: 'Histórico', encabezado: 'Ranking histórico' },
+// El periodo lo decide el personal desde /admin/estacion; esta pantalla solo lo obedece.
+const PERIODOS: { period: LeaderboardPeriod; pestana: string; encabezado: string }[] = [
+  { period: 'day', pestana: 'Hoy', encabezado: 'Ranking de hoy' },
+  { period: 'week', pestana: 'Semana', encabezado: 'Ranking de la semana' },
+  { period: 'month', pestana: 'Mes', encabezado: 'Ranking del mes' },
+  { period: 'all', pestana: 'Histórico', encabezado: 'Ranking histórico' },
 ]
-const HISTORICO = PERIODOS[3]
-
-/** `?periodo=Histórico` también vale: sin acentos ni mayúsculas. Cualquier otra cosa, histórico. */
-function periodoDe(valor: string | null) {
-  const clave = (valor ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
-  return PERIODOS.find(p => p.clave === clave) ?? HISTORICO
-}
-
-const formatoHora = new Intl.DateTimeFormat('es-MX', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
-
-/** La hora de la pared, al minuto. */
-function useHora(): string {
-  const [hora, setHora] = useState(() => formatoHora.format(new Date()))
-  useEffect(() => {
-    // Cada segundo y no cada minuto: así nunca va un minuto atrasada. React descarta el
-    // render cuando el texto no cambió.
-    const id = window.setInterval(() => setHora(formatoHora.format(new Date())), 1000)
-    return () => window.clearInterval(id)
-  }, [])
-  return hora
-}
 
 /**
  * El marcador del periodo, refrescado cada minuto y al volver a ser visible. Un fallo
  * conserva lo último que se pintó: un corte de red no debe dejar la pared en blanco.
- * `entries` es null hasta la primera respuesta buena.
+ * `entries` es null hasta la primera respuesta buena, y también mientras no se sabe el
+ * periodo (`period` null: la fila de la estación todavía no llega).
  */
-function useMarcador(period: LeaderboardPeriod) {
+function useMarcador(period: LeaderboardPeriod | null) {
   const fetchLeaderboard = useStore(s => s.fetchLeaderboard)
   const [entries, setEntries] = useState<LeaderboardEntry[] | null>(null)
   const [sinConexion, setSinConexion] = useState(false)
@@ -59,6 +39,7 @@ function useMarcador(period: LeaderboardPeriod) {
     let cancelado = false
     setEntries(null)
     setSinConexion(false)
+    if (!period) return
 
     const cargar = async () => {
       const lista = await fetchLeaderboard(period)
@@ -83,9 +64,13 @@ function useMarcador(period: LeaderboardPeriod) {
 }
 
 export default function AdminLeaderboard() {
-  const [params] = useSearchParams()
-  const periodo = periodoDe(params.get('periodo'))
-  const { entries, sinConexion } = useMarcador(periodo.period)
+  const estacion = useStore(s => s.estacion)
+  const suscribirEstacion = useStore(s => s.suscribirEstacion)
+  // En vivo: cuando el panel cambia el periodo, Realtime trae la fila y esta pantalla se
+  // redibuja sola, sin recargar.
+  useEffect(() => suscribirEstacion(), [suscribirEstacion])
+  const periodo = estacion ? PERIODOS.find(p => p.period === estacion.periodoRanking) ?? null : null
+  const { entries, sinConexion } = useMarcador(periodo?.period ?? null)
 
   return (
     <KioscoMarco className="bg-brand-azul">
@@ -94,34 +79,31 @@ export default function AdminLeaderboard() {
       <section className="shrink-0 overflow-hidden bg-brand-noche bg-dots-azul border-b-4 border-brand-sombra flex flex-col items-center px-[2.6vh] pt-[2vh]">
         <p className="flex items-center gap-[1.2vh] font-mono font-bold uppercase text-brand-verde text-[1.8vh] tracking-[0.3em]">
           <img src="/astronauta_mados_nuevo.svg" alt="" width={30} height={37} className="h-[2.4vh] w-auto rotate-[155deg]" />
-          {periodo.encabezado}
+          {periodo?.encabezado ?? 'Ranking'}
         </p>
         {/* Interlineado 1.05 y no menos: más apretado, el acento de la Í choca con TABLA. */}
         <h1 className="font-heading text-white text-[4.8vh] leading-[1.05] text-center mt-[1.2vh]">
           Tabla de<br />líderes
         </h1>
 
-        {/* Señala el periodo que muestra este monitor. Son enlaces solo por comodidad del
-            personal al configurarlo: frente al público nadie los toca. */}
-        <nav aria-label="Periodo" className="mt-[2vh] flex items-center gap-[0.4vh] rounded-full bg-brand-sombra p-[0.6vh]">
+        {/* Solo señala el periodo: se elige desde /admin/estacion, no tocando el monitor. */}
+        <div className="mt-[2vh] flex items-center gap-[0.4vh] rounded-full bg-brand-sombra p-[0.6vh]">
           {PERIODOS.map(p => {
-            const activo = p.clave === periodo.clave
+            const activo = p.period === periodo?.period
             return (
-              <Link
-                key={p.clave}
-                to={`?periodo=${p.clave}`}
-                replace
-                aria-current={activo ? 'page' : undefined}
+              <span
+                key={p.period}
+                aria-current={activo ? 'true' : undefined}
                 className={cn(
-                  'rounded-full px-[2.2vh] py-[0.8vh] font-body font-black uppercase text-[1.8vh] leading-none',
+                  'rounded-full px-[2.2vh] py-[0.8vh] font-body font-black uppercase text-[1.8vh] leading-none transition-colors',
                   activo ? 'bg-brand-verde text-brand-sombra' : 'text-white'
                 )}
               >
                 {p.pestana}
-              </Link>
+              </span>
             )
           })}
-        </nav>
+        </div>
 
         <div className="w-full mt-[1.6vh] flex items-end justify-center gap-[2%]">
           {/* 2º a la izquierda, 1º al centro y más alto, 3º a la derecha: como el podio de la home. */}
@@ -139,23 +121,6 @@ export default function AdminLeaderboard() {
 
       <Llamado />
     </KioscoMarco>
-  )
-}
-
-function BarraSuperior({ sinConexion }: { sinConexion: boolean }) {
-  const hora = useHora()
-  return (
-    <header className="shrink-0 h-[7vh] bg-white border-b-4 border-brand-sombra flex items-center justify-between gap-[2vh] px-[2.6vh]">
-      <img src="/mados-logo-full.svg" alt="Helados Mados" width={81} height={36} className="h-[4.6vh] w-auto" />
-      <div className="text-right">
-        <p className="font-mono font-bold text-brand-sombra text-[3.6vh] leading-none tabular-nums">{hora}</p>
-        <p className="font-mono uppercase text-brand-gris text-[1.3vh] tracking-[0.25em] mt-[0.6vh] flex items-center justify-end gap-[0.8vh]">
-          {/* Si el marcador deja de responder, el personal lo ve aquí; el público, apenas. */}
-          {sinConexion && <span className="w-[1vh] h-[1vh] rounded-full bg-brand-naranja" aria-label="Reconectando" />}
-          Estación 01 · {NEGOCIO.direccion.alcaldia}
-        </p>
-      </div>
-    </header>
   )
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import BarraSuperior from './BarraSuperior'
 
 /**
  * Pide al navegador que no apague la pantalla mientras la vista esté abierta. El bloqueo se
@@ -63,7 +64,7 @@ export function KioscoMarco({ className, children }: { className?: string; child
   )
 }
 
-/** El marco con encabezado de marca sobre azul: logo, título y subtítulo. */
+/** El marco con la barra del reloj arriba y, sobre azul, título, subtítulo y contenido. */
 export default function KioscoShell({
   titulo,
   subtitulo,
@@ -74,16 +75,11 @@ export default function KioscoShell({
   children: ReactNode
 }) {
   return (
-    <KioscoMarco className="bg-brand-azul bg-dots-azul gap-[2.2vh] px-[2.6vh] py-[2.6vh]">
-      <header className="shrink-0 flex flex-col gap-[1.6vh]">
-        <img
-          src="/mados-logo-full.svg"
-          alt="Helados Mados"
-          width={81}
-          height={36}
-          className="h-[5vh] w-auto self-start"
-        />
-        <div className="min-w-0">
+    <KioscoMarco className="bg-brand-azul bg-dots-azul">
+      <BarraSuperior />
+
+      <div className="flex-1 min-h-0 flex flex-col gap-[2.2vh] px-[2.6vh] py-[2.6vh]">
+        <div className="shrink-0 min-w-0">
           <h1 className="font-heading text-white text-[4vh] leading-none text-balance">{titulo}</h1>
           {subtitulo && (
             <p className="font-subheading text-brand-verde text-[2.4vh] leading-tight mt-[1vh]">
@@ -91,9 +87,9 @@ export default function KioscoShell({
             </p>
           )}
         </div>
-      </header>
 
-      <main className="flex-1 min-h-0">{children}</main>
+        <main className="flex-1 min-h-0">{children}</main>
+      </div>
     </KioscoMarco>
   )
 }
