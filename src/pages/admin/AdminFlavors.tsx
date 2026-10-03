@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Droplets, Loader2, Milk, type LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { useStore } from '../../lib/store'
-import { SABORES, type BaseSabor, type Sabor } from '../../content/sabores'
+import { PAGINAS_DE_SABORES, SABORES, fondoDe, type BaseSabor, type Sabor } from '../../content/sabores'
 import KioscoShell from '../../components/kiosco/KioscoShell'
 import { tamanoQueCabe } from '../../components/kiosco/tamano'
 import { Card } from '../../components/ui/Card'
@@ -24,11 +24,10 @@ function resumen(sabores: readonly Sabor[]): string {
 }
 
 /**
- * Cuánto cabe en cada tarjeta, medido a 1080×1920 con capturas: `grande` hasta 3 filas,
- * `normal` hasta 6 (12 sabores) y `compacta` hasta 8 (16 sabores). Con más de 16 las tarjetas
- * ya no caben y habría que pasar a tres columnas o rotar páginas.
+ * Cuánto cabe en cada tarjeta, medido a 1080×1920 con capturas: `grande` hasta 3 filas y
+ * `normal` hasta 6. Nunca hay más de 6 filas porque nunca hay más de 12 sabores por página.
  */
-type Densidad = 'grande' | 'normal' | 'compacta'
+type Densidad = 'grande' | 'normal'
 
 const TAMANOS: Record<Densidad, { nombreVh: number; franja: string; pildora: string; posicion: string; icono: string }> = {
   grande: {
@@ -45,21 +44,20 @@ const TAMANOS: Record<Densidad, { nombreVh: number; franja: string; pildora: str
     posicion: 'top-[1vh] left-[1vh]',
     icono: 'w-[1.6vh] h-[1.6vh]',
   },
-  compacta: {
-    nombreVh: 2.2,
-    franja: 'px-[1.2vh] py-[0.6vh]',
-    pildora: 'text-[1.1vh] px-[0.8vh] py-[0.35vh]',
-    posicion: 'top-[0.8vh] left-[0.8vh]',
-    icono: 'w-[1.4vh] h-[1.4vh]',
-  },
 }
 
-/** Ancho medio de un carácter de Baloo 2 en mayúsculas y minúsculas (ver tamano.ts). */
-const BALOO_EM = 0.62
+/**
+ * Ancho medio de un carácter de Baloo 2 en los nombres del catálogo, medido en el navegador:
+ * el más ancho, "Queso con Zarzamora", da 0.52em por carácter. 0.55 deja margen.
+ */
+const BALOO_EM = 0.55
 
 /** Todos los nombres al mismo tamaño y en una línea: el que deja caber el nombre más largo
  *  del catálogo entero, para que la letra no brinque cuando se oculta o vuelve un sabor. */
 const NOMBRE_MAS_LARGO = SABORES.reduce((largo, s) => (s.nombre.length > largo.length ? s.nombre : largo), '')
+
+// Más de 12 no caben a dos columnas con letra legible a distancia: se pasa a páginas.
+const { maximoPorPagina: MAXIMO_POR_PAGINA, segundosPorPagina: SEGUNDOS_POR_PAGINA } = PAGINAS_DE_SABORES
 
 export default function AdminFlavors() {
   const estacion = useStore(s => s.estacion)
@@ -67,6 +65,24 @@ export default function AdminFlavors() {
   // En vivo: cuando el panel quita o pone un sabor, Realtime trae la fila y esta pantalla se
   // redibuja sola, sin recargar.
   useEffect(() => suscribirEstacion(), [suscribirEstacion])
+
+  // Lo que aparece es lo que hay: el sabor que se acaba se oculta desde /admin/estacion.
+  const ocultos = new Set(estacion?.saboresOcultos ?? [])
+  const sabores = estacion ? SABORES.filter(s => !ocultos.has(s.id)) : []
+
+  // Páginas parejas: 17 sabores son 9 + 8, no 12 + 5, para que todas se vean igual de llenas.
+  const paginas = Math.max(1, Math.ceil(sabores.length / MAXIMO_POR_PAGINA))
+  const porPagina = Math.max(1, Math.ceil(sabores.length / paginas))
+  const [pagina, setPagina] = useState(0)
+  useEffect(() => {
+    // Si el panel oculta o devuelve sabores y cambia el número de páginas, se empieza de nuevo.
+    setPagina(0)
+    if (paginas < 2) return
+    const id = window.setInterval(() => setPagina(p => (p + 1) % paginas), SEGUNDOS_POR_PAGINA * 1000)
+    return () => window.clearInterval(id)
+  }, [paginas])
+  // Mientras el efecto de arriba corre, que nunca se pinte una página que ya no existe.
+  const actual = Math.min(pagina, paginas - 1)
 
   if (!estacion) {
     return (
@@ -78,10 +94,6 @@ export default function AdminFlavors() {
     )
   }
 
-  // Lo que aparece es lo que hay: el sabor que se acaba se oculta desde /admin/estacion.
-  const ocultos = new Set(estacion.saboresOcultos)
-  const sabores = SABORES.filter(s => !ocultos.has(s.id))
-
   if (sabores.length === 0) {
     return (
       <KioscoShell titulo="Sabores de hoy">
@@ -92,20 +104,38 @@ export default function AdminFlavors() {
     )
   }
 
-  // Dos columnas salvo con muy pocos sabores. Las filas se reparten todo el alto por igual, así
-  // que la pantalla siempre queda llena de arriba abajo, y la densidad sale de cuántas filas
-  // hay: más filas, tarjetas más bajas.
-  const columnas = sabores.length <= 3 ? 1 : 2
-  const filas = Math.ceil(sabores.length / columnas)
-  const densidad: Densidad = filas <= 3 ? 'grande' : filas <= 6 ? 'normal' : 'compacta'
+  // Dos columnas salvo con muy pocos sabores. La rejilla sale del tamaño de página, no de los
+  // que caen en la página actual: así todas las páginas tienen tarjetas del mismo tamaño.
+  const columnas = porPagina <= 3 ? 1 : 2
+  const filas = Math.ceil(porPagina / columnas)
+  const densidad: Densidad = filas <= 3 ? 'grande' : 'normal'
+  const enPagina = sabores.slice(actual * porPagina, (actual + 1) * porPagina)
 
   return (
-    <KioscoShell titulo="Sabores de hoy" subtitulo={resumen(sabores)}>
+    <KioscoShell
+      titulo="Sabores de hoy"
+      subtitulo={
+        <>
+          {resumen(sabores)}
+          {paginas > 1 && (
+            <span className="inline-flex items-center gap-[0.8vh] ml-[1.6vh] align-middle" aria-label={`Página ${actual + 1} de ${paginas}`}>
+              {Array.from({ length: paginas }, (_, i) => (
+                <span
+                  key={i}
+                  className={cn('w-[1.3vh] h-[1.3vh] rounded-full transition-colors', i === actual ? 'bg-brand-verde' : 'bg-white/30')}
+                />
+              ))}
+            </span>
+          )}
+        </>
+      }
+    >
       <div
-        className={cn('h-full grid gap-[1.2vh]', columnas === 1 ? 'grid-cols-1' : 'grid-cols-2')}
+        key={actual}
+        className={cn('h-full grid gap-[1.2vh] animate-fade-in', columnas === 1 ? 'grid-cols-1' : 'grid-cols-2')}
         style={{ gridTemplateRows: `repeat(${filas}, minmax(0, 1fr))` }}
       >
-        {sabores.map(sabor => (
+        {enPagina.map(sabor => (
           <TarjetaSabor key={sabor.id} sabor={sabor} densidad={densidad} />
         ))}
       </div>
@@ -121,8 +151,8 @@ function TarjetaSabor({ sabor, densidad }: { sabor: Sabor; densidad: Densidad })
     <Card className="h-full min-w-0 overflow-hidden">
       {/* El helado a sangre: las esquinas de la tarjeta lo recortan. La imagen la genera
           `npm --prefix tools/brand-assets run sabores` a partir del color; si falta, queda
-          el color plano del sabor en vez de un ícono roto. */}
-      <div className="relative flex-1 min-h-0" style={{ backgroundColor: sabor.color }}>
+          el color (o las bandas) del sabor en vez de un ícono roto. */}
+      <div className="relative flex-1 min-h-0" style={{ background: fondoDe(sabor) }}>
         <img
           src={`/sabores/${sabor.id}.jpg`}
           alt=""

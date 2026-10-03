@@ -227,7 +227,15 @@
       for (let x = 0; x < W; x++) variacion[y * W + x] = 1 + 0.04 * fbm(x * px * 1.3 + 40, y * px * 1.3 - 20, 3)
     }
 
-    estado = { ancho, alto, superm, W, H, difuso, ambiente, especular, sub, variacion }
+    // Para los sabores de varios colores (el napolitano): dónde cae cada píxel de izquierda a
+    // derecha, deformado con ruido para que las costuras entre bandas ondulen como en un
+    // bloque real y no sean rayas de regla.
+    const bandaU = new Float32Array(W * H)
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) bandaU[y * W + x] = x / W + 0.07 * fbm(x * px * 1.6 + 70, y * px * 1.6 - 15, 3)
+    }
+
+    estado = { ancho, alto, superm, W, H, difuso, ambiente, especular, sub, variacion, bandaU }
   }
 
   const aLineal = c => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
@@ -235,15 +243,21 @@
   /** Hombro suave: respeta el color hasta 0.8 y comprime solo los brillos. */
   const hombro = c => (c < 0.8 ? c : 0.8 + 0.2 * (1 - Math.exp(-(c - 0.8) / 0.2)))
 
-  /** La imagen de un sabor: los términos de luz de `preparar()` con este color. */
-  function pintar(hex, calidad) {
+  /** Ancho de la costura entre bandas, en fracciones de banda. */
+  const COSTURA = 0.04
+
+  /**
+   * La imagen de un sabor: los términos de luz de `preparar()` con su color. `colores` es un
+   * hex o una lista; con varios, se pintan en bandas de izquierda a derecha.
+   */
+  function pintar(colores, calidad) {
     if (!estado) throw new Error('Falta preparar()')
-    const { ancho, alto, superm, W, difuso, ambiente, especular, sub, variacion } = estado
-    const ar = aLineal(parseInt(hex.slice(1, 3), 16) / 255)
-    const ag = aLineal(parseInt(hex.slice(3, 5), 16) / 255)
-    const ab = aLineal(parseInt(hex.slice(5, 7), 16) / 255)
+    const { ancho, alto, superm, W, difuso, ambiente, especular, sub, variacion, bandaU } = estado
+    const lista = typeof colores === 'string' ? [colores] : colores
+    const n = lista.length
+    const albedo = lista.map(hex => [1, 3, 5].map(k => aLineal(parseInt(hex.slice(k, k + 2), 16) / 255)))
     // La luz que entra al helado y sale tintada: más saturada que la superficie.
-    const sr = Math.pow(ar, 1.7), sg = Math.pow(ag, 1.7), sb = Math.pow(ab, 1.7)
+    const tinte = albedo.map(c => c.map(v => Math.pow(v, 1.7)))
 
     const lienzo = document.createElement('canvas')
     lienzo.width = ancho; lienzo.height = alto
@@ -258,6 +272,13 @@
         for (let sy = 0; sy < superm; sy++) {
           for (let sx = 0; sx < superm; sx++) {
             const i = (y * superm + sy) * W + (x * superm + sx)
+            let ar = albedo[0][0], ag = albedo[0][1], ab = albedo[0][2]
+            let sr = tinte[0][0], sg = tinte[0][1], sb = tinte[0][2]
+            for (let k = 1; k < n; k++) {
+              const m = suave(k - COSTURA, k + COSTURA, bandaU[i] * n)
+              ar += (albedo[k][0] - ar) * m; ag += (albedo[k][1] - ag) * m; ab += (albedo[k][2] - ab) * m
+              sr += (tinte[k][0] - sr) * m; sg += (tinte[k][1] - sg) * m; sb += (tinte[k][2] - sb) * m
+            }
             const luz = (ambiente[i] * 0.5 + difuso[i] * 0.72) * variacion[i]
             // Sin esto, las sombras de los colores claros se iban a verde oliva.
             const s = sub[i] * 0.24

@@ -11,12 +11,12 @@
  * Además deja una hoja de contactos en `out/sabores-preview.png` para revisarlas juntas.
  *
  * Reejecutar con: npm --prefix tools/brand-assets run sabores
- * Solo algunos (para ajustar el render): ... run sabores -- --solo=vainilla,chocolate
+ * Solo algunos (para ajustar el render): ... run sabores -- --solo=vainilla,napolitano
  */
 import { chromium } from 'playwright-core'
 import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { SABORES } from '../../../src/content/sabores.ts'
+import { SABORES, coloresDe } from '../../../src/content/sabores.ts'
 
 const HERE = import.meta.dirname
 const ROOT = path.resolve(HERE, '..', '..', '..')
@@ -55,7 +55,7 @@ try {
 
   const generadas = []
   for (const sabor of sabores) {
-    const dataUrl = await page.evaluate(([c, q]) => window.HeladoRender.pintar(c, q), [sabor.color, CALIDAD_JPEG])
+    const dataUrl = await page.evaluate(([c, q]) => window.HeladoRender.pintar(c, q), [coloresDe(sabor), CALIDAD_JPEG])
     const buf = Buffer.from(dataUrl.split(',')[1], 'base64')
     await writeFile(path.join(SALIDA, `${sabor.id}.jpg`), buf)
     generadas.push({ sabor, dataUrl })
@@ -74,7 +74,7 @@ try {
   }
 
   const celdas = generadas
-    .map(({ sabor, dataUrl }) => `<figure><img src="${dataUrl}"><figcaption>${sabor.nombre} · ${sabor.color}</figcaption></figure>`)
+    .map(({ sabor, dataUrl }) => `<figure><img src="${dataUrl}"><figcaption>${sabor.nombre} · ${coloresDe(sabor).join(' ')}</figcaption></figure>`)
     .join('')
   await page.setViewportSize({ width: 1240, height: 400 })
   await page.setContent(`<!doctype html><html><head><meta charset="utf-8"><style>

@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { AlertCircle, Droplets, ExternalLink, IceCreamCone, Milk, Trophy, type LucideIcon } from 'lucide-react'
 import AdminHeader from '../../components/admin/AdminHeader'
 import { useStore, type LeaderboardPeriod } from '../../lib/store'
-import { SABORES, type Sabor } from '../../content/sabores'
+import { PAGINAS_DE_SABORES, SABORES, fondoDe, type Sabor } from '../../content/sabores'
 import { cn } from '../../lib/utils'
 
 const PERIODOS: { period: LeaderboardPeriod; etiqueta: string }[] = [
@@ -40,6 +40,7 @@ export default function AdminEstacion() {
 
   const ocultos = new Set(estacion?.saboresOcultos ?? [])
   const enPantalla = SABORES.filter(s => !ocultos.has(s.id)).length
+  const paginas = Math.ceil(enPantalla / PAGINAS_DE_SABORES.maximoPorPagina)
 
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
@@ -105,7 +106,10 @@ export default function AdminEstacion() {
               abrir="Abrir sabores"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-white/75 text-xs font-body">Toca un sabor para quitarlo o volver a ponerlo.</p>
+                <p className="text-white/75 text-xs font-body">
+                  Toca un sabor para quitarlo o volver a ponerlo.
+                  {paginas > 1 && ` Se muestran en ${paginas} páginas que rotan cada ${PAGINAS_DE_SABORES.segundosPorPagina} s.`}
+                </p>
                 {/* Para cuando se surte todo, normalmente al abrir. */}
                 <button
                   type="button"
@@ -188,7 +192,7 @@ function FilaSabor({ sabor, visible, onCambiar }: { sabor: Sabor; visible: boole
       >
         <span
           className={cn('w-11 h-11 shrink-0 overflow-hidden rounded-xl border-2 border-brand-sombra transition-opacity', !visible && 'opacity-35')}
-          style={{ backgroundColor: sabor.color }}
+          style={{ background: fondoDe(sabor) }}
         >
           <img
             src={`/sabores/${sabor.id}.jpg`}
