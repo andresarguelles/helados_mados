@@ -34,7 +34,9 @@ function dynamicErrorMessage(error: PostgrestError): string {
   return error.message
 }
 
-interface LeaderboardEntry {
+export type LeaderboardPeriod = 'day' | 'week' | 'month' | 'all'
+
+export interface LeaderboardEntry {
   username: string
   points: number
   /**
@@ -187,7 +189,9 @@ interface AppState {
   getUserCoupons: (userId: string) => Promise<Coupon[]>
 
   // Leaderboard
-  getLeaderboard: (period: 'day' | 'week' | 'month' | 'all') => Promise<LeaderboardEntry[]>
+  getLeaderboard: (period: LeaderboardPeriod) => Promise<LeaderboardEntry[]>
+  /** Como `getLeaderboard`, pero `null` si la consulta falla: una lista vacía no es un error. */
+  fetchLeaderboard: (period: LeaderboardPeriod) => Promise<LeaderboardEntry[] | null>
   getLeaderboardRange: (period: 'day' | 'week' | 'month') => Promise<LeaderboardRange | null>
 
   // Texto legal
@@ -436,9 +440,13 @@ export const useStore = create<AppState>()((set, get) => ({
 
   // ── Leaderboard ───────────────────────────────────────────────────────
 
-  getLeaderboard: async (period) => {
+  getLeaderboard: async (period) => (await get().fetchLeaderboard(period)) ?? [],
+
+  // La pantalla de mostrador refresca sola cada minuto y no puede quedarse en blanco por
+  // un corte de red: necesita distinguir "falló" de "no hay nadie", y conservar lo que tenía.
+  fetchLeaderboard: async (period) => {
     const { data, error } = await supabase.rpc('get_leaderboard', { p_period: period })
-    if (error || !data) return []
+    if (error || !data) return null
     return data.map(row => ({
       username: row.username,
       points: row.points,

@@ -290,6 +290,25 @@ const ADMIN_USERS: SeoRoute = {
   robots: 'noindex,nofollow',
 }
 
+// Pantallas de mostrador: monitores verticales en modo quiosco dentro de la Estación.
+const ADMIN_LEADERBOARD: SeoRoute = {
+  path: '/admin/leaderboard',
+  kind: 'spa',
+  title: 'Ranking en pantalla — Helados Mados',
+  description: 'El marcador de Cadetes para el monitor de la Estación de Helados Mados.',
+  index: false,
+  robots: 'noindex,nofollow',
+}
+
+const ADMIN_FLAVORS: SeoRoute = {
+  path: '/admin/flavors',
+  kind: 'spa',
+  title: 'Sabores en pantalla — Helados Mados',
+  description: 'Los sabores disponibles para el monitor de la Estación de Helados Mados.',
+  index: false,
+  robots: 'noindex,nofollow',
+}
+
 // ─── 404 y el shell vacío de las rutas `spa` ────────────────────────────────
 
 export const NOT_FOUND: SeoRoute = {
@@ -338,6 +357,8 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
   ADMIN_DASHBOARD,
   ADMIN_SCANNER,
   ADMIN_USERS,
+  ADMIN_LEADERBOARD,
+  ADMIN_FLAVORS,
 ]
 
 /** `matchPath` insensible a mayúsculas, sobre las rutas del manifiesto; si nada, `NOT_FOUND`. */

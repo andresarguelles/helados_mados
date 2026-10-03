@@ -10,6 +10,7 @@
     "svg-fidelity": "node scripts/svg-fidelity.mjs",
     "og-image": "node --import tsx/esm scripts/build-og-image.mjs",
     "icons": "node scripts/build-icons.mjs",
+    "sabores": "node --import tsx/esm scripts/build-sabores.mjs",
     "build-all": "npm run optimize-svgs && npm run svg-fidelity && npm run icons && npm run og-image"
   },
   "devDependencies": {

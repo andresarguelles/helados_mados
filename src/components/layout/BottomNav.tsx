@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
+import { esRutaKiosco } from '../../lib/kiosco'
 import {
   Home, User, Trophy, Rocket, Ticket,
   LayoutGrid, Users, QrCode,
@@ -41,7 +42,8 @@ export default function BottomNav() {
   const isAdmin = useStore(s => s.isAdmin)
   const location = useLocation()
 
-  if (!visible) return null
+  // En una pantalla de mostrador nadie navega: la barra solo taparía el ranking.
+  if (!visible || esRutaKiosco(location.pathname)) return null
 
   const items = isAdmin ? ADMIN_ITEMS : MEMBER_ITEMS
 

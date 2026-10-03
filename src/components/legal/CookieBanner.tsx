@@ -27,6 +27,7 @@ import {
 import { useBottomNavVisible } from '../layout/BottomNav'
 import { useHydrated } from '../../lib/useHydrated'
 import { cn } from '../../lib/utils'
+import { esRutaKiosco } from '../../lib/kiosco'
 
 // Apertura manual desde el pie de página. Es estado de una sola barra montada en App,
 // así que un almacén de módulo basta y evita subir el estado hasta App para nada.
@@ -74,6 +75,9 @@ export default function CookieBanner() {
   // consentir; con decisión tomada, solo se ve si la persona vuelve a abrirla desde el pie.
   if (!hidratado || !medicionConfigurada()) return null
   if (consentimiento !== null && !abierto) return null
+  // En una pantalla de mostrador nadie va a contestar. No preguntar equivale a no medir,
+  // que es justo el valor por defecto que promete el aviso.
+  if (esRutaKiosco(location.pathname)) return null
 
   const decidir = (valor: ConsentimientoMedicion) => {
     guardarConsentimiento(valor)
