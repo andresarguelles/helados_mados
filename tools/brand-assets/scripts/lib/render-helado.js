@@ -8,6 +8,12 @@
  *      oclusión, brillo especular, subsuperficie). La semilla es fija: misma forma siempre.
  *   2. `pintar(color)` solo combina esos términos con el color de cada sabor. Lo único que
  *      cambia entre una imagen y otra es el color.
+ *
+ * Modo foto: en vez del relieve calculado, `prepararFoto()` toma una foto real de helado
+ * neutro (blanco, sin trozos) y `pintarFoto()` la recolorea. La foto aporta forma, textura,
+ * luz y sombras; el sabor, solo el color. Hay una foto por base (leche y agua).
+ *
+ * Foto propia: `fotoTalCual()` usa la foto de un sabor sin recolorear, solo recortada.
  */
 ;(() => {
   const SEMILLA = 20261002
@@ -149,11 +155,12 @@
   }
 
   let estado = null
+  /** Cuánto helado cabe de arriba abajo, en unidades del ruido: menos = cámara más cerca. */
+  const ALTO_MUNDO = 0.95
 
   /** Relieve y luz, una sola vez. `superm` = supermuestreo por lado (2 = 4 muestras). */
   function preparar(ancho, alto, superm) {
     const W = ancho * superm, H = alto * superm
-    const ALTO_MUNDO = 0.95 // cuánto helado cabe de arriba abajo: menos = cámara más cerca
     const px = ALTO_MUNDO / H
     const RELIEVE = 0.24
 
@@ -303,5 +310,123 @@
     return lienzo.toDataURL('image/jpeg', calidad)
   }
 
-  window.HeladoRender = { preparar, pintar }
+  // ── Modo foto ──────────────────────────────────────────────────────────
+
+  const fotos = {}
+
+  /**
+   * Carga una foto base (data URL), la recorta al centro a `ancho`×`alto` y guarda cuánto más
+   * clara u oscura es cada zona respecto del tono normal de la superficie (la mediana). Ese
+   * cociente es lo único que se conserva de la foto: su color se descarta.
+   */
+  /** Una foto (data URL) recortada al centro a `ancho`×`alto`, en un canvas. */
+  async function recortarFoto(dataUrl, ancho, alto) {
+    const img = new Image()
+    img.src = dataUrl
+    await img.decode()
+    const escala = Math.max(ancho / img.naturalWidth, alto / img.naturalHeight)
+    const sw = ancho / escala, sh = alto / escala
+    const lienzo = document.createElement('canvas')
+    lienzo.width = ancho; lienzo.height = alto
+    const ctx = lienzo.getContext('2d')
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, ancho, alto)
+    return { lienzo, ctx, img }
+  }
+
+  /**
+   * La foto propia de un sabor, tal cual: solo el recorte a 3:2 y el tamaño de la serie. Para
+   * los sabores que se ven mejor con su propia foto que recoloreados.
+   */
+  async function fotoTalCual(dataUrl, ancho, alto, calidad) {
+    const { lienzo } = await recortarFoto(dataUrl, ancho, alto)
+    return lienzo.toDataURL('image/jpeg', calidad)
+  }
+
+  async function prepararFoto(clave, dataUrl, ancho, alto) {
+    const { ctx, img } = await recortarFoto(dataUrl, ancho, alto)
+    const datos = ctx.getImageData(0, 0, ancho, alto).data
+
+    const n = ancho * alto
+    const luz = new Float32Array(n)
+    for (let i = 0; i < n; i++) {
+      luz[i] = 0.2126 * aLineal(datos[i * 4] / 255) + 0.7152 * aLineal(datos[i * 4 + 1] / 255) + 0.0722 * aLineal(datos[i * 4 + 2] / 255)
+    }
+    const orden = Float32Array.from(luz).sort()
+    const mediana = Math.max(1e-4, orden[Math.floor(n * 0.5)])
+    const tope = orden[Math.floor(n * 0.995)] / mediana
+    // Desde dónde un píxel cuenta como brillo de verdad: el 3 % más claro de la foto. Por
+    // debajo, aunque esté arriba de la mediana, es superficie iluminada y conserva su color.
+    const umbralBrillo = orden[Math.floor(n * 0.97)] / mediana
+    const relativa = new Float32Array(n)
+    for (let i = 0; i < n; i++) relativa[i] = luz[i] / mediana
+    // Los brillos se deciden sobre la luminancia apenas suavizada: sobre la cruda, el grano de la
+    // foto convertía cada brillo en una mancha blanca moteada.
+    const relativaSuave = desenfocar(relativa, ancho, alto, 2)
+
+    // Bandas para los sabores de varios colores. Sobre una foto, una costura casi recta se ve
+    // como un corte de edición: aquí serpentea más y además sigue el relieve (los bordes
+    // claros la empujan hacia un lado y las sombras hacia el otro), como tres helados juntos.
+    const px = ALTO_MUNDO / alto
+    const bandaU = new Float32Array(n)
+    for (let y = 0; y < alto; y++) {
+      for (let x = 0; x < ancho; x++) {
+        const i = y * ancho + x
+        bandaU[i] = x / ancho + 0.1 * fbm(x * px * 2.4 + 70, y * px * 2.4 - 15, 4) + 0.06 * (relativaSuave[i] - 1)
+      }
+    }
+
+    const brilloDesde = Math.max(1.02, Math.min(umbralBrillo, tope - 0.01))
+    fotos[clave] = { ancho, alto, relativa, relativaSuave, tope: Math.max(brilloDesde + 0.01, tope), brilloDesde, bandaU, mediana }
+    return { ancho: img.naturalWidth, alto: img.naturalHeight, mediana: +mediana.toFixed(3), tope: +tope.toFixed(2), brilloDesde: +brilloDesde.toFixed(2) }
+  }
+
+  /**
+   * Recolorea la foto `clave` con los colores de un sabor. El tono normal de la superficie sale
+   * exactamente del color del sabor; las sombras, más oscuras y más saturadas (como la luz que
+   * atraviesa el helado real, en vez de irse a gris); los brillos suben hacia blanco, así el
+   * brillo húmedo sigue siendo blanco aun en el chocolate.
+   */
+  function pintarFoto(clave, colores, calidad) {
+    const f = fotos[clave]
+    if (!f) throw new Error(`Falta prepararFoto('${clave}')`)
+    const lista = typeof colores === 'string' ? [colores] : colores
+    const nc = lista.length
+    const albedo = lista.map(hex => [1, 3, 5].map(k => aLineal(parseInt(hex.slice(k, k + 2), 16) / 255)))
+
+    const lienzo = document.createElement('canvas')
+    lienzo.width = f.ancho; lienzo.height = f.alto
+    const ctx = lienzo.getContext('2d')
+    const img = ctx.createImageData(f.ancho, f.alto)
+    // Un poco más de contraste que la foto: en un sabor oscuro las mismas diferencias de luz se
+    // ven más planas que en el blanco de la base.
+    const CONTRASTE = 1.25
+    // Brillo satinado, no espejo: a lo más 65 % hacia blanco, con rampa larga, y menos en los
+    // sabores oscuros, donde el mismo brillo se leía como puntitos de pintura blanca.
+    const BRILLO = 0.65
+    const canal = (a, r, brillo, intensidad) => {
+      const v = r <= 1 ? Math.pow(a, 1 + 0.7 * (1 - r)) * r : hombro(a * r)
+      return v + (1 - v) * BRILLO * intensidad * brillo
+    }
+
+    for (let i = 0, n = f.ancho * f.alto; i < n; i++) {
+      let ar = albedo[0][0], ag = albedo[0][1], ab = albedo[0][2]
+      for (let k = 1; k < nc; k++) {
+        const m = suave(k - COSTURA, k + COSTURA, f.bandaU[i] * nc)
+        ar += (albedo[k][0] - ar) * m; ag += (albedo[k][1] - ag) * m; ab += (albedo[k][2] - ab) * m
+      }
+      const r = Math.pow(f.relativa[i], CONTRASTE)
+      const brillo = suave(f.brilloDesde, f.tope, f.relativaSuave[i])
+      const intensidad = 0.3 + 0.7 * Math.sqrt(0.2126 * ar + 0.7152 * ag + 0.0722 * ab)
+      img.data[i * 4] = Math.round(255 * Math.min(1, Math.max(0, aSrgb(canal(ar, r, brillo, intensidad)))))
+      img.data[i * 4 + 1] = Math.round(255 * Math.min(1, Math.max(0, aSrgb(canal(ag, r, brillo, intensidad)))))
+      img.data[i * 4 + 2] = Math.round(255 * Math.min(1, Math.max(0, aSrgb(canal(ab, r, brillo, intensidad)))))
+      img.data[i * 4 + 3] = 255
+    }
+    ctx.putImageData(img, 0, 0)
+    return lienzo.toDataURL('image/jpeg', calidad)
+  }
+
+  window.HeladoRender = { preparar, pintar, prepararFoto, pintarFoto, fotoTalCual }
 })()
