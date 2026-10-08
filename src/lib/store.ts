@@ -121,7 +121,7 @@ type DynamicWriteResult = { success: true } | { success: false; error: string }
 
 type RedeemResult =
   | { success: true; coupon: Coupon }
-  | { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'ip_limit' | 'not_authenticated' | 'no_username' | 'error' }
+  | { success: false; reason: 'invalid' | 'expired' | 'already_redeemed' | 'not_authenticated' | 'no_username' | 'error' }
 
 // scan_coupon ya no devuelve la fila completa del perfil: mandaba teléfono, cumpleaños y correo
 // al dispositivo del mostrador en cada escaneo.

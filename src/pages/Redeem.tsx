@@ -19,8 +19,8 @@ const QRCode = lazy(() =>
 type Step = 'keyword' | 'auth' | 'success'
 
 /**
- * Lo que se acepta al continuar: canjear crea un cupón, suma un punto y manda un hash de la IP
- * a `ip_redemption_logs`, aunque la cuenta ya existiera.
+ * Lo que se acepta al continuar: canjear crea un cupón y suma un punto, aunque la cuenta ya
+ * existiera.
  *
  * `target="_blank"` aunque sea un `Link`: `keyword` y `step` viven en el estado de React
  * y salir de /canjear los borra. React Router no intercepta un click con target, así que
@@ -65,7 +65,6 @@ export default function Redeem() {
         invalid: 'La palabra ya no está activa.',
         expired: 'Este entrenamiento ha expirado.',
         already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por entrenamiento.',
-        ip_limit: 'Se alcanzó el límite de canjes desde tu red. Intenta más tarde.',
         not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
         no_username: 'Primero elige tu apodo para poder canjear.',
       }

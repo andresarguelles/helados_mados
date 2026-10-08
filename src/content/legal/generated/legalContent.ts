@@ -2,7 +2,7 @@
 // NO EDITAR A MANO: el build del otro repo falla si este archivo y el .md difieren.
 // Para cambiar el texto: edita legal/<doc>.md, sube `version`, y corre `npm run legal:build`.
 
-import { AlertCircle, AlertTriangle, Ban, BarChart3, Calendar, Check, Copyright, Eye, EyeOff, Gift, Key, Mail, MapPin, Package, Pencil, QrCode, RefreshCw, RotateCcw, Scale, Search, Shield, Star, Ticket, Trash2, UserPlus, Users, XCircle, Zap } from 'lucide-react'
+import { AlertCircle, AlertTriangle, Ban, BarChart3, Calendar, Check, Copyright, Eye, EyeOff, Gift, Key, Mail, MapPin, Package, Pencil, QrCode, RefreshCw, RotateCcw, Scale, Shield, Star, Ticket, Trash2, UserPlus, Users, XCircle, Zap } from 'lucide-react'
 
 import type { LegalDoc } from '../model'
 
@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "2.2.3",
-    actualizado: "2026-09-30",
-    astHash: "98cbed9a0e0e089afa6dab1be2e705ce809e6de405942743e44e3d878c27a734",
+    version: "3.0.0",
+    actualizado: "2026-10-07",
+    astHash: "523d3bffc30ef495d8644cc0d5a26699f74fb4e8e0e38b65f551593b1f66cbcd",
     secciones: [
       {
         id: "aviso-corto",
@@ -69,7 +69,6 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "Fecha de nacimiento." }, { t: 'texto', v: " La escribe usted. No es obligatoria." }],
               [{ t: 'fuerte', v: "Foto de perfil." }, { t: 'texto', v: " Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero " }, { t: 'fuerte', v: "hoy no la mostramos en ninguna pantalla." }],
               [{ t: 'fuerte', v: "Sus puntos, sus cupones y las marcas de los bonos" }, { t: 'texto', v: " que ya recibió. Los genera el sistema a partir de su actividad." }],
-              [{ t: 'fuerte', v: "Un valor derivado de su dirección IP" }, { t: 'texto', v: " cuando canjea una palabra secreta. Tiene su propio apartado más abajo." }],
               [{ t: 'fuerte', v: "El registro de qué versión de estos documentos aceptó usted y cuándo." }],
             ],
           },
@@ -102,7 +101,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Crear su cuenta, identificarle y permitirle iniciar sesión." }],
               [{ t: 'texto', v: "Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda." }],
               [{ t: 'texto', v: "Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción." }],
-              [{ t: 'texto', v: "Impedir el abuso de las promociones: un número de teléfono por cuenta, un cupón por persona y por dinámica, y un máximo de tres canjes por red de internet y dinámica." }],
+              [{ t: 'texto', v: "Impedir el abuso de las promociones: un número de teléfono por cuenta y un cupón por persona y por dinámica." }],
               [{ t: 'texto', v: "Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO." }],
               [{ t: 'texto', v: "Conservar la prueba de qué versión de estos documentos aceptó y cuándo." }],
               [{ t: 'texto', v: "Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente." }],
@@ -157,18 +156,6 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         ],
       },
       {
-        id: "direccion-ip",
-        titulo: "Su dirección IP",
-        icono: Search,
-        rol: null,
-        bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cuando usted canjea una palabra secreta, nuestro servidor lee la dirección IP desde la que llega la petición, la combina con un secreto que solo existe en el servidor y guarda " }, { t: 'fuerte', v: "únicamente el resultado de esa operación" }, { t: 'texto', v: ": un valor de longitud fija del que no se puede volver atrás. Su dirección IP en claro nunca llega a nuestra base de datos." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Ese valor sirve para una sola cosa: contar cuántos canjes se han hecho desde una misma red en una misma dinámica, y detenerlos en tres." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Somos precisos con lo que esto es y lo que no es. " }, { t: 'fuerte', v: "Es seudonimización, no anonimización." }, { t: 'texto', v: " Nosotros no podemos obtener su dirección IP a partir del valor guardado. Pero alguien que ya conociera una dirección IP y tuviera el secreto del servidor podría comprobar si esa dirección está en la lista. Por eso lo tratamos como un dato personal y por eso se lo declaramos aquí." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Estos registros " }, { t: 'fuerte', v: "no están ligados a su cuenta" }, { t: 'texto', v: ". No guardan quién es usted: solo un valor derivado de una red, una dinámica y un contador. Por esa misma razón, " }, { t: 'fuerte', v: "no se eliminan cuando usted borra su cuenta" }, { t: 'texto', v: ", porque no sabríamos cuáles son los suyos." }] },
-        ],
-      },
-      {
         id: "cookies",
         titulo: "Cookies y herramientas de medición",
         icono: BarChart3,
@@ -200,8 +187,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'fuerte', v: "Supabase." }, { t: 'texto', v: " Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor." }],
-              [{ t: 'fuerte', v: "Vercel." }, { t: 'texto', v: " Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, en claro y sin pasar por el procedimiento descrito más arriba." }],
+              [{ t: 'fuerte', v: "Supabase." }, { t: 'texto', v: " Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor. Sus registros técnicos reciben la dirección IP de cada petición, como los de cualquier servidor, y la conservan un tiempo limitado según sus propias políticas." }],
+              [{ t: 'fuerte', v: "Vercel." }, { t: 'texto', v: " Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, y la conservan un tiempo limitado según sus propias políticas." }],
               [{ t: 'fuerte', v: "Google." }, { t: 'texto', v: " Interviene en el inicio de sesión y, en el sitio web, en la medición y el mapa de la tienda." }],
             ],
           },
@@ -321,11 +308,10 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arriba, y sus cupones. Sus puntos desaparecen." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tres cosas sobreviven, y aquí está el porqué de cada una:" }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Dos cosas sobreviven, y aquí está el porqué de cada una:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'fuerte', v: "Los registros técnicos antiabuso" }, { t: 'texto', v: " derivados de direcciones IP. No podemos borrarlos porque no están ligados a usted: no contienen su nombre, su correo ni su identificador, solo un valor derivado de una red y un contador. No sabríamos cuáles son los suyos." }],
               [{ t: 'fuerte', v: "El registro de que usted aceptó estos documentos" }, { t: 'texto', v: ": su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin." }],
               [{ t: 'fuerte', v: "El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya" }, { t: 'texto', v: ": el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. " }, { t: 'fuerte', v: "No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado." }, { t: 'texto', v: " Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja." }],
             ],
@@ -347,7 +333,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "La base de datos aplica reglas de acceso fila por fila: una cuenta solo puede leer y escribir lo suyo." }],
               [{ t: 'texto', v: "Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas." }],
               [{ t: 'texto', v: "No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google." }],
-              [{ t: 'texto', v: "Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor." }],
+              [{ t: 'texto', v: "No guardamos su dirección IP: ni en claro ni transformada. Nuestros proveedores la ven al atender cada petición, como se explica en el apartado de con quién compartimos sus datos." }],
               [{ t: 'texto', v: "El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor." }],
               [{ t: 'texto', v: "Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted." }],
             ],
@@ -420,9 +406,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "2.3.0",
-    actualizado: "2026-09-30",
-    astHash: "6d6dcd515bd781ba537a8cd1c351ffff82e82957b9656becf0ab758498472205",
+    version: "2.4.0",
+    actualizado: "2026-10-07",
+    astHash: "a5ae366b55614362e3bdfef7bd363d5ec03d934858bac4c396474aff02d13581",
     secciones: [
       {
         id: "aceptacion",
@@ -507,7 +493,6 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'texto', v: "Un cupón por persona y por dinámica. La misma palabra no se canjea dos veces." }],
               [{ t: 'texto', v: "Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se canjea nada." }],
-              [{ t: 'texto', v: "Se aceptan como máximo tres canjes de una misma dinámica desde una misma red de internet." }],
               [{ t: 'texto', v: "Los cupones son personales e intransferibles. No se venden ni se ceden." }],
               [{ t: 'texto', v: "El cupón se consume al escanearlo. Uno ya canjeado no vuelve a servir." }],
             ],
@@ -646,7 +631,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al borrar su cuenta desaparecen su perfil y sus cupones. Sus puntos se pierden y no se pueden recuperar." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobreviven los registros técnicos antiabuso, que no están ligados a usted, el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: " explica qué se conserva exactamente, por qué y durante cuánto tiempo." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobreviven el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: " explica qué se conserva exactamente, por qué y durante cuánto tiempo." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si prefiere que la hagamos nosotros, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " desde el correo de su cuenta y la ejecutamos por usted." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cosa distinta, y conviene no confundirlas: " }, { t: 'fuerte', v: "nosotros también podemos cancelar su cuenta si usted incumple estos términos" }, { t: 'texto', v: ". Eso no es una baja a petición suya, sino una consecuencia del incumplimiento, y está descrita en el apartado de derecho de admisión." }] },
         ],
@@ -698,4 +683,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "f367b365186072cda955b86b3aa50fc483fdcb6f60c60c486e763da40730ff6a"
+export const LEGAL_BUNDLE_HASH = "2e6585fe72cb88c38d1a47beee007e6fad533e4eb38f71bba65e54fea2fb27f2"

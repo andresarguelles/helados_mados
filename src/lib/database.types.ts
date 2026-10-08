@@ -149,38 +149,6 @@ export type Database = {
         }
         Relationships: []
       }
-      ip_redemption_logs: {
-        Row: {
-          count: number
-          dynamic_id: string
-          first_seen: string
-          ip_hash: string
-          last_seen: string
-        }
-        Insert: {
-          count?: number
-          dynamic_id: string
-          first_seen?: string
-          ip_hash: string
-          last_seen?: string
-        }
-        Update: {
-          count?: number
-          dynamic_id?: string
-          first_seen?: string
-          ip_hash?: string
-          last_seen?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ip_redemption_logs_dynamic_id_fkey"
-            columns: ["dynamic_id"]
-            isOneToOne: false
-            referencedRelation: "dynamics"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       legal_acceptances: {
         Row: {
           accepted_at: string
@@ -352,7 +320,7 @@ export type Database = {
       my_legal_status: { Args: never; Returns: Json }
       phone_is_valid: { Args: { p_phone: string }; Returns: boolean }
       redeem_keyword: {
-        Args: { p_ip_hash: string; p_keyword: string }
+        Args: { p_keyword: string }
         Returns: Json
       }
       scan_coupon: { Args: { p_coupon_id: string }; Returns: Json }

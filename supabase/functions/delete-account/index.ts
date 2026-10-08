@@ -10,8 +10,6 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 //
 // Lo que se va en cascada: auth.users -> profiles -> coupons.
 // Lo que SOBREVIVE, y esta declarado en el aviso de privacidad:
-//   - ip_redemption_logs: no esta ligada al usuario (solo guarda hashes de red y un
-//     contador), asi que no sabriamos cuales son suyos aunque quisieramos.
 //   - legal_acceptances: es la prueba de que hubo consentimiento. Si se fuera con la
 //     cuenta, la baja destruiria justo la evidencia. Queda bloqueada, sin FK, con un
 //     user_id que ya no resuelve a nadie.

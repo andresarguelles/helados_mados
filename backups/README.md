@@ -78,7 +78,7 @@ pruebas.
 | archivo | contenido |
 |---|---|
 | `01_schema.sql` | Esquema de `public` + `supabase_migrations`, con privilegios (los `GRANT`/`REVOKE` sobre las RPCs son parte del modelo de seguridad). Sirve sobre todo para diffear contra `supabase/migrations/`. |
-| `02_data_public.sql` | Datos de `profiles`, `dynamics`, `coupons`, `ip_redemption_logs` y el historial de migraciones. |
+| `02_data_public.sql` | Datos de todas las tablas de `public` (`profiles`, `dynamics`, `coupons`, los registros legales…) y el historial de migraciones. |
 | `03_data_auth.sql` | `auth.users` y `auth.identities` — las cuentas, con sus hashes de contraseña. |
 | `manifest.json` | Fecha, proyecto, versiones de Postgres/`pg_dump`, conteo por tabla y SHA-256 de cada archivo. |
 
@@ -89,23 +89,17 @@ y `auth.audit_log_entries`: son estado efímero de sesión.
 
 Un `pg_dump` solo cubre la base de datos. Hay que guardar aparte:
 
-- **`IP_HASH_PEPPER`** — el secreto de la edge function `redeem-keyword`. Vive en
-  los *Function secrets* de Supabase y hay una copia local en **`.env.secret`**
-  (en la raíz del proyecto, ignorado por git). Sin él, tras una restauración los
-  hashes de IP nuevos no coincidirían con los guardados en `ip_redemption_logs` y
-  el límite de 3 canjes por IP se reiniciaría de facto.
-
-  > `.env.secret` es una copia de conveniencia, **no un respaldo**: existe en un
-  > solo disco y desaparece con la carpeta del proyecto. Guarda el valor también
-  > en un gestor de contraseñas. Al copiarlo de vuelta a Supabase, pega el valor
-  > exacto sin espacios alrededor — un espacio de más cambia el hash y rompe el
-  > histórico de `ip_redemption_logs` en silencio.
 - Configuración de Auth (providers, plantillas de correo) y API keys del proyecto.
 - Los roles de Postgres y sus contraseñas: `pg_dumpall --roles-only` requiere
   superusuario, que Supabase no concede.
 
-El código de la edge function sí está versionado, en
-[`supabase/functions/redeem-keyword/index.ts`](../supabase/functions/redeem-keyword/index.ts).
+El código de las edge functions sí está versionado, en
+[`supabase/functions/`](../supabase/functions/).
+
+Los respaldos del 12 al 19 de septiembre de 2026 traían los hashes de IP de la tabla
+`ip_redemption_logs`. El 2026-10-07, al dejar de guardar la IP (migraciones 0035–0037),
+se vaciaron esas filas; el resto de cada respaldo quedó intacto y su `manifest.json` lo
+anota en `nota`.
 
 ## Restaurar sobre un proyecto nuevo
 
@@ -127,7 +121,7 @@ El orden importa.
    psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f 03_data_auth.sql
    psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f 02_data_public.sql
    ```
-4. Reactiva el trigger y restaura el secreto `IP_HASH_PEPPER`:
+4. Reactiva el trigger:
 
    ```sql
    alter table auth.users enable trigger on_auth_user_created;

@@ -2,8 +2,8 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 2.3.0
-actualizado: 2026-09-30
+version: 2.4.0
+actualizado: 2026-10-07
 ---
 
 ## Lo que acepta al usar Helados Mados {#aceptacion icono=Shield}
@@ -72,7 +72,6 @@ Reglas del canje:
 
 - Un cupón por persona y por dinámica. La misma palabra no se canjea dos veces.
 - Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se canjea nada.
-- Se aceptan como máximo tres canjes de una misma dinámica desde una misma red de internet.
 - Los cupones son personales e intransferibles. No se venden ni se ceden.
 - El cupón se consume al escanearlo. Uno ya canjeado no vuelve a servir.
 
@@ -161,7 +160,7 @@ Puede borrar su cuenta cuando quiera, sin dar explicaciones y sin costo:
 
 Al borrar su cuenta desaparecen su perfil y sus cupones. Sus puntos se pierden y no se pueden recuperar.
 
-Sobreviven los registros técnicos antiabuso, que no están ligados a usted, el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el [aviso de privacidad](legal:privacidad) explica qué se conserva exactamente, por qué y durante cuánto tiempo.
+Sobreviven el registro de que aceptó estos documentos y, si la baja la ejecutamos nosotros a petición suya, la constancia de haberlo hecho. Se lo decimos aquí para que no haya sorpresas; el [aviso de privacidad](legal:privacidad) explica qué se conserva exactamente, por qué y durante cuánto tiempo.
 
 Si prefiere que la hagamos nosotros, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) desde el correo de su cuenta y la ejecutamos por usted.
 

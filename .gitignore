@@ -20,10 +20,8 @@ coverage
 !.env.example
 
 # Secretos que NO viven en ningún respaldo ni en Supabase fuera de su panel.
-# Ya los cubre la regla .env.* de arriba; van explícitos porque perderlos duele:
-#   .env.secret       — IP_HASH_PEPPER de la edge function redeem-keyword
+# Ya los cubre la regla .env.* de arriba; va explícito porque perderlo duele:
 #   .env.backup.local — cadena de conexión a Postgres para `npm run db:backup`
-.env.secret
 .env.backup.local
 
 # Editor directories and files

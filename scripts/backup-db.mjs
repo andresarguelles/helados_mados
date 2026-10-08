@@ -152,7 +152,6 @@ try {
   fs.writeFileSync(path.join(outDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
   console.log(`\n✓ Respaldo completo en backups/${stamp}/`)
-  console.log('  Recuerda: el secreto IP_HASH_PEPPER de la edge function NO está aquí (ver backups/README.md).')
 } catch (err) {
   fs.rmSync(outDir, { recursive: true, force: true })
   die(`Respaldo abortado, no se deja una carpeta a medias.\n  ${err.message}`)

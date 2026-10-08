@@ -79,11 +79,6 @@ export default function EliminarCuenta() {
               consentimiento existió, y por eso no puede desaparecer con la cuenta. Queda
               bloqueado, sin usarse para nada más.
             </li>
-            <li>
-              <span className="font-semibold text-brand-sombra">Los registros técnicos
-              antiabuso</span> derivados de direcciones de internet. No están ligados a ti:
-              no sabríamos cuáles son los tuyos ni aunque quisiéramos.
-            </li>
           </ul>
           {/* El autoborrado NO deja constancia; la baja que ejecutamos nosotros sí. La
               distinción importa y por eso se dice aquí, no solo en el aviso. */}

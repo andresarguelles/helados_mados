@@ -2,8 +2,8 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 2.2.3
-actualizado: 2026-09-30
+version: 3.0.0
+actualizado: 2026-10-07
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
@@ -47,7 +47,6 @@ Esta es la lista completa de los datos personales que guardamos de usted. No hay
 - **Fecha de nacimiento.** La escribe usted. No es obligatoria.
 - **Foto de perfil.** Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero **hoy no la mostramos en ninguna pantalla.**
 - **Sus puntos, sus cupones y las marcas de los bonos** que ya recibió. Los genera el sistema a partir de su actividad.
-- **Un valor derivado de su dirección IP** cuando canjea una palabra secreta. Tiene su propio apartado más abajo.
 - **El registro de qué versión de estos documentos aceptó usted y cuándo.**
 
 Al crear una cuenta le pedimos tres cosas obligatorias: el apodo, el número de WhatsApp y que declare ser mayor de edad. El permiso para escribirle es opcional. Todo lo demás es opcional o nos lo da Google.
@@ -73,7 +72,7 @@ Estas finalidades son necesarias para la relación entre usted y nosotros. Sin e
 - Crear su cuenta, identificarle y permitirle iniciar sesión.
 - Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda.
 - Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción.
-- Impedir el abuso de las promociones: un número de teléfono por cuenta, un cupón por persona y por dinámica, y un máximo de tres canjes por red de internet y dinámica.
+- Impedir el abuso de las promociones: un número de teléfono por cuenta y un cupón por persona y por dinámica.
 - Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO.
 - Conservar la prueba de qué versión de estos documentos aceptó y cuándo.
 - Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente.
@@ -116,16 +115,6 @@ Elija su apodo pensando en esto: si pone su nombre completo, su nombre completo 
 
 Hoy no existe forma de tener cuenta y no aparecer en el marcador. Si no quiere figurar, escríbanos: la medida que podemos aplicar de inmediato es cancelar su cuenta.
 
-## Su dirección IP {#direccion-ip icono=Search}
-
-Cuando usted canjea una palabra secreta, nuestro servidor lee la dirección IP desde la que llega la petición, la combina con un secreto que solo existe en el servidor y guarda **únicamente el resultado de esa operación**: un valor de longitud fija del que no se puede volver atrás. Su dirección IP en claro nunca llega a nuestra base de datos.
-
-Ese valor sirve para una sola cosa: contar cuántos canjes se han hecho desde una misma red en una misma dinámica, y detenerlos en tres.
-
-Somos precisos con lo que esto es y lo que no es. **Es seudonimización, no anonimización.** Nosotros no podemos obtener su dirección IP a partir del valor guardado. Pero alguien que ya conociera una dirección IP y tuviera el secreto del servidor podría comprobar si esa dirección está en la lista. Por eso lo tratamos como un dato personal y por eso se lo declaramos aquí.
-
-Estos registros **no están ligados a su cuenta**. No guardan quién es usted: solo un valor derivado de una red, una dinámica y un contador. Por esa misma razón, **no se eliminan cuando usted borra su cuenta**, porque no sabríamos cuáles son los suyos.
-
 ## Cookies y herramientas de medición {#cookies icono=BarChart3}
 
 :::alcance web
@@ -150,8 +139,8 @@ En la aplicación Android, los datos que la app guarda en su teléfono, incluida
 
 No vendemos sus datos personales. Los compartimos solo con quien hace falta para que la plataforma funcione, y esta es la lista completa:
 
-- **Supabase.** Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor.
-- **Vercel.** Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, en claro y sin pasar por el procedimiento descrito más arriba.
+- **Supabase.** Guarda la base de datos, gestiona el inicio de sesión y ejecuta las funciones del servidor. Sus registros técnicos reciben la dirección IP de cada petición, como los de cualquier servidor, y la conservan un tiempo limitado según sus propias políticas.
+- **Vercel.** Aloja el sitio web. Sus registros técnicos reciben la dirección IP de cada visita, y la conservan un tiempo limitado según sus propias políticas.
 - **Google.** Interviene en el inicio de sesión y, en el sitio web, en la medición y el mapa de la tienda.
 
 Supabase y Vercel actúan como encargados: tratan los datos por nuestra cuenta, siguiendo nuestras instrucciones, y no pueden usarlos para fines propios. Para la ley mexicana eso es una remisión y no requiere su consentimiento aparte.
@@ -240,9 +229,8 @@ Puede borrar su cuenta cuando quiera, sin costo:
 
 Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arriba, y sus cupones. Sus puntos desaparecen.
 
-Tres cosas sobreviven, y aquí está el porqué de cada una:
+Dos cosas sobreviven, y aquí está el porqué de cada una:
 
-- **Los registros técnicos antiabuso** derivados de direcciones IP. No podemos borrarlos porque no están ligados a usted: no contienen su nombre, su correo ni su identificador, solo un valor derivado de una red y un contador. No sabríamos cuáles son los suyos.
 - **El registro de que usted aceptó estos documentos**: su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin.
 - **El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya**: el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. **No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado.** Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja.
 
@@ -256,7 +244,7 @@ Tenemos medidas administrativas, técnicas y físicas para proteger sus datos. S
 - La base de datos aplica reglas de acceso fila por fila: una cuenta solo puede leer y escribir lo suyo.
 - Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas.
 - No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google.
-- Su dirección IP se guarda solo como un valor derivado, combinado con un secreto que vive únicamente en el servidor.
+- No guardamos su dirección IP: ni en claro ni transformada. Nuestros proveedores la ven al atender cada petición, como se explica en el apartado de con quién compartimos sus datos.
 - El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor.
 - Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted.
 

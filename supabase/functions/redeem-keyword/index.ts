@@ -1,16 +1,14 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-// Fallback pepper so the function still works out of the box; for production, set a real
-// secret via `supabase secrets set IP_HASH_PEPPER=<random-value>` (or the Dashboard) so raw
-// IPs can never be reversed from the stored hash even if this source is ever exposed.
-const IP_HASH_PEPPER = Deno.env.get("IP_HASH_PEPPER") ?? "helados-mados-dev-pepper-change-me";
-
-async function sha256Hex(input: string): Promise<string> {
-  const data = new TextEncoder().encode(input);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+// El canje de la palabra secreta. Reenvia el JWT de quien llama y la palabra al RPC
+// `redeem_keyword`, que es quien valida y da el punto.
+//
+// Hasta la migracion 0035 esta funcion existia para leer la IP del llamador y guardar un hash
+// con pepper, que topaba los canjes en 3 por red. Eso se elimino: con el acceso solo con Google
+// y el telefono unico ya no protegia nada, y nunca fue un candado real. La funcion se queda
+// porque es el endpoint que llaman la web y la app de Android, y su contrato (codigos y razones
+// en el cuerpo, tambien en los no-2xx, que Android lee) no cambia.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -56,22 +54,13 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // Supabase's edge network sets x-forwarded-for on the way in; take the first hop.
-  // Raw IP never leaves this function or reaches Postgres -- only the salted hash does.
-  const forwardedFor = req.headers.get("x-forwarded-for") ?? "";
-  const clientIp = forwardedFor.split(",")[0].trim() || "unknown";
-  const ipHash = await sha256Hex(`${clientIp}:${IP_HASH_PEPPER}`);
-
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: authHeader } } }
   );
 
-  const { data, error } = await supabase.rpc("redeem_keyword", {
-    p_keyword: keyword,
-    p_ip_hash: ipHash,
-  });
+  const { data, error } = await supabase.rpc("redeem_keyword", { p_keyword: keyword });
 
   if (error) {
     return new Response(JSON.stringify({ success: false, reason: "error" }), {

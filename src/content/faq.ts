@@ -37,7 +37,7 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Hay algún límite para canjear?',
     respuesta:
-      'Sí: un cupón por persona y por dinámica, la misma palabra no se canjea dos veces, y como máximo se aceptan tres canjes de una misma dinámica desde una misma red de internet. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá medalla que entregarte.',
+      'Sí: un cupón por persona y por dinámica, y la misma palabra no se canjea dos veces. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá medalla que entregarte.',
   },
   {
     pregunta: '¿Quién puede participar?',
