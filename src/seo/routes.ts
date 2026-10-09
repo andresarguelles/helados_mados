@@ -319,6 +319,31 @@ const ADMIN_FLAVORS: SeoRoute = {
   robots: 'noindex,nofollow',
 }
 
+// Las mismas dos pantallas dibujadas de lado, para una TV que no deja girar la imagen.
+const ADMIN_LEADERBOARD_90: SeoRoute = {
+  ...ADMIN_LEADERBOARD,
+  path: '/admin/leaderboard_90',
+  title: 'Ranking en pantalla (girada 90°) — Helados Mados',
+}
+
+const ADMIN_LEADERBOARD_270: SeoRoute = {
+  ...ADMIN_LEADERBOARD,
+  path: '/admin/leaderboard_270',
+  title: 'Ranking en pantalla (girada 270°) — Helados Mados',
+}
+
+const ADMIN_FLAVORS_90: SeoRoute = {
+  ...ADMIN_FLAVORS,
+  path: '/admin/flavors_90',
+  title: 'Sabores en pantalla (girada 90°) — Helados Mados',
+}
+
+const ADMIN_FLAVORS_270: SeoRoute = {
+  ...ADMIN_FLAVORS,
+  path: '/admin/flavors_270',
+  title: 'Sabores en pantalla (girada 270°) — Helados Mados',
+}
+
 // ─── 404 y el shell vacío de las rutas `spa` ────────────────────────────────
 
 export const NOT_FOUND: SeoRoute = {
@@ -370,6 +395,10 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
   ADMIN_ESTACION,
   ADMIN_LEADERBOARD,
   ADMIN_FLAVORS,
+  ADMIN_LEADERBOARD_90,
+  ADMIN_LEADERBOARD_270,
+  ADMIN_FLAVORS_90,
+  ADMIN_FLAVORS_270,
 ]
 
 /** `matchPath` insensible a mayúsculas, sobre las rutas del manifiesto; si nada, `NOT_FOUND`. */

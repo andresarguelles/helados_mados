@@ -5,7 +5,15 @@
  * Archivo mínimo a propósito: lo importa `BottomNav`, que va en todas las páginas, incluidas
  * las prerenderizadas.
  */
-export const RUTAS_KIOSCO: readonly string[] = ['/admin/leaderboard', '/admin/flavors']
+export const RUTAS_KIOSCO: readonly string[] = [
+  '/admin/leaderboard',
+  '/admin/flavors',
+  // Las mismas, giradas para una TV que no deja girar la imagen (ver KioscoGirado).
+  '/admin/leaderboard_90',
+  '/admin/leaderboard_270',
+  '/admin/flavors_90',
+  '/admin/flavors_270',
+]
 
 export function esRutaKiosco(pathname: string): boolean {
   const normalizado = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname

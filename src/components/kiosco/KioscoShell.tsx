@@ -8,7 +8,7 @@ import BarraSuperior from './BarraSuperior'
  * suelta solo cuando la pestaña deja de estar visible, así que se vuelve a pedir al regresar.
  * Si el navegador no lo soporta o lo niega, no pasa nada: queda en manos del sistema.
  */
-function usePantallaEncendida() {
+export function usePantallaEncendida() {
   useEffect(() => {
     let bloqueo: WakeLockSentinel | null = null
     let activo = true
@@ -44,6 +44,10 @@ function usePantallaEncendida() {
  */
 export function KioscoMarco({ className, children }: { className?: string; children: ReactNode }) {
   usePantallaEncendida()
+  // Dentro de la versión girada (KioscoGirado) esta vista vive en un iframe: la salida tiene
+  // que llevarse la ventana entera, no abrir el panel girado dentro del marco. Leer `window`
+  // en el render vale aquí: las pantallas de mostrador son rutas `spa`, nunca se prerenderizan.
+  const enMarco = window.self !== window.top
 
   return (
     // Concatenado y no con cn(): tailwind-merge toma `bg-dots-azul` (la trama) por un color de
@@ -55,6 +59,7 @@ export function KioscoMarco({ className, children }: { className?: string; child
           personal pueda volver al panel sin cerrar el navegador del quiosco. */}
       <Link
         to="/admin/dashboard"
+        target={enMarco ? '_top' : undefined}
         aria-label="Salir de la pantalla de mostrador"
         className="fixed top-3 right-3 z-50 w-12 h-12 rounded-2xl bg-brand-sombra text-white flex items-center justify-center opacity-0 hover:opacity-100 focus-visible:opacity-100 transition-opacity"
       >

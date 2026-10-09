@@ -41,6 +41,8 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'))
 // Pantallas de mostrador (monitores verticales en modo quiosco), ver lib/kiosco.ts.
 const AdminLeaderboard = lazy(() => import('./pages/admin/AdminLeaderboard'))
 const AdminFlavors = lazy(() => import('./pages/admin/AdminFlavors'))
+// Las mismas dos, giradas para una TV que no deja girar la imagen (Fire TV).
+const KioscoGirado = lazy(() => import('./components/kiosco/KioscoGirado'))
 // El panel de control de esas dos pantallas.
 const AdminEstacion = lazy(() => import('./pages/admin/AdminEstacion'))
 
@@ -200,6 +202,29 @@ export const routeElements = (
     <Route path="/admin/flavors" element={
       <Suspense fallback={<AdminFallback />}>
         <ProtectedAdmin><AdminFlavors /></ProtectedAdmin>
+      </Suspense>
+    } />
+    {/* Versiones giradas, ver KioscoGirado. El guard va aquí y no solo dentro del iframe: sin
+        sesión, el login tiene que abrirse en la ventana de arriba, porque Google no se deja
+        cargar dentro de un iframe. */}
+    <Route path="/admin/leaderboard_90" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedAdmin><KioscoGirado ruta="/admin/leaderboard" grados={90} /></ProtectedAdmin>
+      </Suspense>
+    } />
+    <Route path="/admin/leaderboard_270" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedAdmin><KioscoGirado ruta="/admin/leaderboard" grados={270} /></ProtectedAdmin>
+      </Suspense>
+    } />
+    <Route path="/admin/flavors_90" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedAdmin><KioscoGirado ruta="/admin/flavors" grados={90} /></ProtectedAdmin>
+      </Suspense>
+    } />
+    <Route path="/admin/flavors_270" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedAdmin><KioscoGirado ruta="/admin/flavors" grados={270} /></ProtectedAdmin>
       </Suspense>
     } />
     <Route path="*" element={<NotFound />} />
