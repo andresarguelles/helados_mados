@@ -59,7 +59,7 @@ export default function EliminarCuenta() {
         <section className="paper-card rounded-3xl p-5 font-body text-brand-gris text-sm leading-relaxed flex flex-col gap-3">
           <p>Al eliminar tu cuenta borramos de forma permanente:</p>
           <ul className="list-disc list-outside pl-5 flex flex-col gap-1.5">
-            <li>Tu perfil: apodo, correo, teléfono, nombre y fecha de nacimiento.</li>
+            <li>Tu perfil: apodo, correo, teléfono, nombre y cumpleaños.</li>
             <li>Tus cupones, canjeados o no.</li>
             <li>Tus puntos y tu lugar en el marcador.</li>
           </ul>

@@ -19,13 +19,13 @@ const CHECK_DEBOUNCE_MS = 400
 
 /**
  * Primera pantalla de todo cadete que nace con Google. Pide lo que Google no aporta: el apodo
- * (identidad pública del ranking), el WhatsApp (un número, una cuenta) y la aceptación del texto
- * legal junto con la declaración de mayoría de edad.
+ * (identidad pública del ranking) y la aceptación del texto legal junto con la declaración de
+ * mayoría de edad. El WhatsApp es OPCIONAL desde la migración 0040, y el usuario lo agrega, lo
+ * cambia o lo borra después desde su perfil.
  *
- * Todo se guarda junto en una sola RPC, así que no puede quedar un apodo tomado por una cuenta
- * sin número ni una cuenta sin constancia de qué texto aceptó su dueño. El gate de
- * ProtectedMember no deja avanzar sin apodo y `complete_signup` revalida en el servidor: quitar
- * campos del formulario no bastaría.
+ * Todo se guarda junto en una sola RPC, así que no puede quedar una cuenta sin constancia de qué
+ * texto aceptó su dueño. El gate de ProtectedMember no deja avanzar sin apodo y `complete_signup`
+ * revalida en el servidor: quitar campos del formulario no bastaría.
  *
  * DOS CASILLAS, y la separación importa. La primera junta los 18 años y la aceptación de los
  * documentos, porque las dos son términos del contrato. La segunda, el permiso para mandar
@@ -82,13 +82,15 @@ export default function Bienvenida() {
   if (!authReady || !profile || profile.username) return null
 
   // El botón deshabilitado evita el viaje al servidor, pero la validación de verdad está en
-  // `complete_signup`. Ojo: `optIn` NO entra aquí — es opcional desde la 0023.
+  // `complete_signup`. Ni `optIn` ni el teléfono entran aquí: los dos son opcionales (0023, 0040).
   const canSubmit =
     !loading &&
     availability !== 'taken' &&
     username.trim().length >= 3 &&
-    normalizePhone(phone) !== null &&
     aceptaLegal
+
+  // Sin número no hay a dónde mandar promos: la casilla se apaga y se desmarca.
+  const sinNumero = phone === ''
 
   const handleSubmit = async () => {
     setError('')
@@ -97,8 +99,9 @@ export default function Bienvenida() {
     if (!value) { setError('Elige un apodo'); return }
     if (value.length < 3) { setError('El apodo debe tener al menos 3 caracteres'); return }
 
-    const e164 = normalizePhone(phone)
-    if (!e164) {
+    // Vacío vale (no lo quiso dar); a medias no, porque seguramente quería darlo.
+    const e164 = sinNumero ? null : normalizePhone(phone)
+    if (!sinNumero && !e164) {
       const faltan = DEFAULT_COUNTRY.nationalDigits - phone.length
       setError(
         faltan > 0
@@ -128,6 +131,7 @@ export default function Bienvenida() {
         already_set: 'Ya tienes un apodo asignado.',
         invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
         phone_taken: 'Ese número ya está registrado en otra cuenta.',
+        optin_without_phone: 'Para recibir promos por WhatsApp necesitas dejarnos tu número.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
         age_required: 'Para crear tu cuenta tienes que ser mayor de edad.',
         legal_required: 'Falta aceptar los Términos y el Aviso de Privacidad.',
@@ -208,15 +212,18 @@ export default function Bienvenida() {
           <div>
             <PhoneField
               id="bienvenida-phone"
-              label="Tu WhatsApp"
+              label="Tu WhatsApp (opcional)"
               value={phone}
-              onChange={value => { setPhone(value); setError('') }}
+              onChange={value => {
+                setPhone(value)
+                if (value === '') setOptIn(false)
+                setError('')
+              }}
             />
-            {/* Se avisa antes de guardarlo, no cuando ya es tarde para corregirlo. El número es
-                requisito por antifraude —un número, una cuenta—, no por mandarte publicidad. */}
+            {/* Hasta la 0040 era obligatorio y no se podía cambiar; decirlo aquí es lo que quita
+                el miedo a equivocarse al escribirlo. */}
             <p className="text-[11px] text-brand-gris font-body mt-1.5 leading-relaxed">
-              Un número por cuenta.{' '}
-              <span className="font-bold text-brand-sombra">Revísalo bien: no se puede cambiar.</span>
+              Puedes dejarlo vacío, y agregarlo, cambiarlo o borrarlo cuando quieras desde tu perfil.
             </p>
           </div>
 
@@ -252,7 +259,7 @@ export default function Bienvenida() {
             haría que el consentimiento no fuera libre, y un consentimiento no libre no es
             consentimiento: arrastraría a todo el aviso. Ver la migración 0023.
           */}
-          <Checkbox checked={optIn} onChange={v => { setOptIn(v); setError('') }}>
+          <Checkbox checked={optIn} disabled={sinNumero} onChange={v => { setOptIn(v); setError('') }}>
             <span className="font-bold text-brand-sombra">Opcional:</span> avísenme de promos por WhatsApp.
           </Checkbox>
 

@@ -37,10 +37,12 @@ function fullName(profile: Profile): string {
   return [profile.first_name, profile.last_name].filter(Boolean).join(' ')
 }
 
-/** Solo día y mes: para las promos de cumpleaños el año no aporta. */
-function formatBirthday(value: string): string {
-  const [, month, day] = value.split('-')
-  return `${day}/${month}`
+/** dd/mm. El año ni siquiera se guarda (0040). */
+function formatBirthday(profile: Profile): string | null {
+  if (profile.birthday_month == null || profile.birthday_day == null) return null
+  const dd = String(profile.birthday_day).padStart(2, '0')
+  const mm = String(profile.birthday_month).padStart(2, '0')
+  return `${dd}/${mm}`
 }
 
 export default function AdminUsers() {
@@ -225,7 +227,7 @@ export default function AdminUsers() {
                     )}
                     <p className="text-white/60 text-xs font-body mt-0.5">Miembro desde {formatDate(customer.created_at)}</p>
 
-                    {(customer.email || customer.phone || customer.birthdate) && (
+                    {(customer.email || customer.phone || formatBirthday(customer)) && (
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/75 font-body mt-1.5">
                         {customer.email && (
                           <span className="flex items-center gap-1 min-w-0">
@@ -242,10 +244,10 @@ export default function AdminUsers() {
                             {formatPhone(customer.phone)}
                           </span>
                         )}
-                        {customer.birthdate && (
+                        {formatBirthday(customer) && (
                           <span className="flex items-center gap-1">
                             <Cake className="w-3 h-3 text-brand-amarillo/70 shrink-0" />
-                            {formatBirthday(customer.birthdate)}
+                            {formatBirthday(customer)}
                           </span>
                         )}
                       </div>

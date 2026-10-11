@@ -204,7 +204,8 @@ export type Database = {
         Row: {
           age_confirmed_at: string | null
           avatar_url: string | null
-          birthdate: string | null
+          birthday_day: number | null
+          birthday_month: number | null
           created_at: string
           email: string | null
           first_name: string | null
@@ -222,7 +223,8 @@ export type Database = {
         Insert: {
           age_confirmed_at?: string | null
           avatar_url?: string | null
-          birthdate?: string | null
+          birthday_day?: number | null
+          birthday_month?: number | null
           created_at?: string
           email?: string | null
           first_name?: string | null
@@ -240,7 +242,8 @@ export type Database = {
         Update: {
           age_confirmed_at?: string | null
           avatar_url?: string | null
-          birthdate?: string | null
+          birthday_day?: number | null
+          birthday_month?: number | null
           created_at?: string
           email?: string | null
           first_name?: string | null
@@ -266,7 +269,6 @@ export type Database = {
         Args: { p_docs: Json; p_platform: string }
         Returns: Json
       }
-      claim_google_bonus: { Args: never; Returns: Json }
       complete_signup: {
         Args: {
           p_age_confirmed: boolean
@@ -308,7 +310,6 @@ export type Database = {
       }
       hook_google_only_signup: { Args: { event: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
-      is_adult: { Args: { p_birthdate: string }; Returns: boolean }
       legal_current_versions: {
         Args: never
         Returns: {
@@ -326,7 +327,8 @@ export type Database = {
       scan_coupon: { Args: { p_coupon_id: string }; Returns: Json }
       update_my_profile: {
         Args: {
-          p_birthdate: string
+          p_birthday_day: number
+          p_birthday_month: number
           p_first_name: string
           p_last_name: string
           p_phone: string

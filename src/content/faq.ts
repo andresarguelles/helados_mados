@@ -22,7 +22,7 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Cuántos puntos puedo ganar?',
     respuesta:
-      'Ganas +1 punto al canjear la palabra secreta, +10 cuando presentas tu cupón QR en la estación y te lo escaneamos, y dos bonos de +5 que se dan una sola vez: uno por completar tu perfil (nombre, apellido, fecha de nacimiento y teléfono) y otro al entrar por primera vez con tu cuenta de Google.',
+      'Ganas +1 punto al canjear la palabra secreta y +10 cuando presentas tu cupón QR en la estación y te lo escaneamos. Registrarte o llenar tus datos no da puntos: toda cuenta empieza en cero.',
   },
   {
     pregunta: '¿Dónde canjeo mi cupón?',
@@ -42,11 +42,11 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Quién puede participar?',
     respuesta:
-      'Solo personas mayores de 18 años. Al crear tu cuenta declaras que ya los cumpliste, y si nos das tu fecha de nacimiento, el sistema rechaza cualquier cuenta que diga lo contrario.',
+      'Solo personas mayores de 18 años. Al crear tu cuenta declaras que ya los cumpliste.',
   },
   {
     pregunta: '¿Cómo creo mi cuenta?',
     respuesta:
-      'Con tu cuenta de Google. Solo te pedimos un apodo, tu WhatsApp a diez dígitos y que confirmes tus 18 años cumplidos. Nunca vemos tu contraseña de Google.',
+      'Con tu cuenta de Google. Solo te pedimos un apodo y que confirmes tus 18 años cumplidos. Tu WhatsApp es opcional, y lo agregas, cambias o borras cuando quieras desde tu perfil. Nunca vemos tu contraseña de Google.',
   },
 ]

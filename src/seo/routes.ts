@@ -189,7 +189,7 @@ const BIENVENIDA: SeoRoute = {
   path: '/bienvenida',
   kind: 'spa',
   title: 'Completa tu registro — Helados Mados',
-  description: 'Elige tu apodo de Cadete, confirma tu WhatsApp y termina tu registro en Helados Mados.',
+  description: 'Elige tu apodo de Cadete y termina tu registro en Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }

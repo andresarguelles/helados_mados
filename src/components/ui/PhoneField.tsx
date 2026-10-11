@@ -1,5 +1,4 @@
 import { cn } from '../../lib/utils'
-import { Lock } from 'lucide-react'
 import {
   DEFAULT_COUNTRY,
   isValidNational,
@@ -14,8 +13,7 @@ interface PhoneFieldProps {
   value: string
   onChange: (national: string) => void
   country?: PhoneCountry
-  /** El teléfono es de una sola escritura: ya guardado, se muestra pero no se edita. */
-  locked?: boolean
+  /** Lo que se lee con el campo vacío. */
   hint?: string
   autoFocus?: boolean
 }
@@ -38,7 +36,6 @@ export default function PhoneField({
   value,
   onChange,
   country = DEFAULT_COUNTRY,
-  locked = false,
   hint,
   autoFocus,
 }: PhoneFieldProps) {
@@ -51,12 +48,7 @@ export default function PhoneField({
         {label}
       </label>
 
-      <div
-        className={cn(
-          'field-input flex items-center gap-2 p-0 overflow-hidden',
-          locked && 'opacity-60 cursor-not-allowed'
-        )}
-      >
+      <div className="field-input flex items-center gap-2 p-0 overflow-hidden">
         <span
           className={cn(
             'flex items-center gap-1.5 self-stretch pl-4 pr-3 font-body text-brand-sombra',
@@ -76,25 +68,19 @@ export default function PhoneField({
           autoComplete="tel-national"
           value={value}
           onChange={e => onChange(sanitizeNational(e.target.value, country))}
-          readOnly={locked}
           placeholder="5512345678"
           maxLength={country.nationalDigits}
           autoFocus={autoFocus}
           aria-describedby={`${id}-hint`}
           className={cn(
             'flex-1 min-w-0 bg-transparent py-3 pr-3 font-body tabular-nums tracking-wide',
-            'text-brand-sombra placeholder:text-brand-sombra/35 focus:outline-none',
-            locked && 'cursor-not-allowed'
+            'text-brand-sombra placeholder:text-brand-sombra/35 focus:outline-none'
           )}
         />
-
-        {locked && <Lock className="w-4 h-4 text-brand-gris shrink-0 mr-3" aria-hidden="true" />}
       </div>
 
       <p id={`${id}-hint`} className="text-[11px] text-brand-gris font-body mt-1.5">
-        {locked ? (
-          hint ?? 'Tu número ya quedó registrado y no se puede cambiar.'
-        ) : complete ? (
+        {complete ? (
           <span className="text-brand-azul">Listo, {country.nationalDigits} dígitos ✓</span>
         ) : value.length === 0 ? (
           (hint ?? `Escribe los ${country.nationalDigits} dígitos de tu WhatsApp, sin la lada.`)

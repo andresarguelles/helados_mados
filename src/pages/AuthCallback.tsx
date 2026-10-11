@@ -17,7 +17,6 @@ export default function AuthCallback() {
   const [params] = useSearchParams()
   const authReady = useStore(s => s.authReady)
   const profile = useStore(s => s.profile)
-  const claimGoogleBonus = useStore(s => s.claimGoogleBonus)
   const decided = useRef(false)
 
   useEffect(() => {
@@ -43,31 +42,23 @@ export default function AuthCallback() {
 
     decided.current = true
 
-    const run = async () => {
-      // Idempotente y verificado contra auth.identities: devuelve 0 si no hay identidad de Google
-      // o si el bono ya se otorgó. Por eso se puede llamar en todo aterrizaje sin condicionarlo.
-      const pointsAwarded = await claimGoogleBonus()
+    // La intención se lee sin consumirla: arriba hay una salida temprana mientras se espera el
+    // canje del ?code=, y una lectura destructiva ahí perdería el destino. Se borra al navegar.
+    const intent = readAuthIntent()
+    clearAuthIntent()
 
-      // La intención se lee sin consumirla: arriba hay una salida temprana mientras se espera el
-      // canje del ?code=, y una lectura destructiva ahí perdería el destino. Se borra al navegar.
-      const intent = readAuthIntent()
-      clearAuthIntent()
-
-      if (!profile.username) {
-        navigate('/bienvenida', { replace: true, state: { pointsAwarded } })
-        return
-      }
-
-      if (readPendingRedeem()) {
-        navigate('/canjear', { replace: true })
-        return
-      }
-
-      navigate(intent?.next ?? '/perfil', { replace: true, state: { pointsAwarded } })
+    if (!profile.username) {
+      navigate('/bienvenida', { replace: true })
+      return
     }
 
-    void run()
-  }, [authReady, profile, params, navigate, claimGoogleBonus])
+    if (readPendingRedeem()) {
+      navigate('/canjear', { replace: true })
+      return
+    }
+
+    navigate(intent?.next ?? '/perfil', { replace: true })
+  }, [authReady, profile, params, navigate])
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-brand-azul bg-dots-azul px-4">

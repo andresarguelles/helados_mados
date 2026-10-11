@@ -14,18 +14,26 @@ import { cn } from '../../lib/utils'
 export default function Checkbox({
   checked,
   onChange,
+  disabled = false,
   children,
 }: {
   checked: boolean
   onChange: (checked: boolean) => void
+  disabled?: boolean
   children: ReactNode
 }) {
   return (
-    <label className="group relative flex items-start gap-3 cursor-pointer">
+    <label
+      className={cn(
+        'group relative flex items-start gap-3',
+        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+      )}
+    >
       <input
         type="checkbox"
         checked={checked}
         onChange={e => onChange(e.target.checked)}
+        disabled={disabled}
         className="peer sr-only"
       />
       <span
@@ -33,7 +41,9 @@ export default function Checkbox({
         className={cn(
           'mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
           'peer-focus-visible:ring-2 peer-focus-visible:ring-brand-azul peer-focus-visible:ring-offset-2',
-          checked ? 'bg-brand-azul border-brand-sombra' : 'border-brand-sombra/30 group-hover:border-brand-azul'
+          checked
+            ? 'bg-brand-azul border-brand-sombra'
+            : cn('border-brand-sombra/30', !disabled && 'group-hover:border-brand-azul')
         )}
       >
         {checked && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}

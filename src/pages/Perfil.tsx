@@ -1,31 +1,26 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import { useBottomNavVisible } from '../components/layout/BottomNav'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import ProfileDataModal from '../components/profile/ProfileDataModal'
 import { useStore } from '../lib/store'
 import { cn } from '../lib/utils'
-import { Coupon, Profile } from '../lib/types'
+import { Coupon } from '../lib/types'
 import { formatPhone } from '../lib/phone'
+import { formatCumple } from '../lib/cumple'
 import {
-  Star, Zap, Ticket, Medal, LogOut, Pencil, Mail, Sparkles,
+  Star, Zap, Ticket, Medal, LogOut, Pencil, Mail,
 } from 'lucide-react'
 
-/** Los cuatro datos que el usuario escribe a mano; el correo llega por Google aparte. */
-function completionOf(profile: Profile): { done: number; total: number } {
-  const fields = [profile.first_name, profile.last_name, profile.birthdate, profile.phone]
-  return { done: fields.filter(Boolean).length, total: fields.length }
-}
-
-function formatBirthdate(value: string): string {
-  const [year, month, day] = value.split('-')
-  return `${day}/${month}/${year}`
+function DatoPerfil({ valor }: { valor: string | null }) {
+  return valor
+    ? <dd className="text-brand-sombra text-right">{valor}</dd>
+    : <dd className="text-brand-gris/70 text-right italic">Sin agregar</dd>
 }
 
 export default function Perfil() {
   const navigate = useNavigate()
-  const location = useLocation()
   const profile = useStore(s => s.profile)
   const logout = useStore(s => s.logout)
   const getUserCoupons = useStore(s => s.getUserCoupons)
@@ -34,29 +29,17 @@ export default function Perfil() {
   const [coupons, setCoupons] = useState<Coupon[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [dataOpen, setDataOpen] = useState(false)
-  // Puntos recién ganados: el bono de Google al volver del primer acceso, o el de completar datos.
-  const [awarded, setAwarded] = useState<number>(
-    (location.state as { pointsAwarded?: number } | null)?.pointsAwarded ?? 0
-  )
 
   useEffect(() => {
     if (profile) getUserCoupons(profile.id).then(setCoupons)
   }, [profile, getUserCoupons])
 
-  // El aviso es de un solo uso: si no, reaparece en cada recarga con el mismo history state.
-  useEffect(() => {
-    const state = location.state as { pointsAwarded?: number } | null
-    if (state?.pointsAwarded) {
-      navigate(location.pathname, { replace: true, state: null })
-    }
-  }, [location.state, location.pathname, navigate])
-
   if (!profile) return null
 
   const activeCount = coupons.filter(c => c.status === 'active').length
   const redeemedCount = coupons.filter(c => c.status === 'redeemed').length
-  const { done, total } = completionOf(profile)
-  const profileComplete = done === total
+  const nombre = [profile.first_name, profile.last_name].filter(Boolean).join(' ')
+  const cumple = formatCumple(profile.birthday_month, profile.birthday_day)
 
   const handleLogout = async () => {
     await logout()
@@ -86,15 +69,6 @@ export default function Perfil() {
 
       <div className="flex-1 px-4 pt-6 pb-6 max-w-lg mx-auto w-full flex flex-col gap-6">
 
-        {awarded > 0 && (
-          <div className="flex items-center gap-3 rounded-3xl border-2 border-brand-verde bg-brand-verde/15 px-4 py-3 animate-scale-in">
-            <Sparkles className="w-5 h-5 text-brand-sombra shrink-0" />
-            <p className="font-body text-sm text-brand-sombra">
-              Ganaste <span className="font-heading">+{awarded} puntos</span>.
-            </p>
-          </div>
-        )}
-
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="paper-card rounded-3xl p-4 flex items-center gap-3">
@@ -118,60 +92,31 @@ export default function Perfil() {
           </div>
         </div>
 
-        {/* Datos personales */}
+        {/* Datos personales. Todos opcionales y editables siempre: ya no hay "perfil completo"
+            porque ese concepto solo existía para el bono de +5, que se acabó en la 0040. */}
         <div className="paper-card rounded-3xl p-5 flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h2 className="font-heading text-brand-sombra text-lg">
-                {profileComplete ? 'Tus datos' : 'Completa tu perfil'}
-              </h2>
-              <p className="font-body text-brand-gris text-xs mt-1 leading-relaxed">
-                {profileComplete
-                  ? 'Ya tenemos todo para felicitarte en tu cumpleaños.'
-                  : profile.profile_bonus_awarded
-                  ? 'Completa tus datos para no perderte las promos.'
-                  : 'Completa tus datos y gana +5 puntos, una sola vez.'}
-              </p>
-            </div>
-            {profileComplete && (
-              <button
-                onClick={() => setDataOpen(true)}
-                aria-label="Editar tus datos"
-                className="text-brand-gris hover:text-brand-sombra transition-colors shrink-0"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
-            )}
+          <div>
+            <h2 className="font-heading text-brand-sombra text-lg">Tus datos</h2>
+            <p className="font-body text-brand-gris text-xs mt-1 leading-relaxed">
+              Todos son opcionales y los cambias o borras cuando quieras. Con tu cumpleaños te
+              felicitamos, y con tu WhatsApp te avisamos de las promos si nos das permiso.
+            </p>
           </div>
 
-          {!profileComplete && (
-            <div className="flex flex-col gap-1.5">
-              <div className="h-2 rounded-full bg-brand-sombra/10 overflow-hidden">
-                <div
-                  className="h-full bg-brand-azul rounded-full transition-all duration-500"
-                  style={{ width: `${(done / total) * 100}%` }}
-                />
-              </div>
-              <p className="font-body text-brand-gris text-[11px]">{done} de {total} datos</p>
+          <dl className="flex flex-col gap-2 text-sm font-body">
+            <div className="flex justify-between gap-3">
+              <dt className="text-brand-gris">Nombre</dt>
+              <DatoPerfil valor={nombre} />
             </div>
-          )}
-
-          {profileComplete && (
-            <dl className="flex flex-col gap-2 text-sm font-body">
-              <div className="flex justify-between gap-3">
-                <dt className="text-brand-gris">Nombre</dt>
-                <dd className="text-brand-sombra text-right">{profile.first_name} {profile.last_name}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-brand-gris">Cumpleaños</dt>
-                <dd className="text-brand-sombra text-right">{formatBirthdate(profile.birthdate!)}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-brand-gris">WhatsApp</dt>
-                <dd className="text-brand-sombra text-right">{formatPhone(profile.phone)}</dd>
-              </div>
-            </dl>
-          )}
+            <div className="flex justify-between gap-3">
+              <dt className="text-brand-gris">Cumpleaños</dt>
+              <DatoPerfil valor={cumple} />
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-brand-gris">WhatsApp</dt>
+              <DatoPerfil valor={profile.phone ? formatPhone(profile.phone) : null} />
+            </div>
+          </dl>
 
           {/*
             El correo nunca se escribe a mano: solo llega verificado desde Google, que además es
@@ -187,12 +132,10 @@ export default function Perfil() {
             </div>
           )}
 
-          {!profileComplete && (
-            <button onClick={() => setDataOpen(true)} className="btn-fresa">
-              <Pencil className="w-4 h-4" />
-              Agregar información
-            </button>
-          )}
+          <button onClick={() => setDataOpen(true)} className="btn-fresa">
+            <Pencil className="w-4 h-4" />
+            {nombre || cumple || profile.phone ? 'Editar mis datos' : 'Agregar información'}
+          </button>
         </div>
 
         {/* Cómo sumar más puntos */}
@@ -233,7 +176,7 @@ export default function Perfil() {
         open={dataOpen}
         profile={profile}
         onClose={() => setDataOpen(false)}
-        onSaved={points => { setDataOpen(false); setAwarded(points) }}
+        onSaved={() => setDataOpen(false)}
       />
 
       <ConfirmDialog

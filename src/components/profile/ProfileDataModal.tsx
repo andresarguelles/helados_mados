@@ -8,11 +8,16 @@ import { cn } from '../../lib/utils'
 import { normalizePhone, parsePhone, DEFAULT_COUNTRY } from '../../lib/phone'
 import PhoneField from '../ui/PhoneField'
 import { Profile } from '../../lib/types'
+import { MESES, cumpleValido, diasDelMes } from '../../lib/cumple'
+
+const capitalizar = (s: string) => s[0].toUpperCase() + s.slice(1)
 
 interface FormState {
   firstName: string
   lastName: string
-  birthdate: string
+  /** Mes y día del cumpleaños como valor de `<select>`: '' es "sin dato". */
+  birthdayMonth: string
+  birthdayDay: string
   phone: string
   whatsappOptIn: boolean
 }
@@ -21,7 +26,8 @@ function formFrom(profile: Profile): FormState {
   return {
     firstName: profile.first_name ?? '',
     lastName: profile.last_name ?? '',
-    birthdate: profile.birthdate ?? '',
+    birthdayMonth: profile.birthday_month?.toString() ?? '',
+    birthdayDay: profile.birthday_day?.toString() ?? '',
     // El campo trabaja solo con los dígitos nacionales, así que un número ya guardado (que está
     // en E.164) hay que partirlo para poder mostrarlo.
     phone: parsePhone(profile.phone)?.national ?? '',
@@ -38,17 +44,17 @@ export default function ProfileDataModal({
   open: boolean
   profile: Profile
   onClose: () => void
-  onSaved: (pointsAwarded: number) => void
+  onSaved: () => void
 }) {
   const updateMyProfile = useStore(s => s.updateMyProfile)
   const [form, setForm] = useState<FormState>(() => formFrom(profile))
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  // El número se escribe una sola vez: los cadetes nuevos lo dan al crear la cuenta y los legacy
-  // pueden agregarlo aquí, pero después queda fijo. El servidor lo rechaza igual (`phone_immutable`);
-  // esto solo evita que alguien escriba un cambio que nunca se iba a guardar.
-  const phoneLocked = profile.phone !== null
+  // Desde la 0040 el número es opcional y se cambia o se borra aquí mismo. Sin número no hay a
+  // dónde mandar los mensajes, así que el permiso se apaga cuando el campo queda vacío (y no con
+  // un número a medias: corregir un dígito no debería costarle el permiso a nadie).
+  const sinNumero = form.phone.trim() === ''
 
   // Al reabrir, volver a partir de lo guardado en vez de arrastrar una edición abandonada.
   useEffect(() => {
@@ -57,8 +63,6 @@ export default function ProfileDataModal({
       setError('')
     }
   }, [open, profile])
-
-  const today = new Date().toISOString().slice(0, 10)
 
   const handleSave = async () => {
     setError('')
@@ -77,8 +81,15 @@ export default function ProfileDataModal({
       setError('Para recibir promociones por WhatsApp necesitas dejarnos tu número.')
       return
     }
-    if (form.birthdate && form.birthdate >= today) {
-      setError('Tu fecha de nacimiento no puede ser hoy ni una fecha futura.')
+
+    const mes = form.birthdayMonth ? Number(form.birthdayMonth) : null
+    const dia = form.birthdayDay ? Number(form.birthdayDay) : null
+    if ((mes === null) !== (dia === null)) {
+      setError('Elige el día y el mes de tu cumpleaños, o deja los dos vacíos.')
+      return
+    }
+    if (mes !== null && dia !== null && !cumpleValido(mes, dia)) {
+      setError(`${capitalizar(MESES[mes - 1])} no tiene día ${dia}.`)
       return
     }
 
@@ -86,7 +97,8 @@ export default function ProfileDataModal({
     const result = await updateMyProfile({
       first_name: form.firstName.trim() || null,
       last_name: form.lastName.trim() || null,
-      birthdate: form.birthdate || null,
+      birthday_month: mes,
+      birthday_day: dia,
       phone,
       whatsapp_opt_in: form.whatsappOptIn,
     })
@@ -95,9 +107,8 @@ export default function ProfileDataModal({
     if (!result.success) {
       const messages: Record<string, string> = {
         invalid_phone: 'Ese número no parece válido. Revísalo e intenta de nuevo.',
-        invalid_birthdate: 'Esa fecha de nacimiento no es válida.',
+        invalid_birthday: 'Esa fecha de cumpleaños no es válida.',
         optin_without_phone: 'Para recibir promociones por WhatsApp necesitas dejarnos tu número.',
-        phone_immutable: 'Tu número ya quedó registrado y no se puede cambiar. Escríbenos a contacto@heladosmados.com.',
         phone_taken: 'Ese número ya está registrado en otra cuenta.',
         not_authenticated: 'Tu sesión expiró. Vuelve a entrar.',
       }
@@ -105,8 +116,12 @@ export default function ProfileDataModal({
       return
     }
 
-    onSaved(result.pointsAwarded)
+    onSaved()
   }
+
+  // El selector de días se ajusta al mes elegido, pero sin borrar un día que ya no cabe (31 al
+  // pasar a abril): ese caso lo señala la validación en vez de cambiarlo sin avisar.
+  const diasEnLista = Math.max(diasDelMes(Number(form.birthdayMonth) || 1), Number(form.birthdayDay) || 0)
 
   return (
     <Modal open={open} onClose={onClose} loading={saving} labelledBy="profile-data-title">
@@ -115,7 +130,8 @@ export default function ProfileDataModal({
           <div>
             <h2 id="profile-data-title" className="font-heading text-brand-sombra text-lg">Tus datos</h2>
             <p className="text-brand-gris text-xs font-body mt-1 leading-relaxed">
-              Nos sirven para felicitarte en tu cumpleaños y avisarte de las promos.
+              Nos sirven para felicitarte en tu cumpleaños y avisarte de las promos. Todo es
+              opcional, y lo puedes cambiar o borrar cuando quieras.
             </p>
           </div>
           <button
@@ -161,40 +177,53 @@ export default function ProfileDataModal({
           </div>
         </div>
 
-        <div>
-          <label htmlFor="profile-birthdate" className="font-heading text-brand-sombra text-xs mb-1.5 block">
-            Fecha de nacimiento
-          </label>
-          <input
-            id="profile-birthdate"
-            type="date"
-            value={form.birthdate}
-            max={today}
-            onChange={e => { setForm(f => ({ ...f, birthdate: e.target.value })); setError('') }}
-            className="field-input"
-            autoComplete="bday"
-          />
+        {/* Solo día y mes: el año no se pide (0040). */}
+        <fieldset>
+          <legend className="font-heading text-brand-sombra text-xs mb-1.5 block">Cumpleaños</legend>
+          <div className="grid grid-cols-[5.5rem_1fr] gap-3">
+            <select
+              aria-label="Día de tu cumpleaños"
+              value={form.birthdayDay}
+              onChange={e => { setForm(f => ({ ...f, birthdayDay: e.target.value })); setError('') }}
+              className="field-input"
+            >
+              <option value="">Día</option>
+              {Array.from({ length: diasEnLista }, (_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              ))}
+            </select>
+            <select
+              aria-label="Mes de tu cumpleaños"
+              value={form.birthdayMonth}
+              onChange={e => { setForm(f => ({ ...f, birthdayMonth: e.target.value })); setError('') }}
+              className="field-input"
+            >
+              <option value="">Mes</option>
+              {MESES.map((nombre, i) => (
+                <option key={nombre} value={i + 1}>{capitalizar(nombre)}</option>
+              ))}
+            </select>
+          </div>
           <p className="text-[11px] text-brand-gris font-body mt-1.5">
-            Te tenemos una sorpresa ese día.
+            Sin el año. Te tenemos una sorpresa ese día.
           </p>
-        </div>
+        </fieldset>
 
         <PhoneField
           id="profile-phone"
           label="WhatsApp"
           value={form.phone}
-          onChange={value => { setForm(f => ({ ...f, phone: value })); setError('') }}
-          locked={phoneLocked}
-          hint={
-            phoneLocked
-              ? 'Tu número queda fijo. Si te equivocaste, escríbenos a contacto@heladosmados.com.'
-              : 'Se guarda una sola vez: después ya no se puede cambiar desde aquí.'
-          }
+          onChange={value => {
+            setForm(f => ({ ...f, phone: value, whatsappOptIn: value === '' ? false : f.whatsappOptIn }))
+            setError('')
+          }}
+          hint="Opcional. Para borrarlo, deja el campo vacío."
         />
 
         {/* El consentimiento va explícito y con fecha: es lo que exige el aviso de privacidad. */}
         <Checkbox
           checked={form.whatsappOptIn}
+          disabled={sinNumero}
           onChange={v => { setForm(f => ({ ...f, whatsappOptIn: v })); setError('') }}
         >
           Quiero recibir promociones de Helados Mados por WhatsApp. Puedo cancelarlo cuando quiera.

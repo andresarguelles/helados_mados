@@ -2,29 +2,29 @@
   "generador": 1,
   "docs": {
     "privacidad": {
-      "version": "3.0.0",
-      "actualizado": "2026-10-07",
-      "astHash": "523d3bffc30ef495d8644cc0d5a26699f74fb4e8e0e38b65f551593b1f66cbcd",
+      "version": "4.0.0",
+      "actualizado": "2026-10-11",
+      "astHash": "c904d96697b56c4fec74d7d4a42d62e0e029190cebba6783a3a21269bea1749e",
       "secciones": 20,
-      "bloques": 92
+      "bloques": 91
     },
     "terminos": {
-      "version": "2.4.0",
-      "actualizado": "2026-10-07",
-      "astHash": "a5ae366b55614362e3bdfef7bd363d5ec03d934858bac4c396474aff02d13581",
+      "version": "3.0.0",
+      "actualizado": "2026-10-11",
+      "astHash": "36edde269300ed1cf7ae20e1bc4f7db7dbbe62964f6a342f2bb90f8ba55b77e6",
       "secciones": 16,
       "bloques": 62
     }
   },
-  "bundleHash": "2e6585fe72cb88c38d1a47beee007e6fad533e4eb38f71bba65e54fea2fb27f2",
+  "bundleHash": "8c416dc1f9cbe66aac50f0cf7548a16e673008bf0555a0f98eae5ceb94bf7ccc",
   "artefactos": {
     "web": {
-      "src/content/legal/generated/legalContent.ts": "c7cf1d0887b3c366cdbd38e622b6cf30798f5d4e872b488e6e3859134b51fd4b",
-      "src/content/legal/generated/legalSimplificado.ts": "9a2d7273d949cf71478e8d5b610a40cee0f5c71bea7b61dcc58a454a0ae38408",
-      "src/content/legal/generated/legalMeta.ts": "25ed725f27beafccba4057d2c43793f6b2c367ea873529d3a96fe60da3991b59"
+      "src/content/legal/generated/legalContent.ts": "fffd616bd72d0de11055a0d1decb5033802167fc26d11cda2cf428a1b7812583",
+      "src/content/legal/generated/legalSimplificado.ts": "018454e1a345c4f6e343dd80b5d84c3510ddbbb126b6b464c5225eea3a895d2d",
+      "src/content/legal/generated/legalMeta.ts": "90aed286ed2b4ea6419114eb1343456946203b7ab8e8e4bb29bbe088838b9dc2"
     },
     "android": {
-      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "8924867c52f3bb69971dd18ee5337156fbbc5eefc8493953ec1457b7bb1b7e78"
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "36ff8abdc0257bd1cf9b557a22ba21b45ea0b4af431f1a1c39ddce8903d24172"
     }
   }
 }

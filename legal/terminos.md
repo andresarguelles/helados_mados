@@ -2,8 +2,8 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 2.4.0
-actualizado: 2026-10-07
+version: 3.0.0
+actualizado: 2026-10-11
 ---
 
 ## Lo que acepta al usar Helados Mados {#aceptacion icono=Shield}
@@ -33,26 +33,24 @@ La plataforma es para personas mayores de 18 años. No está dirigida a menores 
 
 Al crear su cuenta, usted marca una casilla declarando que tiene 18 años cumplidos o más. Esa declaración es suya y la tomamos como cierta.
 
-Si nos da su fecha de nacimiento, el sistema rechaza cualquiera que implique que usted es menor de edad.
-
 Si detectamos que una cuenta pertenece a un menor, la cancelamos y eliminamos sus datos. No hay compensación por los puntos o cupones que tuviera.
 
 ## Su cuenta {#cuenta icono=UserPlus}
 
 Las cuentas nuevas se crean únicamente con Google. Al hacerlo, Google nos comparte su correo, su nombre, su apellido y su foto de perfil. **Nunca recibimos su contraseña de Google.**
 
-Para terminar el alta le pedimos tres cosas obligatorias y le ofrecemos una opcional:
+Para terminar el alta le pedimos dos cosas obligatorias y le ofrecemos dos opcionales:
 
 - Un apodo. Es el nombre con el que aparecerá ante los demás. Obligatorio.
-- Un número de WhatsApp de México, a diez dígitos. Obligatorio.
 - Declarar que tiene 18 años cumplidos. Obligatorio.
-- Su permiso para escribirle a ese número con avisos de dinámicas y promociones. **Opcional**: si no lo da, su cuenta funciona igual.
+- Un número de WhatsApp de México, a diez dígitos. **Opcional.**
+- Su permiso para escribirle a ese número con avisos de dinámicas y promociones. **Opcional**, y solo si nos dio el número.
 
-El teléfono es obligatorio por una razón concreta: **un número, una cuenta**. Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión.
+**Su número de WhatsApp es opcional y usted lo controla.** Puede no darlo, agregarlo después, cambiarlo o borrarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Hasta la versión 2.4.0 de este documento el número era obligatorio y no se podía cambiar; desde la versión 3.0.0 ya no.
 
-Por eso mismo, **el teléfono no se puede cambiar después**. Una vez guardado queda fijo. Si lo escribió mal, escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com) y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario.
+Un mismo número no puede estar en dos cuentas: si el que escribe ya está registrado en otra, el sistema lo rechaza.
 
-El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes.
+El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil. Si borra su número, el permiso se va con él, porque ya no habría a dónde escribirle.
 
 Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda.
 
@@ -91,8 +89,8 @@ Usted acumula puntos así:
 
 - **Un punto** por canjear una palabra secreta.
 - **Diez puntos** cuando presenta su cupón QR en el mostrador y lo escaneamos.
-- **Cinco puntos**, una sola vez, por completar su nombre, su apellido, su fecha de nacimiento y su teléfono.
-- **Cinco puntos**, una sola vez, al entrar por primera vez con su cuenta de Google.
+
+Crear la cuenta o llenar sus datos no da puntos: **toda cuenta empieza en cero**. Hasta la versión 2.4.0 de este documento dábamos cinco puntos por completar el perfil y cinco por entrar por primera vez con Google. Esos bonos ya no existen, y los puntos que ya se entregaron por ellos se conservan.
 
 Y ahora lo importante, dicho sin rodeos:
 

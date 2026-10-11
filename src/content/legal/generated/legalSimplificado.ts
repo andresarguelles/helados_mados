@@ -16,10 +16,10 @@ export const AVISO_SIMPLIFICADO: LegalSeccion =
     icono: Shield,
     rol: "simplificado",
     bloques: [
-      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "En Helados Mados tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible." }] },
-      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte." }] },
+      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "En Helados Mados tratamos su apodo, su correo y, si usted los da, su número de WhatsApp, su nombre, su apellido y su cumpleaños (día y mes, sin el año). Ninguno es un dato sensible." }] },
+      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar el abuso de las promociones. Eso es el servicio y no depende de un permiso aparte." }] },
       { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
-      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
+      { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su cumpleaños no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
       { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Lea el " }, { t: 'enlaceLegal', v: "aviso de privacidad integral", doc: "privacidad" }, { t: 'texto', v: ", con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com." }] },
       { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Responsable de sus datos: Helados Mados (Marcos Roldán Moreno), con domicilio en Av. Centenario No. 1229, Col. Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569." }] },
     ],

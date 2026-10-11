@@ -17,10 +17,11 @@
  */
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Scale } from 'lucide-react'
+import { Loader2, Scale, Sparkles } from 'lucide-react'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import { LEGAL_META } from '../../content/legal/generated/legalMeta'
+import { novedadesDe } from '../../content/legal/novedades'
 import ErrorAlert from '../ui/ErrorAlert'
 
 const RUTAS: Record<string, string> = { privacidad: '/privacidad', terminos: '/terminos' }
@@ -71,6 +72,7 @@ export default function LegalGate({ children }: { children: React.ReactNode }) {
   if (estado !== 'pendiente') return <>{children}</>
 
   const nombres = pendientes.map((id) => LEGAL_META[id]?.titulo ?? id)
+  const novedades = novedadesDe(pendientes)
 
   return (
     <div className="min-h-screen bg-brand-papel flex items-center justify-center px-4 py-10">
@@ -79,6 +81,29 @@ export default function LegalGate({ children }: { children: React.ReactNode }) {
           <Scale className="w-7 h-7 text-brand-azul shrink-0" />
           <h1 className="font-heading text-brand-sombra text-lg">Actualizamos nuestros documentos</h1>
         </div>
+
+        {/* Lo que cambió, antes del "por favor acepta": casi nadie abre los documentos, y una
+            buena noticia contada aquí es la única forma de que se entere. */}
+        {(novedades.titular || novedades.puntos.length > 0) && (
+          <div className="rounded-2xl border-2 border-brand-verde bg-brand-verde/15 p-4 flex flex-col gap-2">
+            {novedades.titular && (
+              <>
+                <p className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wide text-brand-sombra">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Gran noticia
+                </p>
+                <p className="font-heading text-brand-sombra text-base leading-snug">{novedades.titular}</p>
+              </>
+            )}
+            {novedades.puntos.length > 0 && (
+              <ul className="list-disc pl-4 flex flex-col gap-1 font-body text-xs text-brand-sombra/85 leading-relaxed">
+                {novedades.puntos.map((punto) => (
+                  <li key={punto}>{punto}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <p className="font-body text-brand-gris text-sm leading-relaxed">
           Cambiamos {nombres.length === 1 ? 'un documento' : 'los documentos'} que rigen tu cuenta.

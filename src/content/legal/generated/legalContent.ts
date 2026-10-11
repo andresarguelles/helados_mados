@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "3.0.0",
-    actualizado: "2026-10-07",
-    astHash: "523d3bffc30ef495d8644cc0d5a26699f74fb4e8e0e38b65f551593b1f66cbcd",
+    version: "4.0.0",
+    actualizado: "2026-10-11",
+    astHash: "c904d96697b56c4fec74d7d4a42d62e0e029190cebba6783a3a21269bea1749e",
     secciones: [
       {
         id: "aviso-corto",
@@ -21,10 +21,10 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         icono: Shield,
         rol: "simplificado",
         bloques: [
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "En Helados Mados tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "En Helados Mados tratamos su apodo, su correo y, si usted los da, su número de WhatsApp, su nombre, su apellido y su cumpleaños (día y mes, sin el año). Ninguno es un dato sensible." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar el abuso de las promociones. Eso es el servicio y no depende de un permiso aparte." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su cumpleaños no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Lea el " }, { t: 'enlaceLegal', v: "aviso de privacidad integral", doc: "privacidad" }, { t: 'texto', v: ", con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Responsable de sus datos: Helados Mados (Marcos Roldán Moreno), con domicilio en Av. Centenario No. 1229, Col. Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569." }] },
         ],
@@ -62,17 +62,17 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "Identificador de cuenta." }, { t: 'texto', v: " Un número que le asigna el sistema al crearla. Es público en el marcador." }],
               [{ t: 'fuerte', v: "Apodo." }, { t: 'texto', v: " Lo elige usted al darse de alta. Es obligatorio y es público." }],
               [{ t: 'fuerte', v: "Correo electrónico." }, { t: 'texto', v: " Nos lo da Google al iniciar sesión. No existe ninguna pantalla donde usted lo escriba, y por eso todo correo que guardamos está verificado por Google." }],
-              [{ t: 'fuerte', v: "Número de WhatsApp." }, { t: 'texto', v: " Lo escribe usted al darse de alta y es obligatorio. Solo aceptamos números de México, a diez dígitos. " }, { t: 'fuerte', v: "No se puede cambiar después." }],
+              [{ t: 'fuerte', v: "Número de WhatsApp." }, { t: 'texto', v: " " }, { t: 'fuerte', v: "Es opcional, y usted lo agrega, lo cambia o lo borra desde su perfil cuando quiera." }, { t: 'texto', v: " Si lo da, solo aceptamos números de México, a diez dígitos, y un mismo número no puede estar en dos cuentas. Hasta la versión 3.0.0 de este aviso era obligatorio y no se podía cambiar." }],
               [{ t: 'fuerte', v: "Si nos dio permiso para escribirle" }, { t: 'texto', v: ", junto con la fecha y la hora en que lo hizo. Guardamos la fecha para poder demostrar cuándo nos lo dio. No es obligatorio y se puede retirar cuando quiera." }],
               [{ t: 'fuerte', v: "La fecha en que declaró ser mayor de edad." }],
               [{ t: 'fuerte', v: "Nombre y apellido." }, { t: 'texto', v: " Nos los da Google, y usted puede corregirlos o borrarlos. No son obligatorios." }],
-              [{ t: 'fuerte', v: "Fecha de nacimiento." }, { t: 'texto', v: " La escribe usted. No es obligatoria." }],
+              [{ t: 'fuerte', v: "Cumpleaños." }, { t: 'texto', v: " Solo el día y el mes: " }, { t: 'fuerte', v: "no guardamos el año." }, { t: 'texto', v: " Lo escribe usted y no es obligatorio. Hasta la versión 3.0.0 de este aviso pedíamos la fecha de nacimiento completa; al publicar esta versión borramos el año de todas las fechas que ya teníamos." }],
               [{ t: 'fuerte', v: "Foto de perfil." }, { t: 'texto', v: " Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero " }, { t: 'fuerte', v: "hoy no la mostramos en ninguna pantalla." }],
-              [{ t: 'fuerte', v: "Sus puntos, sus cupones y las marcas de los bonos" }, { t: 'texto', v: " que ya recibió. Los genera el sistema a partir de su actividad." }],
+              [{ t: 'fuerte', v: "Sus puntos, sus cupones y, si los recibió cuando existían, la marca de los bonos de alta." }, { t: 'texto', v: " Los genera el sistema a partir de su actividad." }],
               [{ t: 'fuerte', v: "El registro de qué versión de estos documentos aceptó usted y cuándo." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta le pedimos tres cosas obligatorias: el apodo, el número de WhatsApp y que declare ser mayor de edad. El permiso para escribirle es opcional. Todo lo demás es opcional o nos lo da Google." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta le pedimos dos cosas obligatorias: el apodo y que declare ser mayor de edad. El número de WhatsApp y el permiso para escribirle son opcionales. Todo lo demás es opcional o nos lo da Google." }] },
           { tipo: 'parrafo', alcance: 'web', spans: [{ t: 'texto', v: "En el sitio web, su navegador guarda además su sesión iniciada, y durante el alta guarda temporalmente algunos datos del proceso que se borran al terminarlo o al cerrar la pestaña. Eso vive en su navegador, no en nuestros servidores." }] },
         ],
       },
@@ -101,7 +101,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Crear su cuenta, identificarle y permitirle iniciar sesión." }],
               [{ t: 'texto', v: "Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda." }],
               [{ t: 'texto', v: "Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción." }],
-              [{ t: 'texto', v: "Impedir el abuso de las promociones: un número de teléfono por cuenta y un cupón por persona y por dinámica." }],
+              [{ t: 'texto', v: "Impedir el abuso de las promociones: un cupón por persona y por dinámica, y un mismo número de teléfono en una sola cuenta." }],
               [{ t: 'texto', v: "Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO." }],
               [{ t: 'texto', v: "Conservar la prueba de qué versión de estos documentos aceptó y cuándo." }],
               [{ t: 'texto', v: "Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente." }],
@@ -120,7 +120,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'fuerte', v: "Escribirle por WhatsApp" }, { t: 'texto', v: " sobre dinámicas, palabras secretas y promociones." }],
-              [{ t: 'fuerte', v: "Felicitarle o enviarle una promoción en su cumpleaños" }, { t: 'texto', v: ", si nos dio su fecha de nacimiento." }],
+              [{ t: 'fuerte', v: "Felicitarle o enviarle una promoción en su cumpleaños" }, { t: 'texto', v: ", si nos lo dio." }],
               [{ t: 'fuerte', v: "Atenderle por su nombre" }, { t: 'texto', v: " en la tienda, si nos dio su nombre y su apellido." }],
               [{ t: 'fuerte', v: "Medir cómo se usa el sitio web" }, { t: 'texto', v: " para mejorarlo." }],
             ],
@@ -129,14 +129,14 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. " }, { t: 'fuerte', v: "No es obligatoria" }, { t: 'texto', v: ": puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre." }],
+              [{ t: 'texto', v: "Para los mensajes de WhatsApp: no nos dé su número, no marque la casilla al crear su cuenta, o desmárquela después en su perfil. " }, { t: 'fuerte', v: "No es obligatoria" }, { t: 'texto', v: ": puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre." }],
               [{ t: 'texto', v: "Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera." }],
               [{ t: 'texto', v: "Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar." }],
               [{ t: 'texto', v: "Para cualquiera de ellas, en cualquier momento: escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Tenga presente que completar su nombre, su apellido, su fecha de nacimiento y su teléfono le da cinco puntos, una sola vez. Es un incentivo, no una obligación. Si no los da, no pierde nada más que esos cinco puntos." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número, si nos lo dio, y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Darnos estos datos no le da puntos, y no darlos no le quita nada. Hasta la versión 3.0.0 de este aviso, completar el perfil daba cinco puntos una sola vez; ese incentivo ya no existe." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Nunca vendemos sus datos personales, y nunca los usamos para publicidad de terceros." }] },
         ],
       },
@@ -149,7 +149,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El marcador de la promoción es público. " }, { t: 'fuerte', v: "Cualquier persona puede consultarlo sin iniciar sesión" }, { t: 'texto', v: ", y los cinco primeros lugares aparecen en la página de inicio del sitio." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "De cada participante, el marcador entrega dos cosas: " }, { t: 'fuerte', v: "su apodo y sus puntos" }, { t: 'texto', v: ". Nada más." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Hasta septiembre de 2026 entregaba además el identificador interno de su cuenta, que no se dibujaba en la pantalla pero sí viajaba en la respuesta del servidor, de modo que cualquier persona con conocimientos técnicos podía leerlo. Lo quitamos al escribir este aviso: ahora el servidor solo indica si una fila es la suya, sin revelar de quién es ninguna de las demás." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No se publican su nombre, su apellido, su correo, su teléfono, su fecha de nacimiento ni su foto." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No se publican su nombre, su apellido, su correo, su teléfono, su cumpleaños ni su foto." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Quien todavía no ha elegido apodo no aparece en el marcador, y las cuentas del personal tampoco." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Elija su apodo pensando en esto: si pone su nombre completo, su nombre completo será público." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Hoy no existe forma de tener cuenta y no aparecer en el marcador. Si no quiere figurar, escríbanos: la medida que podemos aplicar de inmediato es cancelar su cuenta." }] },
@@ -209,7 +209,6 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Nunca recibimos su contraseña de Google" }, { t: 'texto', v: ", ni su agenda, ni sus correos, ni sus archivos, ni ningún otro dato de su cuenta de Google." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El uso que damos a esa información se apega a la Política de Datos de Usuario de los Servicios de API de Google, incluidos sus requisitos de Uso Limitado. En concreto: usamos esos datos solo para que usted pueda entrar y para mostrarle su propia cuenta, no los vendemos, no los cedemos a intermediarios de datos ni a anunciantes, y no los usamos para publicidad. Puede consultar esa política en " }, { t: 'enlace', v: "el sitio de desarrolladores de Google", href: "https://developers.google.com/terms/api-services-user-data-policy" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Google es la única forma de entrar, así que su cuenta no se puede desvincular de Google. Si quiere que eliminemos el correo que guardamos, pídanoslo o borre su cuenta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Entrar por primera vez con Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación." }] },
         ],
       },
       {
@@ -241,14 +240,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Le comunicaremos nuestra decisión en un plazo máximo de " }, { t: 'fuerte', v: "veinte días hábiles" }, { t: 'texto', v: " desde que recibamos su solicitud. Si procede, la haremos efectiva dentro de los " }, { t: 'fuerte', v: "quince días hábiles" }, { t: 'texto', v: " siguientes a esa respuesta. Ambos plazos pueden ampliarse una sola vez, por el mismo tiempo, cuando el caso lo justifique, y en ese supuesto se lo diremos." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Dos límites que preferimos decirle de entrada:" }] },
-          {
-            tipo: 'lista', alcance: 'ambas',
-            items: [
-              [{ t: 'fuerte', v: "Su número de teléfono no se puede rectificar desde su perfil." }, { t: 'texto', v: " El sistema lo fija la primera vez y no admite cambios, ni siquiera para borrarlo. Si se equivocó, pídanoslo por correo y lo corregimos nosotros." }],
-              [{ t: 'texto', v: "Hay datos que no podemos cancelar mientras exista un motivo legal para conservarlos. Están en el apartado de conservación." }],
-            ],
-          },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para corregir o borrar su nombre, su apellido, su cumpleaños o su número de WhatsApp no necesita escribirnos: lo hace usted mismo desde su perfil, al momento." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Un límite que preferimos decirle de entrada: hay datos que no podemos cancelar mientras exista un motivo legal para conservarlos. Están en el apartado de conservación." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Ejercer un derecho no le impide ejercer otro, y no hace falta ejercer uno antes que otro." }] },
         ],
       },
@@ -282,7 +275,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'texto', v: "Desmarcar la casilla de WhatsApp en su perfil, para que no le escribamos." }],
-              [{ t: 'texto', v: "Borrar desde su perfil su nombre, su apellido y su fecha de nacimiento, y quedarse solo con lo indispensable." }],
+              [{ t: 'texto', v: "Borrar desde su perfil su nombre, su apellido, su cumpleaños y su número de WhatsApp, y quedarse solo con lo indispensable." }],
               [{ t: 'texto', v: "Rechazar las cookies de medición en el sitio web." }],
               [{ t: 'texto', v: "Pedirnos por correo que limitemos un uso concreto. Lo revisamos y le decimos qué podemos hacer y qué no." }],
             ],
@@ -313,7 +306,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'fuerte', v: "El registro de que usted aceptó estos documentos" }, { t: 'texto', v: ": su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin." }],
-              [{ t: 'fuerte', v: "El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya" }, { t: 'texto', v: ": el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. " }, { t: 'fuerte', v: "No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado." }, { t: 'texto', v: " Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja." }],
+              [{ t: 'fuerte', v: "El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya" }, { t: 'texto', v: ": el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. " }, { t: 'fuerte', v: "No contiene su correo, ni su teléfono, ni su nombre, ni su cumpleaños, ni el motivo que nos haya dado." }, { t: 'texto', v: " Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Además guardamos respaldos completos de la base de datos. Un dato que usted borre hoy puede seguir existiendo en un respaldo anterior hasta que ese respaldo se sustituye o se destruye. Esos respaldos no se usan para nada más: están ahí para poder recuperar el servicio si algo se rompe." }] },
@@ -348,7 +341,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: null,
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "La plataforma es solo para mayores de 18 años y no está dirigida a menores de edad." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear su cuenta usted declara que es mayor de edad. Si nos da su fecha de nacimiento, el sistema rechaza cualquiera que implique lo contrario." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear su cuenta usted declara que es mayor de edad." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No recabamos de manera consciente datos personales de menores de edad. Si detectamos que una cuenta es de un menor, la cancelamos y eliminamos sus datos." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si usted es madre, padre o tutor y cree que un menor a su cargo nos dio sus datos, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y los eliminaremos." }] },
         ],
@@ -406,9 +399,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "2.4.0",
-    actualizado: "2026-10-07",
-    astHash: "a5ae366b55614362e3bdfef7bd363d5ec03d934858bac4c396474aff02d13581",
+    version: "3.0.0",
+    actualizado: "2026-10-11",
+    astHash: "36edde269300ed1cf7ae20e1bc4f7db7dbbe62964f6a342f2bb90f8ba55b77e6",
     secciones: [
       {
         id: "aceptacion",
@@ -449,7 +442,6 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "La plataforma es para personas mayores de 18 años. No está dirigida a menores de edad." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear su cuenta, usted marca una casilla declarando que tiene 18 años cumplidos o más. Esa declaración es suya y la tomamos como cierta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si nos da su fecha de nacimiento, el sistema rechaza cualquiera que implique que usted es menor de edad." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Si detectamos que una cuenta pertenece a un menor, la cancelamos y eliminamos sus datos. No hay compensación por los puntos o cupones que tuviera." }] },
         ],
       },
@@ -460,19 +452,19 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: null,
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Las cuentas nuevas se crean únicamente con Google. Al hacerlo, Google nos comparte su correo, su nombre, su apellido y su foto de perfil. " }, { t: 'fuerte', v: "Nunca recibimos su contraseña de Google." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para terminar el alta le pedimos tres cosas obligatorias y le ofrecemos una opcional:" }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Para terminar el alta le pedimos dos cosas obligatorias y le ofrecemos dos opcionales:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'texto', v: "Un apodo. Es el nombre con el que aparecerá ante los demás. Obligatorio." }],
-              [{ t: 'texto', v: "Un número de WhatsApp de México, a diez dígitos. Obligatorio." }],
               [{ t: 'texto', v: "Declarar que tiene 18 años cumplidos. Obligatorio." }],
-              [{ t: 'texto', v: "Su permiso para escribirle a ese número con avisos de dinámicas y promociones. " }, { t: 'fuerte', v: "Opcional" }, { t: 'texto', v: ": si no lo da, su cuenta funciona igual." }],
+              [{ t: 'texto', v: "Un número de WhatsApp de México, a diez dígitos. " }, { t: 'fuerte', v: "Opcional." }],
+              [{ t: 'texto', v: "Su permiso para escribirle a ese número con avisos de dinámicas y promociones. " }, { t: 'fuerte', v: "Opcional" }, { t: 'texto', v: ", y solo si nos dio el número." }],
             ],
           },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El teléfono es obligatorio por una razón concreta: " }, { t: 'fuerte', v: "un número, una cuenta" }, { t: 'texto', v: ". Sin esa regla, una misma persona podría abrir varias cuentas de Gmail y llevarse los puntos de una sola transmisión." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Por eso mismo, " }, { t: 'fuerte', v: "el teléfono no se puede cambiar después" }, { t: 'texto', v: ". Una vez guardado queda fijo. Si lo escribió mal, escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: " y lo corregimos nosotros. No hay forma de cambiarlo ni de borrarlo desde su perfil dejando la cuenta abierta. Lo decimos claro porque una versión anterior de este documento prometía lo contrario." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Guardamos su número aunque no nos dé ese permiso, porque su otra función —que nadie abra varias cuentas— no depende de que usted quiera recibir mensajes." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Su número de WhatsApp es opcional y usted lo controla." }, { t: 'texto', v: " Puede no darlo, agregarlo después, cambiarlo o borrarlo cuando quiera desde su perfil, sin perder la cuenta, los puntos ni los cupones. Hasta la versión 2.4.0 de este documento el número era obligatorio y no se podía cambiar; desde la versión 3.0.0 ya no." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Un mismo número no puede estar en dos cuentas: si el que escribe ya está registrado en otra, el sistema lo rechaza." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "El permiso para recibir mensajes es otra cosa: es opcional, y puede darlo o retirarlo cuando quiera desde su perfil. Si borra su número, el permiso se va con él, porque ya no habría a dónde escribirle." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su cuenta es personal. Usted es responsable de lo que ocurra con ella. No la comparta ni la venda." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'fuerte', v: "Solo se puede entrar con Google" }, { t: 'texto', v: ", tanto en el sitio web como en la aplicación." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Hasta el 30 de septiembre de 2026, el sitio web tuvo un segundo acceso, con apodo y contraseña, para las cuentas creadas antes de que el registro fuera solo con Google. Ese acceso ya no existe. Las cuentas antiguas que nunca se vincularon con Google se conservan como estaban, con su apodo, sus puntos y sus cupones, pero ya no tienen forma de iniciar sesión." }] },
@@ -523,10 +515,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             items: [
               [{ t: 'fuerte', v: "Un punto" }, { t: 'texto', v: " por canjear una palabra secreta." }],
               [{ t: 'fuerte', v: "Diez puntos" }, { t: 'texto', v: " cuando presenta su cupón QR en el mostrador y lo escaneamos." }],
-              [{ t: 'fuerte', v: "Cinco puntos" }, { t: 'texto', v: ", una sola vez, por completar su nombre, su apellido, su fecha de nacimiento y su teléfono." }],
-              [{ t: 'fuerte', v: "Cinco puntos" }, { t: 'texto', v: ", una sola vez, al entrar por primera vez con su cuenta de Google." }],
             ],
           },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Crear la cuenta o llenar sus datos no da puntos: " }, { t: 'fuerte', v: "toda cuenta empieza en cero" }, { t: 'texto', v: ". Hasta la versión 2.4.0 de este documento dábamos cinco puntos por completar el perfil y cinco por entrar por primera vez con Google. Esos bonos ya no existen, y los puntos que ya se entregaron por ellos se conservan." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Y ahora lo importante, dicho sin rodeos:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
@@ -683,4 +674,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "2e6585fe72cb88c38d1a47beee007e6fad533e4eb38f71bba65e54fea2fb27f2"
+export const LEGAL_BUNDLE_HASH = "8c416dc1f9cbe66aac50f0cf7548a16e673008bf0555a0f98eae5ceb94bf7ccc"

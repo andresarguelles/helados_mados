@@ -2,19 +2,19 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 3.0.0
-actualizado: 2026-10-07
+version: 4.0.0
+actualizado: 2026-10-11
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
 
-En Helados Mados tratamos su apodo, su correo, su número de WhatsApp y, si usted los da, su nombre, su apellido y su fecha de nacimiento. Ninguno es un dato sensible.
+En Helados Mados tratamos su apodo, su correo y, si usted los da, su número de WhatsApp, su nombre, su apellido y su cumpleaños (día y mes, sin el año). Ninguno es un dato sensible.
 
-Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar que una misma persona abra varias cuentas. Eso es el servicio y no depende de un permiso aparte.
+Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar el abuso de las promociones. Eso es el servicio y no depende de un permiso aparte.
 
 Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta.
 
-Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su fecha de nacimiento no. Puede pedirnos que limitemos otros usos escribiendo a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
+Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su cumpleaños no. Puede pedirnos que limitemos otros usos escribiendo a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Lea el [aviso de privacidad integral](legal:privacidad), con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com.
 
@@ -40,16 +40,16 @@ Esta es la lista completa de los datos personales que guardamos de usted. No hay
 - **Identificador de cuenta.** Un número que le asigna el sistema al crearla. Es público en el marcador.
 - **Apodo.** Lo elige usted al darse de alta. Es obligatorio y es público.
 - **Correo electrónico.** Nos lo da Google al iniciar sesión. No existe ninguna pantalla donde usted lo escriba, y por eso todo correo que guardamos está verificado por Google.
-- **Número de WhatsApp.** Lo escribe usted al darse de alta y es obligatorio. Solo aceptamos números de México, a diez dígitos. **No se puede cambiar después.**
+- **Número de WhatsApp.** **Es opcional, y usted lo agrega, lo cambia o lo borra desde su perfil cuando quiera.** Si lo da, solo aceptamos números de México, a diez dígitos, y un mismo número no puede estar en dos cuentas. Hasta la versión 3.0.0 de este aviso era obligatorio y no se podía cambiar.
 - **Si nos dio permiso para escribirle**, junto con la fecha y la hora en que lo hizo. Guardamos la fecha para poder demostrar cuándo nos lo dio. No es obligatorio y se puede retirar cuando quiera.
 - **La fecha en que declaró ser mayor de edad.**
 - **Nombre y apellido.** Nos los da Google, y usted puede corregirlos o borrarlos. No son obligatorios.
-- **Fecha de nacimiento.** La escribe usted. No es obligatoria.
+- **Cumpleaños.** Solo el día y el mes: **no guardamos el año.** Lo escribe usted y no es obligatorio. Hasta la versión 3.0.0 de este aviso pedíamos la fecha de nacimiento completa; al publicar esta versión borramos el año de todas las fechas que ya teníamos.
 - **Foto de perfil.** Google nos da la dirección de internet donde está alojada esa imagen. La guardamos, pero **hoy no la mostramos en ninguna pantalla.**
-- **Sus puntos, sus cupones y las marcas de los bonos** que ya recibió. Los genera el sistema a partir de su actividad.
+- **Sus puntos, sus cupones y, si los recibió cuando existían, la marca de los bonos de alta.** Los genera el sistema a partir de su actividad.
 - **El registro de qué versión de estos documentos aceptó usted y cuándo.**
 
-Al crear una cuenta le pedimos tres cosas obligatorias: el apodo, el número de WhatsApp y que declare ser mayor de edad. El permiso para escribirle es opcional. Todo lo demás es opcional o nos lo da Google.
+Al crear una cuenta le pedimos dos cosas obligatorias: el apodo y que declare ser mayor de edad. El número de WhatsApp y el permiso para escribirle son opcionales. Todo lo demás es opcional o nos lo da Google.
 
 :::alcance web
 En el sitio web, su navegador guarda además su sesión iniciada, y durante el alta guarda temporalmente algunos datos del proceso que se borran al terminarlo o al cerrar la pestaña. Eso vive en su navegador, no en nuestros servidores.
@@ -72,7 +72,7 @@ Estas finalidades son necesarias para la relación entre usted y nosotros. Sin e
 - Crear su cuenta, identificarle y permitirle iniciar sesión.
 - Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda.
 - Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción.
-- Impedir el abuso de las promociones: un número de teléfono por cuenta y un cupón por persona y por dinámica.
+- Impedir el abuso de las promociones: un cupón por persona y por dinámica, y un mismo número de teléfono en una sola cuenta.
 - Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO.
 - Conservar la prueba de qué versión de estos documentos aceptó y cuándo.
 - Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente.
@@ -82,20 +82,20 @@ Estas finalidades son necesarias para la relación entre usted y nosotros. Sin e
 Estas otras finalidades no son necesarias para el servicio. Si dice que no, su cuenta, sus puntos y sus cupones siguen exactamente igual:
 
 - **Escribirle por WhatsApp** sobre dinámicas, palabras secretas y promociones.
-- **Felicitarle o enviarle una promoción en su cumpleaños**, si nos dio su fecha de nacimiento.
+- **Felicitarle o enviarle una promoción en su cumpleaños**, si nos lo dio.
 - **Atenderle por su nombre** en la tienda, si nos dio su nombre y su apellido.
 - **Medir cómo se usa el sitio web** para mejorarlo.
 
 Cómo negarse a cada una:
 
-- Para los mensajes de WhatsApp: no marque la casilla al crear su cuenta, o desmárquela después en su perfil. **No es obligatoria**: puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre.
+- Para los mensajes de WhatsApp: no nos dé su número, no marque la casilla al crear su cuenta, o desmárquela después en su perfil. **No es obligatoria**: puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre.
 - Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera.
 - Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar.
 - Para cualquiera de ellas, en cualquier momento: escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
-Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre.
+Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número, si nos lo dio, y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre.
 
-Tenga presente que completar su nombre, su apellido, su fecha de nacimiento y su teléfono le da cinco puntos, una sola vez. Es un incentivo, no una obligación. Si no los da, no pierde nada más que esos cinco puntos.
+Darnos estos datos no le da puntos, y no darlos no le quita nada. Hasta la versión 3.0.0 de este aviso, completar el perfil daba cinco puntos una sola vez; ese incentivo ya no existe.
 
 **Nunca vendemos sus datos personales, y nunca los usamos para publicidad de terceros.**
 
@@ -107,7 +107,7 @@ De cada participante, el marcador entrega dos cosas: **su apodo y sus puntos**. 
 
 Hasta septiembre de 2026 entregaba además el identificador interno de su cuenta, que no se dibujaba en la pantalla pero sí viajaba en la respuesta del servidor, de modo que cualquier persona con conocimientos técnicos podía leerlo. Lo quitamos al escribir este aviso: ahora el servidor solo indica si una fila es la suya, sin revelar de quién es ninguna de las demás.
 
-No se publican su nombre, su apellido, su correo, su teléfono, su fecha de nacimiento ni su foto.
+No se publican su nombre, su apellido, su correo, su teléfono, su cumpleaños ni su foto.
 
 Quien todavía no ha elegido apodo no aparece en el marcador, y las cuentas del personal tampoco.
 
@@ -163,8 +163,6 @@ El uso que damos a esa información se apega a la Política de Datos de Usuario 
 
 Google es la única forma de entrar, así que su cuenta no se puede desvincular de Google. Si quiere que eliminemos el correo que guardamos, pídanoslo o borre su cuenta.
 
-Entrar por primera vez con Google le da cinco puntos, una sola vez. Lo comprobamos contra el registro de identidades del servidor, no contra lo que diga la aplicación.
-
 ## Sus derechos ARCO {#arco icono=Pencil}
 
 Usted tiene cuatro derechos sobre sus datos personales:
@@ -186,10 +184,9 @@ Su solicitud debe contener:
 
 Le comunicaremos nuestra decisión en un plazo máximo de **veinte días hábiles** desde que recibamos su solicitud. Si procede, la haremos efectiva dentro de los **quince días hábiles** siguientes a esa respuesta. Ambos plazos pueden ampliarse una sola vez, por el mismo tiempo, cuando el caso lo justifique, y en ese supuesto se lo diremos.
 
-Dos límites que preferimos decirle de entrada:
+Para corregir o borrar su nombre, su apellido, su cumpleaños o su número de WhatsApp no necesita escribirnos: lo hace usted mismo desde su perfil, al momento.
 
-- **Su número de teléfono no se puede rectificar desde su perfil.** El sistema lo fija la primera vez y no admite cambios, ni siquiera para borrarlo. Si se equivocó, pídanoslo por correo y lo corregimos nosotros.
-- Hay datos que no podemos cancelar mientras exista un motivo legal para conservarlos. Están en el apartado de conservación.
+Un límite que preferimos decirle de entrada: hay datos que no podemos cancelar mientras exista un motivo legal para conservarlos. Están en el apartado de conservación.
 
 Ejercer un derecho no le impide ejercer otro, y no hace falta ejercer uno antes que otro.
 
@@ -210,7 +207,7 @@ Una advertencia para que no haya malentendidos: hay finalidades que no dependen 
 Además de los derechos ARCO, puede pedirnos que limitemos el uso o la divulgación de sus datos sin llegar a borrarlos. Estas son las opciones que hoy existen de verdad:
 
 - Desmarcar la casilla de WhatsApp en su perfil, para que no le escribamos.
-- Borrar desde su perfil su nombre, su apellido y su fecha de nacimiento, y quedarse solo con lo indispensable.
+- Borrar desde su perfil su nombre, su apellido, su cumpleaños y su número de WhatsApp, y quedarse solo con lo indispensable.
 - Rechazar las cookies de medición en el sitio web.
 - Pedirnos por correo que limitemos un uso concreto. Lo revisamos y le decimos qué podemos hacer y qué no.
 
@@ -232,7 +229,7 @@ Al borrar su cuenta eliminamos su perfil, con todos los datos de la lista de arr
 Dos cosas sobreviven, y aquí está el porqué de cada una:
 
 - **El registro de que usted aceptó estos documentos**: su identificador de cuenta, la versión aceptada y la fecha. Es la única prueba de que el consentimiento existió. Lo conservamos bloqueado, sin usarlo para ninguna otra cosa, durante el plazo de prescripción de las acciones legales derivadas de esta relación, y después lo eliminamos. La ley permite expresamente conservar datos con ese fin.
-- **El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya**: el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. **No contiene su correo, ni su teléfono, ni su nombre, ni su fecha de nacimiento, ni el motivo que nos haya dado.** Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja.
+- **El registro de la baja, y solo cuando la ejecutamos nosotros a petición suya**: el identificador de la cuenta, su apodo, la fecha y quién de nuestro equipo la ejecutó. Es la prueba de que atendimos su solicitud y de cuándo, y también de quién actuó sobre su cuenta. Se conserva durante el mismo plazo que el registro anterior. **No contiene su correo, ni su teléfono, ni su nombre, ni su cumpleaños, ni el motivo que nos haya dado.** Si usted borró su cuenta por sí mismo desde la aplicación o desde el sitio, no guardamos ningún registro de esa baja.
 
 Además guardamos respaldos completos de la base de datos. Un dato que usted borre hoy puede seguir existiendo en un respaldo anterior hasta que ese respaldo se sustituye o se destruye. Esos respaldos no se usan para nada más: están ahí para poder recuperar el servicio si algo se rompe.
 
@@ -254,7 +251,7 @@ Ningún sistema es infalible. Si ocurre una vulneración de seguridad que afecte
 
 La plataforma es solo para mayores de 18 años y no está dirigida a menores de edad.
 
-Al crear su cuenta usted declara que es mayor de edad. Si nos da su fecha de nacimiento, el sistema rechaza cualquiera que implique lo contrario.
+Al crear su cuenta usted declara que es mayor de edad.
 
 No recabamos de manera consciente datos personales de menores de edad. Si detectamos que una cuenta es de un menor, la cancelamos y eliminamos sus datos.
 

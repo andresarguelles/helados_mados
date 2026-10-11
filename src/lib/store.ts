@@ -135,7 +135,8 @@ type ScanResult =
 
 export interface SignupInput {
   username: string
-  phone: string
+  /** Opcional desde la 0040: null si no dio número. Si viene, ya normalizado a E.164. */
+  phone: string | null
   /** Opcional desde la 0023: publicidad no puede ser condición para existir. */
   whatsappOptIn: boolean
   /** Declaración de 18 años cumplidos. Obligatoria: el servidor responde `age_required`. */
@@ -150,6 +151,8 @@ type CompleteSignupReason =
   // consentimiento no sea libre, y un consentimiento no libre no es consentimiento.
   | 'age_required' | 'legal_required' | 'legal_incomplete' | 'unknown_version'
   | 'invalid_platform'
+  // 0040: el número es opcional, y sin número no hay a dónde mandar los mensajes.
+  | 'optin_without_phone'
 
 type CompleteSignupResult =
   | { success: true }
@@ -158,17 +161,19 @@ type CompleteSignupResult =
 export interface ProfileDataInput {
   first_name: string | null
   last_name: string | null
-  birthdate: string | null
+  /** Cumpleaños sin año (0040): los dos o ninguno. */
+  birthday_month: number | null
+  birthday_day: number | null
   phone: string | null
   whatsapp_opt_in: boolean
 }
 
 type UpdateProfileReason =
-  | 'invalid_phone' | 'invalid_birthdate' | 'optin_without_phone'
-  | 'phone_immutable' | 'phone_taken' | 'not_authenticated' | 'error'
+  | 'invalid_phone' | 'invalid_birthday' | 'optin_without_phone'
+  | 'phone_taken' | 'not_authenticated' | 'error'
 
 type UpdateProfileResult =
-  | { success: true; pointsAwarded: number }
+  | { success: true }
   | { success: false; reason: UpdateProfileReason }
 
 type OAuthResult = { success: true } | { success: false; reason: 'error' }
@@ -192,7 +197,6 @@ interface AppState {
 
   // Google: la única forma de entrar y de crear cuenta.
   signInWithGoogle: (next?: string) => Promise<OAuthResult>
-  claimGoogleBonus: () => Promise<number>
 
   // Perfil
   isUsernameAvailable: (username: string) => Promise<boolean | null>
@@ -328,14 +332,6 @@ export const useStore = create<AppState>()((set, get) => ({
     return { success: true }
   },
 
-  claimGoogleBonus: async () => {
-    const { data, error } = await supabase.rpc('claim_google_bonus')
-    if (error || !data) return 0
-    const result = data as { success: boolean; points_awarded?: number }
-    await get().refreshProfile()
-    return result.success ? (result.points_awarded ?? 0) : 0
-  },
-
   // ── Perfil ────────────────────────────────────────────────────────────
 
   isUsernameAvailable: async (username) => {
@@ -344,18 +340,21 @@ export const useStore = create<AppState>()((set, get) => ({
     return data
   },
 
-  // Apodo, teléfono, edad y aceptación legal se guardan juntos o no se guarda nada: la RPC
-  // es una sola transacción, así que no puede quedar un apodo tomado por una cuenta sin
-  // número, ni una cuenta sin constancia de qué texto aceptó su dueño.
+  // Apodo, edad, aceptación legal y (si lo dio) teléfono se guardan juntos o no se guarda
+  // nada: la RPC es una sola transacción, así que no puede quedar una cuenta sin constancia
+  // de qué texto aceptó su dueño.
   completeSignup: async ({ username, phone, whatsappOptIn, ageConfirmed }) => {
-    const { data, error } = await supabase.rpc('complete_signup', {
+    const args = {
       p_username: username.trim(),
       p_phone: phone,
       p_whatsapp_opt_in: whatsappOptIn,
       p_age_confirmed: ageConfirmed,
       p_legal: documentosParaAceptar(),
       p_platform: PLATAFORMA,
-    })
+    }
+    // Mismo cast que en updateMyProfile: `p_phone` acepta null aunque el tipo generado diga string.
+    type CompleteSignupArgs = Database['public']['Functions']['complete_signup']['Args']
+    const { data, error } = await supabase.rpc('complete_signup', args as CompleteSignupArgs)
     if (error || !data) return { success: false, reason: 'error' }
     const result = data as { success: boolean; reason?: CompleteSignupReason }
     if (!result.success) return { success: false, reason: result.reason ?? 'error' }
@@ -367,7 +366,8 @@ export const useStore = create<AppState>()((set, get) => ({
     const args = {
       p_first_name: input.first_name,
       p_last_name: input.last_name,
-      p_birthdate: input.birthdate,
+      p_birthday_month: input.birthday_month,
+      p_birthday_day: input.birthday_day,
       p_phone: input.phone,
       p_whatsapp_opt_in: input.whatsapp_opt_in,
     }
@@ -378,10 +378,10 @@ export const useStore = create<AppState>()((set, get) => ({
     type UpdateProfileArgs = Database['public']['Functions']['update_my_profile']['Args']
     const { data, error } = await supabase.rpc('update_my_profile', args as UpdateProfileArgs)
     if (error || !data) return { success: false, reason: 'error' }
-    const result = data as { success: boolean; reason?: UpdateProfileReason; points_awarded?: number }
+    const result = data as { success: boolean; reason?: UpdateProfileReason }
     if (!result.success) return { success: false, reason: result.reason ?? 'error' }
     await get().refreshProfile()
-    return { success: true, pointsAwarded: result.points_awarded ?? 0 }
+    return { success: true }
   },
 
   // ── Admin: customers ──────────────────────────────────────────────────
