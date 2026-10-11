@@ -11,8 +11,13 @@ import { Card } from '../../components/ui/Card'
 import { ScrollArea } from '../../components/ui/ScrollArea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/Table'
 
-/** Cada cuánto se vuelve a pedir el marcador. Un minuto basta para una pantalla de pared. */
+/**
+ * Red de seguridad: el marcador se relee en vivo con cada canje o escaneo (Realtime), y además
+ * cada minuto por si el canal se cayera sin avisar en un monitor que pasa días encendido.
+ */
 const REFRESCO_MS = 60_000
+/** Los avisos de un mismo momento (varios escaneos seguidos) se juntan en una sola lectura. */
+const AGRUPAR_MS = 800
 /** Top 10: tres en el podio y siete en la lista, sin desplazarse. */
 const FILAS = 10
 
@@ -25,13 +30,16 @@ const PERIODOS: { period: LeaderboardPeriod; pestana: string; encabezado: string
 ]
 
 /**
- * El marcador del periodo, refrescado cada minuto y al volver a ser visible. Un fallo
- * conserva lo último que se pintó: un corte de red no debe dejar la pared en blanco.
- * `entries` es null hasta la primera respuesta buena, y también mientras no se sabe el
- * periodo (`period` null: la fila de la estación todavía no llega).
+ * El marcador del periodo, releído en cuanto hay un canje o un escaneo: quien cobra su QR en
+ * el mostrador tiene que verse en la pantalla en ese momento, no un minuto después. Además se
+ * relee cada minuto y al volver a ser visible. Un fallo conserva lo último que se pintó: un
+ * corte de red no debe dejar la pared en blanco. `entries` es null hasta la primera respuesta
+ * buena, y también mientras no se sabe el periodo (`period` null: la fila de la estación
+ * todavía no llega).
  */
 function useMarcador(period: LeaderboardPeriod | null) {
   const fetchLeaderboard = useStore(s => s.fetchLeaderboard)
+  const suscribirMarcador = useStore(s => s.suscribirMarcador)
   const [entries, setEntries] = useState<LeaderboardEntry[] | null>(null)
   const [sinConexion, setSinConexion] = useState(false)
 
@@ -41,12 +49,23 @@ function useMarcador(period: LeaderboardPeriod | null) {
     setSinConexion(false)
     if (!period) return
 
+    // Con lecturas en vivo pueden ir dos en vuelo: solo pinta la última que se pidió, para
+    // que una respuesta lenta no pise a una más nueva.
+    let turno = 0
     const cargar = async () => {
+      const mio = ++turno
       const lista = await fetchLeaderboard(period)
-      if (cancelado) return
+      if (cancelado || mio !== turno) return
       if (lista) setEntries(lista.slice(0, FILAS))
       setSinConexion(!lista)
     }
+
+    let pendiente: number | undefined
+    const alCambiar = () => {
+      window.clearTimeout(pendiente)
+      pendiente = window.setTimeout(() => void cargar(), AGRUPAR_MS)
+    }
+    const dejarDeEscuchar = suscribirMarcador(alCambiar)
 
     void cargar()
     const intervalo = window.setInterval(() => void cargar(), REFRESCO_MS)
@@ -55,10 +74,12 @@ function useMarcador(period: LeaderboardPeriod | null) {
 
     return () => {
       cancelado = true
+      window.clearTimeout(pendiente)
       window.clearInterval(intervalo)
       document.removeEventListener('visibilitychange', alVolver)
+      dejarDeEscuchar()
     }
-  }, [period, fetchLeaderboard])
+  }, [period, fetchLeaderboard, suscribirMarcador])
 
   return { entries, sinConexion }
 }

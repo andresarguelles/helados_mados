@@ -223,6 +223,12 @@ interface AppState {
   /** Como `getLeaderboard`, pero `null` si la consulta falla: una lista vacía no es un error. */
   fetchLeaderboard: (period: LeaderboardPeriod) => Promise<LeaderboardEntry[] | null>
   getLeaderboardRange: (period: 'day' | 'week' | 'month') => Promise<LeaderboardRange | null>
+  /**
+   * Avisa de cada canje y cada escaneo, en vivo, para releer el marcador. También avisa al
+   * (re)conectarse, porque lo que pasó sin conexión no llega por el canal. Devuelve la función
+   * para dejar de escuchar.
+   */
+  suscribirMarcador: (alCambiar: () => void) => () => void
 
   // Estación: lo que muestran las pantallas de mostrador
   /** Lee la fila y escucha sus cambios en vivo. Devuelve la función para dejar de escuchar. */
@@ -562,6 +568,17 @@ export const useStore = create<AppState>()((set, get) => ({
     const row = data?.[0]
     if (error || !row || !row.range_start || !row.range_end) return null
     return { start: row.range_start, end: row.range_end }
+  },
+
+  // El aviso solo dice "algo cambió en coupons" (0043 la puso en la publicación de Realtime):
+  // no se usa la fila que trae, se relee `get_leaderboard`, que es quien sabe sumar por
+  // periodo y desempatar. RLS hace que solo un admin reciba los cupones ajenos.
+  suscribirMarcador: (alCambiar) => {
+    const canal = supabase
+      .channel(`marcador-${Math.random().toString(36).slice(2)}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'coupons' }, () => alCambiar())
+      .subscribe(estado => { if (estado === 'SUBSCRIBED') alCambiar() })
+    return () => { void supabase.removeChannel(canal) }
   },
 
   // ── Estación ──────────────────────────────────────────────────────────
