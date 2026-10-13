@@ -177,13 +177,24 @@ function Listas({ filtros, clave }: { filtros: Filtros; clave: string }) {
   const [lista, setLista] = useState<Lista>('top')
   const [recarga, setRecarga] = useState(0)
   const [aExcluir, setAExcluir] = useState<{ id: string; username: string } | null>(null)
+  // El último excluido, para poder deshacerlo: ya fuera de las listas, no habría otro lugar
+  // desde donde regresarlo.
+  const [excluido, setExcluido] = useState<{ id: string; username: string } | null>(null)
   const { datos, cargando, error } = useConsulta(() => metricas.lista(filtros, lista), `${clave}|${lista}|${recarga}`)
   const ayuda = LISTAS.find(l => l.valor === lista)?.ayuda
 
   const excluir = async () => {
     if (!aExcluir) return
-    await excluirDeListas(aExcluir.id, true)
+    const ok = await excluirDeListas(aExcluir.id, true)
+    if (ok) setExcluido(aExcluir)
     setAExcluir(null)
+    setRecarga(n => n + 1)
+  }
+
+  const deshacer = async () => {
+    if (!excluido) return
+    await excluirDeListas(excluido.id, false)
+    setExcluido(null)
     setRecarga(n => n + 1)
   }
 
@@ -215,6 +226,15 @@ function Listas({ filtros, clave }: { filtros: Filtros; clave: string }) {
       <p className="font-body text-xs text-brand-gris -mt-2">
         {ayuda}{datos ? ` ${fmt(datos.total)} en total${datos.total > datos.filas.length ? `; se muestran los primeros ${datos.filas.length}` : ''}.` : ''}
       </p>
+
+      {excluido && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-brand-papel px-4 py-2.5 font-body text-sm" role="status">
+          <span className="text-brand-sombra"><strong>{excluido.username}</strong> ya no aparece en las listas.</span>
+          <button type="button" onClick={() => { void deshacer() }} className="font-bold text-brand-azul underline">
+            Deshacer
+          </button>
+        </div>
+      )}
 
       {error ? <p className="font-body text-sm text-brand-rosa">{MENSAJE_ERROR[error] ?? MENSAJE_ERROR.error}</p>
         : !datos ? null
