@@ -37,6 +37,8 @@ export default function AdminDashboard() {
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  // Aviso pendiente de confirmar: con él a la vista, el siguiente clic en Guardar sí escribe.
+  const [aviso, setAviso] = useState('')
   const [listError, setListError] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<Dynamic | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -56,6 +58,7 @@ export default function AdminDashboard() {
     })
     setEditTarget(null)
     setError('')
+    setAviso('')
     setModal('create')
   }
 
@@ -63,13 +66,17 @@ export default function AdminDashboard() {
     setForm({
       keyword: d.keyword,
       physical_stock: d.physical_stock,
-      starts_at: d.starts_at.slice(0, 16),
-      ends_at: d.ends_at.slice(0, 16),
+      // datetime-local no lleva zona, así que espera la hora local. Recortar el ISO de la base
+      // metía la hora UTC como si fuera de México, y cada guardado recorría la dinámica 6 h hacia
+      // adelante: así quedó CHOCOLATIN sin aceptarse en pleno Live (2026-10-12).
+      starts_at: toDatetimeLocalValue(new Date(d.starts_at)),
+      ends_at: toDatetimeLocalValue(new Date(d.ends_at)),
       description: d.description,
       prize_label: d.prize_label,
     })
     setEditTarget(d)
     setError('')
+    setAviso('')
     setModal('edit')
   }
 
@@ -85,8 +92,6 @@ export default function AdminDashboard() {
     if (new Date(form.starts_at) >= new Date(form.ends_at)) { setError('La fecha de fin debe ser posterior a la de inicio'); return }
     if (!form.prize_label.trim()) { setError('Describe el premio'); return }
 
-    setSaving(true)
-
     const data = {
       keyword: form.keyword.trim().toUpperCase(),
       physical_stock: Number(form.physical_stock),
@@ -96,10 +101,39 @@ export default function AdminDashboard() {
       prize_label: form.prize_label.trim(),
     }
 
-    const result = modal === 'create'
-      ? await addDynamic(data)
-      : editTarget ? await updateDynamic(editTarget.id, data) : { success: true as const }
+    if (modal === 'edit' && editTarget) {
+      // Solo lo que cambió: subir el stock en pleno Live no tiene por qué reescribir las fechas.
+      // Las fechas se comparan como las muestra el formulario (al minuto), no como ISO.
+      const cambios: Partial<Dynamic> = {}
+      if (data.keyword !== editTarget.keyword) cambios.keyword = data.keyword
+      if (data.physical_stock !== editTarget.physical_stock) cambios.physical_stock = data.physical_stock
+      if (form.starts_at !== toDatetimeLocalValue(new Date(editTarget.starts_at))) cambios.starts_at = data.starts_at
+      if (form.ends_at !== toDatetimeLocalValue(new Date(editTarget.ends_at))) cambios.ends_at = data.ends_at
+      if (data.description !== editTarget.description) cambios.description = data.description
+      if (data.prize_label !== editTarget.prize_label) cambios.prize_label = data.prize_label
 
+      if (Object.keys(cambios).length === 0) { setModal(null); return }
+
+      const inicio = cambios.starts_at ?? editTarget.starts_at
+      const fin = cambios.ends_at ?? editTarget.ends_at
+      if (!aviso && isDynamicActive(editTarget) && !isDynamicActive({ starts_at: inicio, ends_at: fin })) {
+        setAviso(new Date(fin) <= new Date()
+          ? `Con esta fecha de fin, ${data.keyword} se cierra ahora mismo: ya no se podrán generar cupones con ella ni canjear sus QR en tienda.`
+          : `Con esta fecha de inicio, ${data.keyword} deja de aceptarse hasta el ${formatDate(inicio)}: mientras tanto, quien la escriba verá "Palabra incorrecta o vencida".`)
+        return
+      }
+
+      setSaving(true)
+      const result = await updateDynamic(editTarget.id, cambios)
+      setSaving(false)
+
+      if (!result.success) { setError(result.error); return }
+      setModal(null)
+      return
+    }
+
+    setSaving(true)
+    const result = await addDynamic(data)
     setSaving(false)
 
     if (!result.success) { setError(result.error); return }
@@ -404,6 +438,7 @@ export default function AdminDashboard() {
                     onChange={e => {
                       const value = e.target.value
                       setForm(f => ({ ...f, starts_at: value }))
+                      setAviso('')
                       if (modal === 'create' && value.slice(0, 10) < toDatetimeLocalValue(new Date()).slice(0, 10)) {
                         setError('La fecha de inicio no puede ser anterior a hoy')
                       } else {
@@ -421,7 +456,7 @@ export default function AdminDashboard() {
                   <input
                     type="datetime-local"
                     value={form.ends_at}
-                    onChange={e => setForm(f => ({ ...f, ends_at: e.target.value }))}
+                    onChange={e => { setForm(f => ({ ...f, ends_at: e.target.value })); setAviso('') }}
                     className="field-input text-sm"
                   />
                 </div>
@@ -434,6 +469,15 @@ export default function AdminDashboard() {
                 </div>
               )}
 
+              {aviso && (
+                <div role="alert" className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-600 font-body">
+                    {aviso} Si es lo que quieres, toca otra vez el botón.
+                  </p>
+                </div>
+              )}
+
               <button
                 id="save-dynamic-btn"
                 onClick={handleSave}
@@ -441,7 +485,9 @@ export default function AdminDashboard() {
                 className="btn-fresa mt-2"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
-                {saving ? 'Guardando...' : modal === 'create' ? 'Crear entrenamiento' : 'Guardar cambios'}
+                {saving
+                  ? 'Guardando...'
+                  : modal === 'create' ? 'Crear entrenamiento' : aviso ? 'Guardar de todos modos' : 'Guardar cambios'}
               </button>
             </div>
         </div>
