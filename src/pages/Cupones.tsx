@@ -39,7 +39,7 @@ export default function Cupones() {
         <div className="pt-2">
           <h1 className="font-heading text-brand-sombra text-2xl">Mis cupones</h1>
           <p className="font-body text-brand-gris text-sm mt-1">
-            Canjea tu QR en el mostrador para recibir tu medalla.
+            Canjea tu QR en el mostrador para recibir tu premio.
           </p>
         </div>
 

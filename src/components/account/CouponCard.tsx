@@ -111,7 +111,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
               </div>
 
               <p className="text-xs text-brand-gris text-center font-body">
-                Muestra este QR en el mostrador para canjearlo por tu medalla
+                Muestra este QR en el mostrador para canjearlo por tu premio
               </p>
               <p className="text-[10px] text-brand-sombra/30 font-mono break-all text-center">
                 ID: {coupon.id}
@@ -122,7 +122,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
           {coupon.status === 'redeemed' && (
             <div className="flex flex-col items-center gap-2 py-2">
               <CheckCircle2 className="w-14 h-14 text-brand-sombra" />
-              <p className="font-heading text-brand-sombra">¡Medalla entregada!</p>
+              <p className="font-heading text-brand-sombra">¡Premio entregado!</p>
               <p className="text-xs text-brand-gris font-body">
                 Canjeado el {coupon.redeemed_at ? formatDate(coupon.redeemed_at) : '—'}
               </p>

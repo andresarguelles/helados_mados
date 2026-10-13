@@ -12,7 +12,7 @@ const ERROR_MESSAGES: Record<ErrorReason, { title: string; desc: string }> = {
   not_found: { title: 'QR no encontrado', desc: 'Este código QR no existe en el sistema.' },
   already_used: { title: 'Cupón ya canjeado', desc: 'Este cupón ya fue utilizado anteriormente.' },
   expired: { title: 'Cupón expirado', desc: 'La vigencia de este entrenamiento ha terminado.' },
-  stock_empty: { title: 'Stock agotado', desc: 'No quedan medallas físicas disponibles para este entrenamiento.' },
+  stock_empty: { title: 'Stock agotado', desc: 'No quedan premios disponibles para este entrenamiento.' },
   forbidden: { title: 'Sin permiso', desc: 'Tu sesión no tiene acceso de personal.' },
   error: { title: 'Error inesperado', desc: 'Intenta escanear de nuevo.' },
 }
@@ -91,7 +91,7 @@ export default function AdminScanner() {
 
     if (result.success) {
       setSuccessData({
-        username: result.user.username ?? 'Cadete',
+        username: result.user.username ?? 'Sin apodo',
         prizeLabel: result.dynamic.prize_label,
         points: result.user.total_points,
       })
@@ -137,7 +137,7 @@ export default function AdminScanner() {
           <div className="flex flex-col items-center gap-1.5 text-center">
             <QrCode className="w-8 h-8 text-brand-verde" />
             <h1 className="font-heading text-white text-xl">Escanear cupón</h1>
-            <p className="text-white/90 text-sm font-body">Apunta la cámara al QR del cadete</p>
+            <p className="text-white/90 text-sm font-body">Apunta la cámara al QR del cliente</p>
           </div>
 
           {cameraError ? (
@@ -201,7 +201,7 @@ export default function AdminScanner() {
             <div className="flex items-center gap-3">
               <Gift className="w-6 h-6 text-brand-azul shrink-0" />
               <div>
-                <p className="text-brand-gris text-xs font-body">Medalla entregada</p>
+                <p className="text-brand-gris text-xs font-body">Premio a entregar</p>
                 <p className="font-heading text-brand-sombra text-lg">{successData.prizeLabel}</p>
               </div>
             </div>
@@ -222,7 +222,7 @@ export default function AdminScanner() {
             className="flex items-center gap-2 bg-white text-brand-sombra font-heading px-8 py-4 rounded-3xl text-lg border-2 border-brand-sombra shadow-sticker-white hover:scale-105 active:scale-95 transition-all"
           >
             <RotateCcw className="w-5 h-5" />
-            Siguiente cadete
+            Escanear otro
           </button>
         </div>
       )}

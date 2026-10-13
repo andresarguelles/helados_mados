@@ -9,13 +9,14 @@ Helados Mados no es "helados con astronautas": es una **agencia espacial que rep
 | Término genérico | Término de marca |
 |---|---|
 | Puesto / sucursal | Estación (ej. "Estación 01 · Zaragoza") |
-| Cliente / usuario | Cadete (rangos: Cadete → Piloto → Comandante) |
 | Dinámica / promo | Entrenamiento |
-| Helado gratis / premio | Medalla |
-| Vendedor / staff | Comandante |
 | Menú | Bitácora de sabores |
 | Nuevo sabor | Descubrimiento |
-| Audiencia / comunidad | Los Cadetes Mados |
+
+**Fuera de la app desde el 2026-10-13 (decisión del dueño): "Cadete", "Piloto", "Comandante" y "Medalla".** El brand book los proponía, pero en la web y en Android no se usan:
+- **Rangos (Cadete → Piloto → Comandante):** ninguna cuenta tiene rango, así que nadie puede saber si subió. Lo único que existe es el podio: los tres primeros lugares del ranking son el orgullo de Helados Mados, sin título. A quien participa se le dice "cliente" (o nada); al personal, "equipo".
+- **Medalla:** nunca se ha entregado una. Lo que da cada cupón cambia por dinámica (helado gratis, merch, autógrafos, descuentos…) y vive en su `prize_label`; el texto fijo dice "premio" o "el premio de la dinámica". Prometer "medalla" en un texto fijo es como prometer un coche.
+- **La estación no va como marca del sitio.** Hay una estación fija (Av. Centenario 1229, Álvaro Obregón) y estaciones móviles en escuelas y otros puntos de la ciudad: el sitio es de la marca, no de una estación. La dirección va donde se dice dónde estamos (ubicación de la home, JSON-LD, textos legales), nunca en títulos, lemas ni en la imagen para compartir.
 
 **Naming:** estaciones = número de 2 dígitos + colonia/escuela. Los sabores NUNCA llevan nombre espacial (Picafresa sigue siendo Picafresa); lo espacial va en el formato/experiencia, no en el producto.
 
@@ -99,7 +100,7 @@ Contenedores de tarjeta estándar: `border: 4px solid #3C5DDC; border-radius: 20
 
 - **Estación móvil:** toldo verde, faldón blanco con número de estación, panel azul con logo, hieleras forradas con el sistema visual.
 - **Uniformes/merch:** playera azul, gorra verde, parche de estación bordado (coleccionable).
-- **Papelería:** tarjeta de cadete sellable, formato de anuncio vertical 9:16.
+- **Papelería:** tarjeta sellable, formato de anuncio vertical 9:16.
 - **Redes sociales:** plantillas para TikTok respetando zona segura de la interfaz de la app.
 - **Web:** la landing tiene un solo trabajo — decir dónde está la marca hoy y cuál es el reto/entrenamiento activo; todo lo demás es secundario.
 
@@ -112,5 +113,5 @@ Contenedores de tarjeta estándar: `border: 4px solid #3C5DDC; border-radius: 20
 5. Badges/etiquetas de estado o categoría: pastilla verde `#C8FD5F` sobre `#1C2440`, texto en Space Mono mayúsculas, rotada levemente (-1.5° a -6°).
 6. Botones primarios: fondo `#3C5DDC` con borde `#1C2440`, texto blanco o verde para el CTA principal.
 7. Toda etiqueta técnica/numérica (horarios, número de estación, precios) en Space Mono mayúsculas.
-8. Vocabulario de UI: usar siempre "estación", "cadete", "entrenamiento", "medalla", "comandante", "bitácora de sabores" en vez de los términos genéricos — ver tabla en sección 1.
+8. Vocabulario de UI: usar "estación", "entrenamiento" y "bitácora de sabores" en vez de los términos genéricos — ver tabla en sección 1. Nunca "cadete", "piloto", "comandante" ni "medalla" (ver la nota debajo de la tabla).
 9. Mínimo de logo en digital: 160px horizontal / 32px isotipo — no reducir el logo completo por debajo de eso; usar el isotipo del OVNI en su lugar.

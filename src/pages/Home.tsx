@@ -26,14 +26,16 @@ export default function Home() {
             <div>
               <h1 className="font-heading text-white text-4xl leading-tight">
                 <span className="block font-mono uppercase text-white text-[11px] tracking-widest mb-2">
-                  {NEGOCIO.nombre} · Estación {NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}
+                  {/* La ciudad y no la alcaldía: el sitio es de toda la marca, no de una estación.
+                      Hay una fija y varias móviles, y la fija tiene su dirección más abajo. */}
+                  {NEGOCIO.nombre} · {NEGOCIO.direccion.ciudad}
                 </span>
-                Gana medallas
+                Gana premios
                 <span className="block text-brand-verde">despega por un helado</span>
               </h1>
               <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
-                Únete al TikTok Live, genera tu cupón con la palabra secreta
-                y canjéalo por tu medalla en tu estación. ¡Compite por ser Comandante!
+                Únete al TikTok Live, genera tu cupón con la palabra secreta y canjéalo
+                en la estación por el premio de la dinámica. ¡Compite por un lugar en el podio!
               </p>
             </div>
 
@@ -103,8 +105,8 @@ export default function Home() {
             {[
               { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
               { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y genera tu cupón con la palabra: +1 punto digital.' },
-              { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe tu medalla. ¡Suma +10 puntos!' },
-              { icon: <Trophy className="w-5 h-5" />, title: 'Compite y gana', desc: 'Sube en la tabla de líderes y compite por el primer lugar.' },
+              { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe el premio de la dinámica. ¡Suma +10 puntos!' },
+              { icon: <Trophy className="w-5 h-5" />, title: 'Compite en el ranking', desc: 'Suma puntos y sube en la tabla de líderes: los tres primeros lugares son el orgullo de Helados Mados.' },
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-3 paper-card rounded-2xl p-4">
                 <div className="w-10 h-10 bg-brand-azul/10 rounded-xl flex items-center justify-center text-brand-azul shrink-0">
@@ -128,9 +130,9 @@ export default function Home() {
           <div className="paper-card rounded-3xl p-5">
             <p className="font-body text-brand-gris text-sm leading-relaxed">
               {NEGOCIO.nombre} es la agencia espacial de los helados tradicionales de la CDMX.
-              Nuestra estación fija está en Av. Centenario 1229, {NEGOCIO.direccion.alcaldia}, y
-              salimos con estaciones móviles a la salida de las escuelas. Lo que ves en el TikTok
-              Live lo vives en persona: la palabra secreta, los puntos, la medalla en tus manos.
+              Tenemos una estación fija, en Av. Centenario 1229, y salimos con estaciones móviles a
+              escuelas y otros puntos de la ciudad. Lo que ves en el TikTok Live lo vives en
+              persona: la palabra secreta, los puntos, el premio en tus manos.
               Aquí no hay pantalla de por medio: hay fila, risas y helado de verdad.
             </p>
           </div>
@@ -141,7 +143,7 @@ export default function Home() {
           <div className="flex items-center gap-2 mb-4">
             <MapPin className="w-5 h-5 text-brand-azul" />
             <h2 className="font-heading text-brand-sombra text-xl">
-              Nuestra estación en {NEGOCIO.direccion.alcaldia}
+              Dónde encontrarnos
             </h2>
           </div>
 

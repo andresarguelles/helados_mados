@@ -4,8 +4,11 @@
  * fuentes reales de `node_modules/@fontsource` (no las del sistema — así el render coincide con
  * lo que ve un visitante) y los SVG de marca ya optimizados.
  *
- * La estación se lee de `src/content/negocio.ts` (fuente única del NAP, ver CLAUDE.md) en vez de
+ * La ciudad se lee de `src/content/negocio.ts` (fuente única del NAP, ver CLAUDE.md) en vez de
  * escribirla a mano aquí, para que este script no pueda quedar desalineado del resto del sitio.
+ * La ciudad y no la alcaldía: hasta el 2026-10-13 la pastilla decía "Estación Álvaro Obregón",
+ * y en cada vista previa de WhatsApp el sitio parecía el de esa estación y no el de la marca,
+ * que tiene una estación fija y varias móviles.
  * Como es un `.ts`, se corre con el loader de `tsx` (`node --import tsx/esm ...`) en vez de sumar
  * un paso de build — este paquete de herramientas es independiente de la instalación raíz.
  *
@@ -52,7 +55,7 @@ async function main() {
   const logoSvg = logoSvgRaw
     .replace(/^(\s*<svg\b)([^>]*)>/, (_all, tag, attrs) => `${tag}${attrs.replace(/\s(width|height)="[^"]*"/g, '')} class="logo">`)
 
-  const kickerText = `Estación ${NEGOCIO.direccion.alcaldia} · ${NEGOCIO.direccion.ciudadCorta}`
+  const kickerText = `Heladería espacial · ${NEGOCIO.direccion.ciudadCorta}`
 
   const [bungee400, spaceMono400, spaceMono700] = await Promise.all([
     woff2DataUri('bungee', 'files', 'bungee-latin-400-normal.woff2'),

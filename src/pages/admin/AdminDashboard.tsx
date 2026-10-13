@@ -224,7 +224,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
-      <AdminHeader title="Panel Comandante" />
+      <AdminHeader title="Panel del equipo" />
 
       {/* Content */}
       <div className="flex-1 max-w-lg mx-auto w-full px-4 pt-20 pb-24 flex flex-col gap-6">
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-heading text-white text-xl uppercase">Entrenamientos</h1>
-            <p className="text-white/85 text-xs font-body mt-0.5">Palabras secretas y medallas</p>
+            <p className="text-white/85 text-xs font-body mt-0.5">Palabras secretas y premios</p>
           </div>
           <button
             id="create-dynamic-btn"
@@ -367,7 +367,7 @@ export default function AdminDashboard() {
               {/* Prize label */}
               <div>
                 <label className="font-heading text-brand-sombra text-xs mb-1.5 block">
-                  Medalla / descripción <span className="text-brand-azul">*</span>
+                  Premio / descripción <span className="text-brand-azul">*</span>
                 </label>
                 <input
                   type="text"

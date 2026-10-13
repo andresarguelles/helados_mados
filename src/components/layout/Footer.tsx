@@ -44,11 +44,13 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Solo la zona y el correo, a propósito. La calle, el C.P. y el teléfono son el domicilio
+        {/* Solo la ciudad y el correo, a propósito. La calle, el C.P. y el teléfono son el domicilio
             fiscal y la línea del responsable, que es una persona física: se quedan en la sección de
-            ubicación de la home, en los avisos legales y en el JSON-LD, no en el pie de cada página. */}
+            ubicación de la home, en los avisos legales y en el JSON-LD, no en el pie de cada página.
+            Y la ciudad, no la alcaldía: hay una estación fija y varias móviles, y en el pie de cada
+            página la alcaldía hacía ver el sitio como el de una sola estación. */}
         <address className="not-italic flex flex-col items-center gap-0.5 text-sm font-body text-center">
-          <span>{NEGOCIO.direccion.alcaldia}, {NEGOCIO.direccion.ciudadCorta}</span>
+          <span>{NEGOCIO.direccion.ciudad}</span>
           <a href={`mailto:${NEGOCIO.email}`} className="hover:text-white transition-colors">
             {NEGOCIO.email}
           </a>

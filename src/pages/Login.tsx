@@ -46,7 +46,7 @@ export default function Login() {
         <div className="flex flex-col items-center text-center gap-3 mb-8">
           <span className="inline-flex items-center gap-1.5 bg-brand-azul/10 text-brand-noche font-mono text-[10px] uppercase tracking-wide px-3 py-1.5 rounded-full">
             <User className="w-3 h-3" />
-            Acceso cadete
+            Tu cuenta
           </span>
           <div>
             <h1 className="font-heading text-brand-sombra text-3xl">Bienvenido</h1>

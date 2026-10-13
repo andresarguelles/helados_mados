@@ -105,7 +105,7 @@ export default function AdminUsers() {
 
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
-      <AdminHeader title="Panel Comandante" />
+      <AdminHeader title="Panel del equipo" />
 
       <div className="flex-1 max-w-lg mx-auto w-full px-4 pt-20 pb-24 flex flex-col gap-6">
 

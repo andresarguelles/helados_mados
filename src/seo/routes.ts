@@ -55,10 +55,12 @@ const INICIO: Migas = { nombre: 'Inicio', path: '/' }
 
 // ─── Home ─────────────────────────────────────────────────────────────────────
 
-const HOME_TITLE = 'Helados Mados — Heladería espacial en Álvaro Obregón, CDMX'
+// La ciudad y no la alcaldía: el sitio es de toda la marca —una estación fija y las móviles—,
+// no de la estación de Álvaro Obregón. Su dirección sigue en la home y en el JSON-LD.
+const HOME_TITLE = 'Helados Mados — Heladería espacial en la Ciudad de México'
 const HOME_DESCRIPTION =
-  'Helados tradicionales en la Estación de Av. Centenario, Álvaro Obregón. Síguenos en ' +
-  'TikTok Live, atrapa la palabra secreta y gana tu Medalla.'
+  'Helados tradicionales en la Ciudad de México. Síguenos en TikTok Live, atrapa la palabra ' +
+  'secreta, genera tu cupón y canjéalo en nuestra estación.'
 
 const HOME: SeoRoute = {
   path: '/',
@@ -76,7 +78,7 @@ const HOME: SeoRoute = {
 const GENERAR_TITLE = 'Genera tu cupón con la palabra del Live — Helados Mados'
 const GENERAR_DESCRIPTION =
   'Escribe la palabra secreta de nuestro TikTok Live y genera tu cupón: suma un punto y ' +
-  'canjéalo en la Estación por tu helado.'
+  'canjéalo en la estación por el premio de la dinámica.'
 const GENERAR_MIGAS: Migas[] = [INICIO, { nombre: 'Generar cupón', path: '/generar' }]
 
 const GENERAR: SeoRoute = {
@@ -171,7 +173,7 @@ const LOGIN: SeoRoute = {
   title: 'Iniciar sesión — Helados Mados',
   description:
     'Entra a tu cuenta de Helados Mados con Google para ver tus puntos, tus cupones y ' +
-    'el ranking de Cadetes.',
+    'el ranking.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -191,7 +193,7 @@ const BIENVENIDA: SeoRoute = {
   path: '/bienvenida',
   kind: 'spa',
   title: 'Completa tu registro — Helados Mados',
-  description: 'Elige tu apodo de Cadete y termina tu registro en Helados Mados.',
+  description: 'Elige tu apodo y termina tu registro en Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -200,7 +202,7 @@ const PERFIL: SeoRoute = {
   path: '/perfil',
   kind: 'spa',
   title: 'Mi perfil — Helados Mados',
-  description: 'Consulta y actualiza los datos de tu cuenta de Cadete en Helados Mados.',
+  description: 'Consulta y actualiza los datos de tu cuenta de Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -217,8 +219,8 @@ const CUPONES: SeoRoute = {
 const RANKING: SeoRoute = {
   path: '/ranking',
   kind: 'spa',
-  title: 'Ranking de Cadetes — Helados Mados',
-  description: 'El marcador público de puntos de todos los Cadetes de Helados Mados.',
+  title: 'Ranking — Helados Mados',
+  description: 'El marcador público de puntos de Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -227,7 +229,7 @@ const MISIONES: SeoRoute = {
   path: '/misiones',
   kind: 'spa',
   title: 'Misiones — Helados Mados',
-  description: 'Las misiones y recompensas que vienen para los Cadetes de Helados Mados.',
+  description: 'Las misiones que vienen en Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -239,7 +241,7 @@ const CUENTA_REDIRECT: SeoRoute = {
   kind: 'redirect',
   redirectTo: '/perfil',
   title: 'Mi perfil — Helados Mados',
-  description: 'Consulta y actualiza los datos de tu cuenta de Cadete en Helados Mados.',
+  description: 'Consulta y actualiza los datos de tu cuenta de Helados Mados.',
   index: false,
   robots: 'noindex,follow',
 }
@@ -271,7 +273,7 @@ const AVISO_PRIVACIDAD_REDIRECT: SeoRoute = {
 const ADMIN: SeoRoute = {
   path: '/admin',
   kind: 'spa',
-  title: 'Acceso de Comandantes — Helados Mados',
+  title: 'Acceso del equipo — Helados Mados',
   description: 'Acceso para el equipo de Helados Mados.',
   index: false,
   robots: 'noindex,nofollow',
@@ -280,7 +282,7 @@ const ADMIN: SeoRoute = {
 const ADMIN_DASHBOARD: SeoRoute = {
   path: '/admin/dashboard',
   kind: 'spa',
-  title: 'Panel de Comandante — Helados Mados',
+  title: 'Entrenamientos — Helados Mados',
   description: 'Gestión de entrenamientos y dinámicas de Helados Mados.',
   index: false,
   robots: 'noindex,nofollow',
@@ -298,8 +300,8 @@ const ADMIN_SCANNER: SeoRoute = {
 const ADMIN_USERS: SeoRoute = {
   path: '/admin/users',
   kind: 'spa',
-  title: 'Cadetes registrados — Helados Mados',
-  description: 'Lista de Cadetes registrados en Helados Mados.',
+  title: 'Clientes registrados — Helados Mados',
+  description: 'Lista de clientes registrados en Helados Mados.',
   index: false,
   robots: 'noindex,nofollow',
 }
@@ -329,7 +331,7 @@ const ADMIN_LEADERBOARD: SeoRoute = {
   path: '/admin/leaderboard',
   kind: 'spa',
   title: 'Ranking en pantalla — Helados Mados',
-  description: 'El marcador de Cadetes para el monitor de la Estación de Helados Mados.',
+  description: 'El marcador de puntos para el monitor de la Estación de Helados Mados.',
   index: false,
   robots: 'noindex,nofollow',
 }

@@ -27,17 +27,17 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Dónde canjeo mi cupón?',
     respuesta:
-      'En nuestra estación de Avenida Centenario 1229, colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, CDMX. Muestra tu cupón QR en el mostrador: ahí mismo te lo escaneamos y te entregamos tu medalla.',
+      'En nuestra estación de Avenida Centenario 1229, colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, CDMX. Muestra tu cupón QR en el mostrador: ahí mismo te lo escaneamos y te entregamos el premio de esa dinámica.',
   },
   {
     pregunta: '¿Participar cuesta algo?',
     respuesta:
-      'No. Generar tu cupón y canjearlo por tu medalla no tiene costo. Los puntos tampoco son dinero: no se compran, no se venden ni se cambian por efectivo.',
+      'No. Generar tu cupón y canjearlo no tiene costo. Los puntos tampoco son dinero: no se compran, no se venden ni se cambian por efectivo.',
   },
   {
     pregunta: '¿Hay algún límite?',
     respuesta:
-      'Sí: un cupón por persona y por dinámica; con la misma palabra no se genera un segundo cupón. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá medalla que entregarte.',
+      'Sí: un cupón por persona y por dinámica; con la misma palabra no se genera un segundo cupón. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá premio que entregarte.',
   },
   {
     pregunta: '¿Quién puede participar?',

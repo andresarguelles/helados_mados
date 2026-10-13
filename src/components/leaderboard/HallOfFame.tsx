@@ -3,10 +3,13 @@ import { useStore } from '../../lib/store'
 import { Sparkles, Crown, Medal, Award, Star } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
+// El lugar y nada más. Hasta el 2026-10-13 cada uno llevaba un rango (Comandante, Piloto,
+// Cadete), pero ninguna cuenta tiene rango: nadie podía saber si había subido. Los tres
+// primeros lugares son el orgullo de la casa, sin títulos que prometan algo que no existe.
 const PODIUM: { rank: number; title: string; icon: React.ReactNode; badge: string; height: string }[] = [
-  { rank: 1, title: 'Comandante', icon: <Crown className="w-5 h-5" />, badge: 'bg-brand-amarillo', height: 'py-5' },
-  { rank: 2, title: 'Piloto',     icon: <Medal className="w-4 h-4" />, badge: 'bg-brand-grisclaro', height: 'py-3' },
-  { rank: 3, title: 'Cadete',     icon: <Award className="w-4 h-4" />, badge: 'bg-brand-ingravidez', height: 'py-3' },
+  { rank: 1, title: '1er lugar', icon: <Crown className="w-5 h-5" />, badge: 'bg-brand-amarillo', height: 'py-5' },
+  { rank: 2, title: '2º lugar',  icon: <Medal className="w-4 h-4" />, badge: 'bg-brand-grisclaro', height: 'py-3' },
+  { rank: 3, title: '3er lugar', icon: <Award className="w-4 h-4" />, badge: 'bg-brand-ingravidez', height: 'py-3' },
 ]
 
 // Orden visual del podio: 2º a la izquierda, 1º al centro (más alto), 3º a la derecha.

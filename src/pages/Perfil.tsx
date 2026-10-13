@@ -10,7 +10,7 @@ import { Coupon } from '../lib/types'
 import { formatPhone } from '../lib/phone'
 import { formatCumple } from '../lib/cumple'
 import {
-  Star, Zap, Ticket, Medal, LogOut, Pencil, Mail,
+  Star, Zap, Ticket, Gift, LogOut, Pencil, Mail,
 } from 'lucide-react'
 
 function DatoPerfil({ valor }: { valor: string | null }) {
@@ -55,7 +55,6 @@ export default function Perfil() {
         <div className="max-w-lg mx-auto flex flex-col items-center text-center gap-4">
           <div>
             <h1 className="font-heading text-white text-2xl">{profile.username}</h1>
-            <p className="text-white/85 text-sm font-body">Cadete Mados</p>
           </div>
           <div className="flex items-center gap-2 bg-white/10 rounded-2xl px-6 py-3">
             <Star className="w-5 h-5 text-brand-verde fill-brand-verde" />
@@ -83,11 +82,11 @@ export default function Perfil() {
 
           <div className="paper-card rounded-3xl p-4 flex items-center gap-3">
             <div className="w-10 h-10 bg-brand-amarillo/25 rounded-2xl flex items-center justify-center text-brand-sombra shrink-0">
-              <Medal className="w-5 h-5" />
+              <Gift className="w-5 h-5" />
             </div>
             <div className="min-w-0">
               <p className="font-heading text-brand-sombra text-xl leading-none">{redeemedCount}</p>
-              <p className="font-body text-brand-gris text-xs mt-1">Medallas canjeadas</p>
+              <p className="font-body text-brand-gris text-xs mt-1">Cupones canjeados</p>
             </div>
           </div>
         </div>

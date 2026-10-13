@@ -73,7 +73,7 @@ export default function Redeem() {
     }
 
     const dynamic = await getActiveDynamic(trimmedKw)
-    setPrizeLabel(dynamic?.prize_label ?? 'Medalla')
+    setPrizeLabel(dynamic?.prize_label ?? 'Tu premio')
     setCouponId(result.coupon.id)
 
     // Import dinámico: nadie necesita el peso de canvas-confetti hasta este instante.
@@ -279,14 +279,14 @@ export default function Redeem() {
                 </h1>
               </div>
               <p className="font-body text-brand-sombra/70 text-sm mt-2">
-                Tu cupón está listo. Canjéalo en el mostrador para recibir tu medalla.
+                Tu cupón está listo. Canjéalo en el mostrador para recibir tu premio.
               </p>
             </div>
 
             {/* Prize banner */}
             <div className="w-full bg-brand-amarillo/25 border-2 border-brand-sombra rounded-3xl px-5 py-4 text-center">
               <p className="font-heading text-brand-sombra text-xl">{prizeLabel}</p>
-              <p className="text-xs text-brand-sombra/70 mt-1 font-body">Medalla canjeable con este QR</p>
+              <p className="text-xs text-brand-sombra/70 mt-1 font-body">Canjeable con este QR</p>
             </div>
 
             {/* QR Ticket */}
