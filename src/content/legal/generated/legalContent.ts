@@ -11,9 +11,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "privacidad",
     titulo: "Aviso de Privacidad",
     icono: Shield,
-    version: "4.0.0",
-    actualizado: "2026-10-11",
-    astHash: "c904d96697b56c4fec74d7d4a42d62e0e029190cebba6783a3a21269bea1749e",
+    version: "4.1.0",
+    actualizado: "2026-10-12",
+    astHash: "f9a9f035f91865198475dbb246b446b31cd8dfe117e01d06a310e68afcc39978",
     secciones: [
       {
         id: "aviso-corto",
@@ -22,8 +22,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: "simplificado",
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "En Helados Mados tratamos su apodo, su correo y, si usted los da, su número de WhatsApp, su nombre, su apellido y su cumpleaños (día y mes, sin el año). Ninguno es un dato sensible." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar el abuso de las promociones. Eso es el servicio y no depende de un permiso aparte." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador, evitar el abuso de las promociones y sacar estadísticas internas de cómo funcionan. Eso es el servicio y no depende de un permiso aparte." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Con su permiso, además, le escribimos por WhatsApp, le felicitamos en su cumpleaños y le ofrecemos promociones según cómo participa. Puede retirar esos permisos cuando quiera, sin perder la cuenta." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su cumpleaños no. Puede pedirnos que limitemos otros usos escribiendo a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Lea el " }, { t: 'enlaceLegal', v: "aviso de privacidad integral", doc: "privacidad" }, { t: 'texto', v: ", con sus derechos ARCO y todo el detalle, en esta misma aplicación y en www.heladosmados.com." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Responsable de sus datos: Helados Mados (Marcos Roldán Moreno), con domicilio en Av. Centenario No. 1229, Col. Reacomodo Valentín Gómez Farías, Álvaro Obregón, Ciudad de México, C.P. 01569." }] },
@@ -105,6 +105,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO." }],
               [{ t: 'texto', v: "Conservar la prueba de qué versión de estos documentos aceptó y cuándo." }],
               [{ t: 'texto', v: "Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente." }],
+              [{ t: 'texto', v: "Elaborar estadísticas internas de la promoción —altas, canjes, cobros en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular." }],
             ],
           },
         ],
@@ -123,6 +124,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'fuerte', v: "Felicitarle o enviarle una promoción en su cumpleaños" }, { t: 'texto', v: ", si nos lo dio." }],
               [{ t: 'fuerte', v: "Atenderle por su nombre" }, { t: 'texto', v: " en la tienda, si nos dio su nombre y su apellido." }],
               [{ t: 'fuerte', v: "Medir cómo se usa el sitio web" }, { t: 'texto', v: " para mejorarlo." }],
+              [{ t: 'fuerte', v: "Ofrecerle promociones según su participación" }, { t: 'texto', v: ": identificar a los clientes más participativos, a quienes dejaron de participar y a quienes cumplen años pronto, para hacerles una oferta." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cómo negarse a cada una:" }] },
@@ -132,6 +134,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Para los mensajes de WhatsApp: no nos dé su número, no marque la casilla al crear su cuenta, o desmárquela después en su perfil. " }, { t: 'fuerte', v: "No es obligatoria" }, { t: 'texto', v: ": puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre." }],
               [{ t: 'texto', v: "Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera." }],
               [{ t: 'texto', v: "Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar." }],
+              [{ t: 'texto', v: "Para las promociones según su participación: pídanoslo por correo y dejará de aparecer en esas listas. Sus puntos y cupones siguen contando en las estadísticas de conjunto, que no le identifican." }],
               [{ t: 'texto', v: "Para cualquiera de ellas, en cualquier momento: escríbanos a " }, { t: 'enlace', v: "contacto@heladosmados.com", href: "mailto:contacto@heladosmados.com" }, { t: 'texto', v: "." }],
             ],
           },
@@ -327,7 +330,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
               [{ t: 'texto', v: "Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas." }],
               [{ t: 'texto', v: "No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google." }],
               [{ t: 'texto', v: "No guardamos su dirección IP: ni en claro ni transformada. Nuestros proveedores la ven al atender cada petición, como se explica en el apartado de con quién compartimos sus datos." }],
-              [{ t: 'texto', v: "El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor." }],
+              [{ t: 'texto', v: "El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor. Hay niveles de acceso: el personal del mostrador solo valida cupones y maneja las pantallas de la tienda, y al escanear ve únicamente su apodo y sus puntos; la lista de clientes la ven los administradores, y las estadísticas y las listas para promociones, solo el responsable." }],
               [{ t: 'texto', v: "Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted." }],
             ],
           },
@@ -674,4 +677,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "8c416dc1f9cbe66aac50f0cf7548a16e673008bf0555a0f98eae5ceb94bf7ccc"
+export const LEGAL_BUNDLE_HASH = "b83e920f01085166879da5a0171a2ec9c2f0b3b0bd6ad58f515dd3dc9af93976"

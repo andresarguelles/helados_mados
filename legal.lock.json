@@ -2,9 +2,9 @@
   "generador": 1,
   "docs": {
     "privacidad": {
-      "version": "4.0.0",
-      "actualizado": "2026-10-11",
-      "astHash": "c904d96697b56c4fec74d7d4a42d62e0e029190cebba6783a3a21269bea1749e",
+      "version": "4.1.0",
+      "actualizado": "2026-10-12",
+      "astHash": "f9a9f035f91865198475dbb246b446b31cd8dfe117e01d06a310e68afcc39978",
       "secciones": 20,
       "bloques": 91
     },
@@ -16,15 +16,15 @@
       "bloques": 62
     }
   },
-  "bundleHash": "8c416dc1f9cbe66aac50f0cf7548a16e673008bf0555a0f98eae5ceb94bf7ccc",
+  "bundleHash": "b83e920f01085166879da5a0171a2ec9c2f0b3b0bd6ad58f515dd3dc9af93976",
   "artefactos": {
     "web": {
-      "src/content/legal/generated/legalContent.ts": "fffd616bd72d0de11055a0d1decb5033802167fc26d11cda2cf428a1b7812583",
-      "src/content/legal/generated/legalSimplificado.ts": "018454e1a345c4f6e343dd80b5d84c3510ddbbb126b6b464c5225eea3a895d2d",
-      "src/content/legal/generated/legalMeta.ts": "90aed286ed2b4ea6419114eb1343456946203b7ab8e8e4bb29bbe088838b9dc2"
+      "src/content/legal/generated/legalContent.ts": "585b7286de00cfd6775e47490bf171edcb17eda74f32d0f8b724648b6ec756a6",
+      "src/content/legal/generated/legalSimplificado.ts": "0b987bd3f0bc6d35615fa56d8bb93f07f99e23897e3ac71fbc1f6328b4a17abc",
+      "src/content/legal/generated/legalMeta.ts": "1b5a4d57f16cbb9cda0a92e71b2a62aa2556c959a21136a4ef623d47d63aa586"
     },
     "android": {
-      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "36ff8abdc0257bd1cf9b557a22ba21b45ea0b4af431f1a1c39ddce8903d24172"
+      "app/src/main/java/com/heladosmados/app/legal/generated/LegalContent.kt": "038fbb78d033d67100875bdf64aaf97da91870b07f98a3909127476cd1acf9fb"
     }
   }
 }

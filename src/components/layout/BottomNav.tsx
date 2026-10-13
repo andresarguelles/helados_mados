@@ -2,9 +2,10 @@ import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import { esRutaKiosco } from '../../lib/kiosco'
+import type { Rol } from '../../lib/roles'
 import {
   Home, User, Trophy, Rocket, Ticket,
-  LayoutGrid, Users, QrCode, Store,
+  LayoutGrid, Users, QrCode, Store, ChartColumn,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -22,13 +23,21 @@ const MEMBER_ITEMS: NavItem[] = [
   { to: '/cupones',  label: 'Cupones',  icon: Ticket },
 ]
 
-const ADMIN_ITEMS: NavItem[] = [
-  { to: '/',                label: 'Inicio',         icon: Home },
-  { to: '/admin/dashboard', label: 'Entrenamientos', icon: LayoutGrid },
-  { to: '/admin/users',     label: 'Clientes',       icon: Users },
-  { to: '/admin/scanner',   label: 'Escáner',        icon: QrCode },
-  { to: '/admin/estacion',  label: 'Estación',       icon: Store },
-]
+const INICIO: NavItem = { to: '/', label: 'Inicio', icon: Home }
+const DINAMICAS: NavItem = { to: '/admin/dashboard', label: 'Entrenamientos', icon: LayoutGrid }
+const CLIENTES: NavItem = { to: '/admin/users', label: 'Clientes', icon: Users }
+const ESCANER: NavItem = { to: '/admin/scanner', label: 'Escáner', icon: QrCode }
+const ESTACION: NavItem = { to: '/admin/estacion', label: 'Estación', icon: Store }
+const METRICAS: NavItem = { to: '/admin/metricas', label: 'Métricas', icon: ChartColumn }
+
+// Una barra por rol (0044). El superadmin cambia Inicio por Métricas: con seis no caben las
+// etiquetas en un teléfono, y la home sigue a un toque desde el logo.
+const ITEMS_POR_ROL: Record<Rol, NavItem[]> = {
+  cliente: MEMBER_ITEMS,
+  staff: [INICIO, ESCANER, ESTACION],
+  admin: [INICIO, DINAMICAS, CLIENTES, ESCANER, ESTACION],
+  superadmin: [DINAMICAS, CLIENTES, ESCANER, ESTACION, METRICAS],
+}
 
 // Fuente única de verdad para saber si la barra está en pantalla: las páginas la usan
 // para reservar el espacio inferior (pb-24) y no quedar tapadas por ella.
@@ -40,13 +49,13 @@ export function useBottomNavVisible() {
 
 export default function BottomNav() {
   const visible = useBottomNavVisible()
-  const isAdmin = useStore(s => s.isAdmin)
+  const rol = useStore(s => s.rol)
   const location = useLocation()
 
   // En una pantalla de mostrador nadie navega: la barra solo taparía el ranking.
   if (!visible || esRutaKiosco(location.pathname)) return null
 
-  const items = isAdmin ? ADMIN_ITEMS : MEMBER_ITEMS
+  const items = ITEMS_POR_ROL[rol]
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t-4 border-brand-azul bg-brand-sombra pb-[env(safe-area-inset-bottom)]">

@@ -300,6 +300,16 @@ const ADMIN_ESTACION: SeoRoute = {
   robots: 'noindex,nofollow',
 }
 
+// Solo el superadmin: cifras y listas de clientes, y la asignación de roles.
+const ADMIN_METRICAS: SeoRoute = {
+  path: '/admin/metricas',
+  kind: 'spa',
+  title: 'Métricas — Helados Mados',
+  description: 'Métricas de clientes y de la promoción de Helados Mados.',
+  index: false,
+  robots: 'noindex,nofollow',
+}
+
 // Pantallas de mostrador: monitores verticales en modo quiosco dentro de la Estación.
 const ADMIN_LEADERBOARD: SeoRoute = {
   path: '/admin/leaderboard',
@@ -393,6 +403,7 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
   ADMIN_SCANNER,
   ADMIN_USERS,
   ADMIN_ESTACION,
+  ADMIN_METRICAS,
   ADMIN_LEADERBOARD,
   ADMIN_FLAVORS,
   ADMIN_LEADERBOARD_90,

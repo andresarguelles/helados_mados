@@ -72,15 +72,17 @@ Deno.serve(async (req: Request) => {
     return responder({ success: false, reason: "not_authenticated" }, 401);
   }
 
-  // Un admin que se borra a si mismo deja la tienda sin quien escanee cupones, y el rol no
-  // se puede reasignar desde la app. Que pase por otro admin primero.
+  // El personal (staff, admin, superadmin; migracion 0044) no se borra solo: un admin que se
+  // va deja la tienda sin quien escanee. Primero el superadmin le regresa el rol de cliente
+  // desde Metricas > Equipo, y ya como cliente puede borrarse. El motivo conserva su nombre
+  // `admin_cannot_delete` porque es contrato congelado de Android.
   const { data: perfil } = await comoUsuario
     .from("profiles")
-    .select("is_admin")
+    .select("role")
     .eq("id", userId)
     .single();
 
-  if (perfil?.is_admin) {
+  if (perfil && perfil.role !== "cliente") {
     return responder({ success: false, reason: "admin_cannot_delete" }, 403);
   }
 

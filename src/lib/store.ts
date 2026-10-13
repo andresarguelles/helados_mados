@@ -5,6 +5,7 @@ import { Profile, Dynamic, Coupon } from './types'
 import type { Database } from './database.types'
 import { saveAuthIntent, clearAuthIntent } from './authIntent'
 import { LEGAL_META } from '../content/legal/generated/legalMeta'
+import { permisosDe, type Rol } from './roles'
 
 /** La plataforma que queda registrada en cada aceptación del texto legal. */
 const PLATAFORMA = 'web'
@@ -182,7 +183,14 @@ type OAuthResult = { success: true } | { success: false; reason: 'error' }
 
 interface AppState {
   profile: Profile | null
+  /** El rol (0044). Los tres booleanos de abajo se derivan de él, para que nadie los recalcule. */
+  rol: Rol
+  /** Admin o superadmin: dinámicas y clientes. */
   isAdmin: boolean
+  /** Staff o más: escáner, Estación y pantallas del mostrador. */
+  isStaff: boolean
+  /** Métricas y asignar roles. */
+  isSuperadmin: boolean
   authReady: boolean
   dynamics: Dynamic[]
   coupons: Coupon[]
@@ -276,7 +284,7 @@ function oauthRedirectTo(): string {
 
 export const useStore = create<AppState>()((set, get) => ({
   profile: null,
-  isAdmin: false,
+  ...permisosDe(null),
   authReady: false,
   dynamics: [],
   coupons: [],
@@ -288,11 +296,11 @@ export const useStore = create<AppState>()((set, get) => ({
   initAuth: () => {
     const hydrate = async (session: Session | null) => {
       if (!session) {
-        set({ profile: null, isAdmin: false, authReady: true })
+        set({ profile: null, ...permisosDe(null), authReady: true })
         return
       }
       const profile = await loadProfile()
-      set({ profile, isAdmin: profile?.is_admin ?? false, authReady: true })
+      set({ profile, ...permisosDe(profile), authReady: true })
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => { void hydrate(session) })
@@ -306,14 +314,14 @@ export const useStore = create<AppState>()((set, get) => ({
 
   logout: async () => {
     await supabase.auth.signOut()
-    set({ profile: null, isAdmin: false })
+    set({ profile: null, ...permisosDe(null) })
   },
 
   getCurrentUser: () => get().profile,
 
   refreshProfile: async () => {
     const profile = await loadProfile()
-    set({ profile, isAdmin: profile?.is_admin ?? false })
+    set({ profile, ...permisosDe(profile) })
   },
 
   // ── Google ────────────────────────────────────────────────────────────
@@ -536,7 +544,7 @@ export const useStore = create<AppState>()((set, get) => ({
     // La sesión apunta a un usuario que ya no existe: limpiarla aquí evita que la app
     // quede en un estado donde hay token pero no hay perfil.
     await supabase.auth.signOut()
-    set({ profile: null, isAdmin: false })
+    set({ profile: null, ...permisosDe(null) })
     return { success: true }
   },
 

@@ -25,7 +25,8 @@ export default function LeaderboardTabs() {
   const getLeaderboardRange = useStore(s => s.getLeaderboardRange)
   // Solo para saber si hay sesion: la fila propia la marca el servidor con esTuFila.
   const haySesion = useStore(s => s.profile?.id != null)
-  const isAdmin = useStore(s => s.isAdmin)
+  // El personal (staff y admins) no compite: get_leaderboard solo lista clientes.
+  const esPersonal = useStore(s => s.isStaff)
   const [entries, setEntries] = useState<Awaited<ReturnType<typeof getLeaderboard>>>([])
   const [loaded, setLoaded] = useState(false)
   const [range, setRange] = useState<Awaited<ReturnType<typeof getLeaderboardRange>>>(null)
@@ -94,8 +95,8 @@ export default function LeaderboardTabs() {
               </>
             ) : (
               <p className="flex-1 font-body text-white/70 text-xs text-center">
-                {isAdmin
-                  ? 'Los administradores no participan en el ranking'
+                {esPersonal
+                  ? 'El personal no participa en el ranking'
                   : 'Aún no sumas puntos en este período'}
               </p>
             )}

@@ -26,6 +26,12 @@ const NOVEDADES: Record<string, Novedad> = {
     titular: WHATSAPP_OPCIONAL,
     puntos: ['Para tu cumpleaños solo te pedimos día y mes, y borramos el año de las fechas que ya teníamos.'],
   },
+  'privacidad@4.1.0': {
+    puntos: [
+      'Sacamos estadísticas internas de la promoción —canjes, horarios, dinámicas— para mejorarla. Son cifras de conjunto: no te identifican.',
+      'Podemos ofrecerte promociones según cómo participas. Si no quieres, escríbenos y dejas de aparecer en esas listas.',
+    ],
+  },
   'terminos@3.0.0': {
     titular: WHATSAPP_OPCIONAL,
     puntos: ['Ya no damos puntos por registrarte ni por llenar tus datos: toda cuenta nueva empieza en cero. Los que ya ganaste se quedan.'],

@@ -1,26 +1,29 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
+import { inicioDe } from '../../lib/roles'
 import GoogleButton from '../../components/auth/GoogleButton'
 import { Shield, AlertCircle, LogOut } from 'lucide-react'
 
 /**
- * El panel también se entra con Google: no hay otro acceso desde el 2026-09-30. Quién es admin lo
- * decide `profiles.is_admin`, no el botón, y la frontera real son el RLS y el `is_admin()` de las RPC.
+ * El panel también se entra con Google: no hay otro acceso desde el 2026-09-30. Quién entra lo
+ * decide `profiles.role` (0044), no el botón, y la frontera real son el RLS y las RPC. Cada rol
+ * aterriza en su propia pantalla: el staff en el escáner, el resto en las dinámicas.
  */
 export default function AdminLogin() {
   const navigate = useNavigate()
   const authReady = useStore(s => s.authReady)
   const profile = useStore(s => s.profile)
-  const isAdmin = useStore(s => s.isAdmin)
+  const isStaff = useStore(s => s.isStaff)
+  const rol = useStore(s => s.rol)
   const logout = useStore(s => s.logout)
 
   useEffect(() => {
-    if (authReady && profile && isAdmin) navigate('/admin/dashboard', { replace: true })
-  }, [authReady, profile, isAdmin, navigate])
+    if (authReady && profile && isStaff) navigate(inicioDe(rol), { replace: true })
+  }, [authReady, profile, isStaff, rol, navigate])
 
   // Con sesión y sin permiso: decirlo, en vez de volver a ofrecer un botón que daría lo mismo.
-  const sinPermiso = authReady && profile && !isAdmin
+  const sinPermiso = authReady && profile && !isStaff
 
   return (
     <div className="min-h-screen bg-brand-azul bg-dots-azul flex flex-col items-center justify-center px-4">
@@ -53,7 +56,8 @@ export default function AdminLogin() {
               </button>
             </>
           ) : (
-            <GoogleButton next="/admin/dashboard" label="Entrar con Google" />
+            // Vuelve aquí y no a una pantalla fija: esta misma página decide a dónde va cada rol.
+            <GoogleButton next="/admin" label="Entrar con Google" />
           )}
         </div>
 

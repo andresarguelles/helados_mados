@@ -13,13 +13,18 @@ const ERROR_MESSAGES: Record<ErrorReason, { title: string; desc: string }> = {
   already_used: { title: 'Cupón ya canjeado', desc: 'Este cupón ya fue utilizado anteriormente.' },
   expired: { title: 'Cupón expirado', desc: 'La vigencia de este entrenamiento ha terminado.' },
   stock_empty: { title: 'Stock agotado', desc: 'No quedan medallas físicas disponibles para este entrenamiento.' },
-  forbidden: { title: 'Sin permiso', desc: 'Tu sesión no tiene acceso de administrador.' },
+  forbidden: { title: 'Sin permiso', desc: 'Tu sesión no tiene acceso de personal.' },
   error: { title: 'Error inesperado', desc: 'Intenta escanear de nuevo.' },
 }
 
 export default function AdminScanner() {
   const navigate = useNavigate()
   const { scanCoupon } = useStore()
+  // El staff no tiene dinámicas: su otra pantalla es la Estación.
+  const esStaff = useStore(s => s.rol === 'staff')
+  const regreso = esStaff
+    ? { to: '/admin/estacion', label: 'Estación' }
+    : { to: '/admin/dashboard', label: 'Entrenamientos' }
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const [scanState, setScanState] = useState<ScanState>('scanning')
   const [errorReason, setErrorReason] = useState<ErrorReason | null>(null)
@@ -116,11 +121,11 @@ export default function AdminScanner() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 pb-2 pt-[max(2rem,env(safe-area-inset-top))]">
         <button
-          onClick={() => navigate('/admin/dashboard')}
+          onClick={() => navigate(regreso.to)}
           className="flex items-center gap-1.5 text-white/85 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-body">Entrenamientos</span>
+          <span className="text-sm font-body">{regreso.label}</span>
         </button>
         <span className="font-heading text-white text-sm">Escáner QR</span>
         <div className="w-20" />

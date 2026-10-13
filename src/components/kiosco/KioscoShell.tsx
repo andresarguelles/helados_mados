@@ -56,9 +56,10 @@ export function KioscoMarco({ className, children }: { className?: string; child
       {children}
 
       {/* Invisible para el público; aparece al pasar el ratón o con el teclado, para que el
-          personal pueda volver al panel sin cerrar el navegador del quiosco. */}
+          personal pueda volver al panel sin cerrar el navegador del quiosco. Va a la Estación,
+          que es desde donde se manejan estas pantallas y la ven staff y admins por igual. */}
       <Link
-        to="/admin/dashboard"
+        to="/admin/estacion"
         target={enMarco ? '_top' : undefined}
         aria-label="Salir de la pantalla de mostrador"
         className="fixed top-3 right-3 z-50 w-12 h-12 rounded-2xl bg-brand-sombra text-white flex items-center justify-center opacity-0 hover:opacity-100 focus-visible:opacity-100 transition-opacity"

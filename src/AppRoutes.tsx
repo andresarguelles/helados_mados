@@ -11,6 +11,7 @@ import BottomNav from './components/layout/BottomNav'
 import CookieBanner from './components/legal/CookieBanner'
 import LegalGate from './components/legal/LegalGate'
 import { useStore } from './lib/store'
+import { alcanza, inicioDe, type Rol } from './lib/roles'
 import { trackPageview } from './lib/analytics'
 import { applyHead } from './seo/head'
 import { seoForPath } from './seo/routes'
@@ -45,6 +46,8 @@ const AdminFlavors = lazy(() => import('./pages/admin/AdminFlavors'))
 const KioscoGirado = lazy(() => import('./components/kiosco/KioscoGirado'))
 // El panel de control de esas dos pantallas.
 const AdminEstacion = lazy(() => import('./pages/admin/AdminEstacion'))
+// Métricas y roles: solo el superadmin.
+const AdminMetricas = lazy(() => import('./pages/admin/AdminMetricas'))
 
 /**
  * Qué precargar antes de hidratar cada ruta prerenderizada que cuelga de
@@ -93,11 +96,19 @@ function RouteTracker() {
   return null
 }
 
-function ProtectedAdmin({ children }: { children: React.ReactNode }) {
-  const isAdmin = useStore(s => s.isAdmin)
+/**
+ * El panel por rol (0044): `minimo` es el rol más bajo que puede ver la pantalla. Es comodidad,
+ * no seguridad —la frontera son RLS y las RPC—, así que solo decide a dónde mandar a quien no
+ * alcanza: al personal, a su propia pantalla de inicio (el staff que abre el dashboard cae en el
+ * escáner); a un cliente o sin sesión, al login del panel.
+ */
+function ProtectedRol({ minimo, children }: { minimo: Rol; children: React.ReactNode }) {
+  const rol = useStore(s => s.rol)
   const authReady = useStore(s => s.authReady)
   if (!authReady) return null
-  if (!isAdmin) return <Navigate to="/admin" replace />
+  if (!alcanza(rol, minimo)) {
+    return <Navigate to={alcanza(rol, 'staff') ? inicioDe(rol) : '/admin'} replace />
+  }
   return <>{children}</>
 }
 
@@ -176,32 +187,38 @@ export const routeElements = (
     } />
     <Route path="/admin/dashboard" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminDashboard /></ProtectedAdmin>
+        <ProtectedRol minimo="admin"><AdminDashboard /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/scanner" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminScanner /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><AdminScanner /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/users" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminUsers /></ProtectedAdmin>
+        <ProtectedRol minimo="admin"><AdminUsers /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/estacion" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminEstacion /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><AdminEstacion /></ProtectedRol>
+      </Suspense>
+    } />
+    {/* Solo el superadmin: cifras y listas de clientes, y la asignación de roles (0045). */}
+    <Route path="/admin/metricas" element={
+      <Suspense fallback={<AdminFallback />}>
+        <ProtectedRol minimo="superadmin"><AdminMetricas /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/leaderboard" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminLeaderboard /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><AdminLeaderboard /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/flavors" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><AdminFlavors /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><AdminFlavors /></ProtectedRol>
       </Suspense>
     } />
     {/* Versiones giradas, ver KioscoGirado. El guard va aquí y no solo dentro del iframe: sin
@@ -209,22 +226,22 @@ export const routeElements = (
         cargar dentro de un iframe. */}
     <Route path="/admin/leaderboard_90" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><KioscoGirado ruta="/admin/leaderboard" grados={90} /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><KioscoGirado ruta="/admin/leaderboard" grados={90} /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/leaderboard_270" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><KioscoGirado ruta="/admin/leaderboard" grados={270} /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><KioscoGirado ruta="/admin/leaderboard" grados={270} /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/flavors_90" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><KioscoGirado ruta="/admin/flavors" grados={90} /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><KioscoGirado ruta="/admin/flavors" grados={90} /></ProtectedRol>
       </Suspense>
     } />
     <Route path="/admin/flavors_270" element={
       <Suspense fallback={<AdminFallback />}>
-        <ProtectedAdmin><KioscoGirado ruta="/admin/flavors" grados={270} /></ProtectedAdmin>
+        <ProtectedRol minimo="staff"><KioscoGirado ruta="/admin/flavors" grados={270} /></ProtectedRol>
       </Suspense>
     } />
     <Route path="*" element={<NotFound />} />

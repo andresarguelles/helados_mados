@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      cambios_de_rol: {
+        Row: {
+          creado_en: string
+          ejecutado_por: string
+          id: string
+          rol_anterior: string
+          rol_nuevo: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          creado_en?: string
+          ejecutado_por: string
+          id?: string
+          rol_anterior: string
+          rol_nuevo: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          creado_en?: string
+          ejecutado_por?: string
+          id?: string
+          rol_anterior?: string
+          rol_nuevo?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           created_at: string
@@ -208,6 +238,7 @@ export type Database = {
           birthday_month: number | null
           created_at: string
           email: string | null
+          excluir_de_listas: boolean
           first_name: string | null
           google_bonus_awarded: boolean
           id: string
@@ -215,6 +246,7 @@ export type Database = {
           last_name: string | null
           phone: string | null
           profile_bonus_awarded: boolean
+          role: string
           total_points: number
           username: string | null
           whatsapp_opt_in: boolean
@@ -227,6 +259,7 @@ export type Database = {
           birthday_month?: number | null
           created_at?: string
           email?: string | null
+          excluir_de_listas?: boolean
           first_name?: string | null
           google_bonus_awarded?: boolean
           id: string
@@ -234,6 +267,7 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           profile_bonus_awarded?: boolean
+          role?: string
           total_points?: number
           username?: string | null
           whatsapp_opt_in?: boolean
@@ -246,6 +280,7 @@ export type Database = {
           birthday_month?: number | null
           created_at?: string
           email?: string | null
+          excluir_de_listas?: boolean
           first_name?: string | null
           google_bonus_awarded?: boolean
           id?: string
@@ -253,6 +288,7 @@ export type Database = {
           last_name?: string | null
           phone?: string | null
           profile_bonus_awarded?: boolean
+          role?: string
           total_points?: number
           username?: string | null
           whatsapp_opt_in?: boolean
@@ -269,6 +305,7 @@ export type Database = {
         Args: { p_docs: Json; p_platform: string }
         Returns: Json
       }
+      asignar_rol: { Args: { p_rol: string; p_usuario: string }; Returns: Json }
       complete_signup: {
         Args: {
           p_age_confirmed: boolean
@@ -310,6 +347,8 @@ export type Database = {
       }
       hook_google_only_signup: { Args: { event: Json }; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
+      is_staff: { Args: never; Returns: boolean }
+      is_superadmin: { Args: never; Returns: boolean }
       legal_current_versions: {
         Args: never
         Returns: {
@@ -318,6 +357,16 @@ export type Database = {
           version: string
         }[]
       }
+      marcar_excluir_de_listas: {
+        Args: { p_excluir: boolean; p_usuario: string }
+        Returns: Json
+      }
+      metricas_clientes: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string }; Returns: Json }
+      metricas_dinamicas: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string }; Returns: Json }
+      metricas_horarios: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string }; Returns: Json }
+      metricas_lista: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string; p_limite?: number; p_lista: string }; Returns: Json }
+      metricas_resumen: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string }; Returns: Json }
+      metricas_serie: { Args: { p_desde: string; p_dinamicas?: string[]; p_hasta: string; p_segmento?: string; p_granularidad?: string }; Returns: Json }
       my_legal_status: { Args: never; Returns: Json }
       phone_is_valid: { Args: { p_phone: string }; Returns: boolean }
       redeem_keyword: {

@@ -84,14 +84,15 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // El guard de ruta del cliente es comodidad; la frontera es esta comprobacion.
+  // El guard de ruta del cliente es comodidad; la frontera es esta comprobacion. Borran
+  // cuentas los admins y el superadmin (migracion 0044); el staff no.
   const { data: quienLlama } = await comoUsuario
     .from("profiles")
-    .select("is_admin")
+    .select("role")
     .eq("id", adminId)
     .single();
 
-  if (!quienLlama?.is_admin) return rechazo("forbidden");
+  if (quienLlama?.role !== "admin" && quienLlama?.role !== "superadmin") return rechazo("forbidden");
 
   // A partir de aqui hace falta service role: la policy de profiles solo deja ver la fila
   // propia o, siendo admin, cualquiera — pero el borrado de auth.users necesita la llave.
@@ -103,16 +104,18 @@ Deno.serve(async (req: Request) => {
 
   const { data: objetivo } = await comoServicio
     .from("profiles")
-    .select("id, username, email, is_admin")
+    .select("id, username, email, role")
     .eq("id", userId)
     .maybeSingle();
 
   if (!objetivo) return rechazo("not_found");
 
-  // Solo hay dos admins, is_admin no se puede reotorgar desde la app, y un clic dejaria al
-  // negocio fuera de su propio panel. La baja de personal se queda en la consola SQL.
-  // Esto cubre tambien el caso de un admin borrandose a si mismo.
-  if (objetivo.is_admin) return rechazo("target_is_admin");
+  // Desde aqui solo se borran clientes. A alguien del personal primero se le regresa el rol
+  // de cliente (Metricas > Equipo, solo el superadmin), y queda en la bitacora de roles: un
+  // clic aqui no puede dejar al negocio fuera de su propio panel. Cubre tambien a quien
+  // intente borrarse a si mismo. El motivo se sigue llamando `target_is_admin` porque es
+  // contrato congelado de Android.
+  if (objetivo.role !== "cliente") return rechazo("target_is_admin");
 
   // La confirmacion es el apodo DEL OBJETIVO, no una cadena fija, y eso cambia una
   // propiedad del sistema: el chequeo pasa a depender de a quien se borra. Un cliente mal

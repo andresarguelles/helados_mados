@@ -2,17 +2,17 @@
 id: privacidad
 titulo: Aviso de Privacidad
 icono: Shield
-version: 4.0.0
-actualizado: 2026-10-11
+version: 4.1.0
+actualizado: 2026-10-12
 ---
 
 ## En corto {#aviso-corto icono=Shield rol=simplificado}
 
 En Helados Mados tratamos su apodo, su correo y, si usted los da, su número de WhatsApp, su nombre, su apellido y su cumpleaños (día y mes, sin el año). Ninguno es un dato sensible.
 
-Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador y evitar el abuso de las promociones. Eso es el servicio y no depende de un permiso aparte.
+Los usamos para crear su cuenta, entregarle sus cupones, llevar su marcador, evitar el abuso de las promociones y sacar estadísticas internas de cómo funcionan. Eso es el servicio y no depende de un permiso aparte.
 
-Con su permiso, además, le escribimos por WhatsApp y le felicitamos en su cumpleaños. Puede retirar ese permiso desde su perfil cuando quiera, sin perder la cuenta.
+Con su permiso, además, le escribimos por WhatsApp, le felicitamos en su cumpleaños y le ofrecemos promociones según cómo participa. Puede retirar esos permisos cuando quiera, sin perder la cuenta.
 
 Su apodo y sus puntos son públicos en el marcador; su nombre, su correo, su teléfono y su cumpleaños no. Puede pedirnos que limitemos otros usos escribiendo a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
@@ -76,6 +76,7 @@ Estas finalidades son necesarias para la relación entre usted y nosotros. Sin e
 - Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO.
 - Conservar la prueba de qué versión de estos documentos aceptó y cuándo.
 - Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente.
+- Elaborar estadísticas internas de la promoción —altas, canjes, cobros en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular.
 
 ## Finalidades voluntarias y cómo negarse {#finalidades-voluntarias icono=Gift}
 
@@ -85,12 +86,14 @@ Estas otras finalidades no son necesarias para el servicio. Si dice que no, su c
 - **Felicitarle o enviarle una promoción en su cumpleaños**, si nos lo dio.
 - **Atenderle por su nombre** en la tienda, si nos dio su nombre y su apellido.
 - **Medir cómo se usa el sitio web** para mejorarlo.
+- **Ofrecerle promociones según su participación**: identificar a los clientes más participativos, a quienes dejaron de participar y a quienes cumplen años pronto, para hacerles una oferta.
 
 Cómo negarse a cada una:
 
 - Para los mensajes de WhatsApp: no nos dé su número, no marque la casilla al crear su cuenta, o desmárquela después en su perfil. **No es obligatoria**: puede tener su cuenta, sus puntos y sus cupones sin aceptar recibir mensajes. Hasta septiembre de 2026 sí lo era, y lo cambiamos al escribir este aviso, porque un permiso que hay que dar a fuerza para poder registrarse no es un permiso libre.
 - Para el cumpleaños y para su nombre: no llene esos campos, o bórrelos desde su perfil cuando quiera.
 - Para la medición del sitio web: recházela en el aviso de cookies que aparece al entrar.
+- Para las promociones según su participación: pídanoslo por correo y dejará de aparecer en esas listas. Sus puntos y cupones siguen contando en las estadísticas de conjunto, que no le identifican.
 - Para cualquiera de ellas, en cualquier momento: escríbanos a [contacto@heladosmados.com](mailto:contacto@heladosmados.com).
 
 Sobre los mensajes de WhatsApp, otra precisión honesta: hoy la plataforma no tiene ningún sistema conectado para enviarlos. Guardamos su número, si nos lo dio, y su permiso. Si le escribimos, lo hacemos desde fuera de la plataforma, con las herramientas de mensajería de siempre.
@@ -242,7 +245,7 @@ Tenemos medidas administrativas, técnicas y físicas para proteger sus datos. S
 - Las operaciones que mueven puntos, cupones y existencias se ejecutan en el servidor, no en su teléfono, y comprueban ahí las reglas.
 - No guardamos contraseñas en claro. Las cuentas antiguas que tenían contraseña la conservan almacenada cifrada por nuestro proveedor de autenticación, de forma que nadie de Helados Mados puede leerla. Desde el 30 de septiembre de 2026 ya no sirve para entrar: el acceso es solo con Google.
 - No guardamos su dirección IP: ni en claro ni transformada. Nuestros proveedores la ven al atender cada petición, como se explica en el apartado de con quién compartimos sus datos.
-- El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor.
+- El panel de administración está restringido al personal autorizado, y esa autorización se comprueba en el servidor. Hay niveles de acceso: el personal del mostrador solo valida cupones y maneja las pantallas de la tienda, y al escanear ve únicamente su apodo y sus puntos; la lista de clientes la ven los administradores, y las estadísticas y las listas para promociones, solo el responsable.
 - Cuando alguien de nuestro equipo elimina una cuenta, queda registrado quién lo hizo. Nadie del personal puede borrar una cuenta sin dejar constancia, y esa constancia existe también para protegerle a usted.
 
 Ningún sistema es infalible. Si ocurre una vulneración de seguridad que afecte de forma significativa sus derechos, se lo comunicaremos para que pueda tomar medidas, como exige la ley.

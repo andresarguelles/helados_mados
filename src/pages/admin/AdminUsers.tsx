@@ -82,7 +82,8 @@ export default function AdminUsers() {
   const customers = useMemo(() => {
     const q = query.trim().toLowerCase()
     return profiles
-      .filter(p => !p.is_admin)
+      // Solo clientes: el personal (staff, admins) no es cliente, como en el ranking.
+      .filter(p => p.role === 'cliente')
       // Ahora hay más de un dato por el que buscar a alguien en el mostrador.
       .filter(p => !q || [p.username, p.first_name, p.last_name, p.email, p.phone]
         .some(value => value?.toLowerCase().includes(q)))
