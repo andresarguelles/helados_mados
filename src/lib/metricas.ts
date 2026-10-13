@@ -111,9 +111,9 @@ export interface Kpis {
   canjes: number
   escaneos: number
   puntos: number
-  /** % de los cupones canjeados en el rango que ya se cobraron en tienda. */
+  /** % de los cupones generados en el rango que ya se canjearon en tienda. */
   conversion: number | null
-  /** Mediana de horas entre canjear la palabra y cobrar el QR. */
+  /** Mediana de horas entre generar el cupón y canjearlo en tienda. */
   mediana_horas: number | null
 }
 

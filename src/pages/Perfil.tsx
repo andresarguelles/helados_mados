@@ -143,13 +143,13 @@ export default function Perfil() {
           <div>
             <h2 className="font-heading text-brand-sombra text-lg">Suma más puntos</h2>
             <p className="font-body text-brand-gris text-xs mt-1 leading-relaxed">
-              Canjea la palabra secreta del Live para ganar +1 punto, y muestra tu QR
-              en mostrador para sumar +10.
+              Genera tu cupón con la palabra secreta del Live (+1 punto) y canjéalo
+              en el mostrador para sumar +10.
             </p>
           </div>
-          <button onClick={() => navigate('/canjear')} className="btn-fresa">
+          <button onClick={() => navigate('/generar')} className="btn-fresa">
             <Zap className="w-4 h-4" />
-            Canjear palabra secreta
+            Generar cupón
           </button>
         </div>
 

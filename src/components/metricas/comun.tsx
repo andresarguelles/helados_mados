@@ -5,7 +5,12 @@ import { cn } from '../../lib/utils'
 // Colores de las gráficas. Validados con el script de la skill de dataviz sobre blanco
 // (validate_palette.js): tres series categóricas que pasan banda de luminosidad, croma, separación
 // para daltonismo (peor par ΔE 25) y contraste ≥ 3:1; y una rampa ordinal azul de un solo tono.
-// El color sigue a la entidad: Canjes siempre es azul, aunque un filtro deje una sola serie.
+// El color sigue a la entidad: los cupones generados siempre son azules, aunque un filtro deje
+// una sola serie.
+//
+// OJO con las llaves, que vienen de las RPC y no cambiaron con el vocabulario: `canjes` son los
+// CUPONES GENERADOS con la palabra (+1) y `escaneos` son los CANJES en tienda (+10). En pantalla
+// "canje" es solo lo de la tienda, desde 2026-10-13.
 export const COLOR = {
   canjes: '#3C5DDC',
   escaneos: '#E8622C',

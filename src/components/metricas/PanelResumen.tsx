@@ -15,10 +15,10 @@ import {
 const KPIS: { clave: keyof Kpis; nombre: string; ayuda: string; formato?: (n: number | null) => string }[] = [
   { clave: 'altas', nombre: 'Altas', ayuda: 'Cuentas que terminaron su registro' },
   { clave: 'activos', nombre: 'Clientes activos', ayuda: 'Ganaron al menos un punto' },
-  { clave: 'canjes', nombre: 'Canjes', ayuda: 'Palabras secretas canjeadas (+1)' },
-  { clave: 'escaneos', nombre: 'Cobros en tienda', ayuda: 'QR escaneados en el mostrador (+10)' },
-  { clave: 'conversion', nombre: 'Conversión a tienda', ayuda: 'De los canjes del rango, cuántos ya se cobraron', formato: fmtPct },
-  { clave: 'mediana_horas', nombre: 'Del canje al cobro', ayuda: 'Mediana de horas entre canjear y cobrar el QR', formato: n => (n == null ? '—' : `${fmt(n)} h`) },
+  { clave: 'canjes', nombre: 'Cupones generados', ayuda: 'Cupones generados con la palabra secreta (+1)' },
+  { clave: 'escaneos', nombre: 'Canjes', ayuda: 'Cupones canjeados en el mostrador (+10)' },
+  { clave: 'conversion', nombre: 'Conversión a canje', ayuda: 'De los cupones generados en el rango, cuántos ya se canjearon', formato: fmtPct },
+  { clave: 'mediana_horas', nombre: 'De generado a canjeado', ayuda: 'Mediana de horas entre generar el cupón y canjearlo', formato: n => (n == null ? '—' : `${fmt(n)} h`) },
   { clave: 'puntos', nombre: 'Puntos otorgados', ayuda: 'Suma de +1 y +10 del rango' },
 ]
 
@@ -26,7 +26,7 @@ function Cambio({ actual, anterior }: { actual: number | null; anterior: number 
   if (actual == null || anterior == null) return <span className="text-brand-gris">sin comparación</span>
   if (anterior === 0) return <span className="text-brand-gris">{actual === 0 ? 'igual' : 'antes: 0'}</span>
   const pct = Math.round(((actual - anterior) / anterior) * 100)
-  // El cambio va en tinta neutra con flecha: subir no siempre es bueno (más horas al cobro, no).
+  // El cambio va en tinta neutra con flecha: subir no siempre es bueno (más horas hasta el canje, no).
   const Icono = pct > 0 ? ArrowUpRight : pct < 0 ? ArrowDownRight : Minus
   return (
     <span className="inline-flex items-center gap-0.5 text-brand-gris">
@@ -64,8 +64,8 @@ function Cifras({ resumen, comparar }: { resumen: Resumen; comparar: boolean }) 
 // ─── Serie en el tiempo ───────────────────────────────────────────────────────
 
 const SERIES = [
-  { clave: 'canjes', nombre: 'Canjes', color: COLOR.canjes },
-  { clave: 'escaneos', nombre: 'Cobros en tienda', color: COLOR.escaneos },
+  { clave: 'canjes', nombre: 'Cupones generados', color: COLOR.canjes },
+  { clave: 'escaneos', nombre: 'Canjes', color: COLOR.escaneos },
   { clave: 'altas', nombre: 'Altas', color: COLOR.altas },
 ] as const
 
@@ -117,7 +117,7 @@ function GraficaSerie({ serie, granularidad }: { serie: PuntoSerie[]; granularid
   return (
     <Tarjeta
       titulo="En el tiempo"
-      subtitulo="Cada punto cuenta el día en que se ganó: el canje cuando se escribe la palabra, el cobro cuando se escanea el QR."
+      subtitulo="Cada punto cuenta el día en que se ganó: el cupón el día que se genera con la palabra, el canje el día que se escanea en tienda."
       tabla={tabla}
     >
       {/* Leyenda siempre presente con dos o más series; también sirve para apagar una. */}

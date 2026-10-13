@@ -16,7 +16,7 @@ import { REPO_ROOT, resolveChromePath, VIEWPORTS } from './lib/config.mjs';
 import { ensureDir, writeJson, routeSlug, log } from './lib/util.mjs';
 import { checkPath } from './lib/httpMatrix.mjs';
 
-const ROUTES_HIDRATACION = ['/', '/canjear', '/login', '/terminos', '/privacidad', '/eliminar-cuenta'];
+const ROUTES_HIDRATACION = ['/', '/generar', '/login', '/terminos', '/privacidad', '/eliminar-cuenta'];
 const HYDRATION_PATTERNS = [
   /minified react error #41[89]/i,
   /minified react error #42[35]/i,
@@ -389,7 +389,7 @@ async function testGuardias(browser, base, outDir) {
 }
 
 // ---------------------------------------------------------------------------
-// g) 404 real + pagina NotFound; /cuenta y /canjear/ redirigen 308
+// g) 404 real + pagina NotFound; /cuenta, /canjear y /generar/ redirigen 308
 // ---------------------------------------------------------------------------
 async function testNotFoundYRedirects(browser, base, outDir) {
   const detalle = {};
@@ -409,23 +409,25 @@ async function testNotFoundYRedirects(browser, base, outDir) {
     }
     const screenshot = await shot(page, outDir, 'g-404');
     await context.close();
-    const ok = status === 404 && hrefs.includes('/') && hrefs.includes('/canjear');
-    detalle.notFound = { status, tieneLinkInicio: hrefs.includes('/'), tieneLinkCanjear: hrefs.includes('/canjear'), error, screenshot, ok };
+    const ok = status === 404 && hrefs.includes('/') && hrefs.includes('/generar');
+    detalle.notFound = { status, tieneLinkInicio: hrefs.includes('/'), tieneLinkGenerar: hrefs.includes('/generar'), error, screenshot, ok };
   }
 
   for (const [ruta, esperado] of [
     ['/cuenta', '/perfil'],
-    ['/canjear/', '/canjear'],
+    // La direccion vieja de la palabra secreta: "canjear" ahora es solo lo de la tienda.
+    ['/canjear', '/generar'],
+    ['/generar/', '/generar'],
   ]) {
     const r = await checkPath(base, ruta).catch((e) => ({ error: e.message }));
     const ok = r && r.status === 308 && r.location === esperado;
     detalle[ruta] = { ...r, esperado, ok };
   }
 
-  const ok = detalle.notFound.ok && detalle['/cuenta'].ok && detalle['/canjear/'].ok;
+  const ok = detalle.notFound.ok && detalle['/cuenta'].ok && detalle['/canjear'].ok && detalle['/generar/'].ok;
   return {
     id: 'g-404-y-redirects',
-    nombre: '/esta-ruta-no-existe -> 404 real con enlaces; /cuenta y /canjear/ -> 308',
+    nombre: '/esta-ruta-no-existe -> 404 real con enlaces; /cuenta, /canjear y /generar/ -> 308',
     ok,
     detalle,
   };
@@ -483,7 +485,7 @@ async function testConsentimiento(browser, base, outDir) {
 }
 
 // ---------------------------------------------------------------------------
-// i) Navegacion cliente: footer "Terminos y Condiciones" y "Canjear palabra secreta"
+// i) Navegacion cliente: footer "Terminos y Condiciones" y "Generar cupón"
 // ---------------------------------------------------------------------------
 async function testNavegacionCliente(browser, base, outDir) {
   const detalle = {};
@@ -520,33 +522,33 @@ async function testNavegacionCliente(browser, base, outDir) {
     let urlDespues = null;
     try {
       await page.goto(u(base, '/'), { waitUntil: 'networkidle', timeout: 20000 });
-      await page.getByRole('link', { name: /^canjear palabra secreta$/i }).first().click({ timeout: 10000 });
-      await page.waitForURL(/\/canjear/, { timeout: 10000 }).catch(() => {});
+      await page.getByRole('link', { name: /^generar cupón$/i }).first().click({ timeout: 10000 });
+      await page.waitForURL(/\/generar/, { timeout: 10000 }).catch(() => {});
       await page.waitForTimeout(500);
       tituloDespues = await page.title();
       urlDespues = page.url();
     } catch (e) {
       error = e.message;
     }
-    const screenshot = await shot(page, outDir, 'i-nav-canjear');
+    const screenshot = await shot(page, outDir, 'i-nav-generar');
     await context.close();
-    const ok = !error && /\/canjear$/.test(new URL(urlDespues || 'http://x/').pathname) && !!tituloDespues;
-    detalle.canjear = { tituloDespues, urlDespues, error, screenshot, ok };
+    const ok = !error && /\/generar$/.test(new URL(urlDespues || 'http://x/').pathname) && !!tituloDespues;
+    detalle.generar = { tituloDespues, urlDespues, error, screenshot, ok };
   }
 
-  const ok = detalle.terminos.ok && detalle.canjear.ok;
+  const ok = detalle.terminos.ok && detalle.generar.ok;
   return {
     id: 'i-navegacion-cliente',
-    nombre: 'Navegacion cliente sin recarga: footer "Términos y Condiciones" y CTA "Canjear palabra secreta"',
+    nombre: 'Navegacion cliente sin recarga: footer "Términos y Condiciones" y CTA "Generar cupón"',
     ok,
     detalle,
   };
 }
 
 // ---------------------------------------------------------------------------
-// j) /canjear: escribir palabra y verificar
+// j) /generar: escribir palabra y generar el cupon
 // ---------------------------------------------------------------------------
-async function testCanjearPalabra(browser, base, outDir) {
+async function testGenerarCupon(browser, base, outDir) {
   const context = await browser.newContext();
   const page = await context.newPage();
   const consoleErrs = [];
@@ -557,16 +559,16 @@ async function testCanjearPalabra(browser, base, outDir) {
   let mainAntes = null;
   let mainDespues = null;
   try {
-    await page.goto(u(base, '/canjear'), { waitUntil: 'networkidle', timeout: 20000 });
+    await page.goto(u(base, '/generar'), { waitUntil: 'networkidle', timeout: 20000 });
     mainAntes = await page.$eval('main', (el) => el.innerText).catch(() => null);
     await page.fill('#keyword-input', 'PRUEBA');
-    await page.getByRole('button', { name: /verificar palabra/i }).click({ timeout: 10000 });
+    await page.getByRole('button', { name: /generar cupón/i }).click({ timeout: 10000 });
     await page.waitForTimeout(2500);
     mainDespues = await page.$eval('main', (el) => el.innerText).catch(() => null);
   } catch (e) {
     error = e.message;
   }
-  const screenshot = await shot(page, outDir, 'j-canjear-palabra');
+  const screenshot = await shot(page, outDir, 'j-generar-cupon');
   await context.close();
 
   // Los "resource load status 400/404" del propio navegador para la llamada
@@ -576,8 +578,8 @@ async function testCanjearPalabra(browser, base, outDir) {
   const uiRespondio = mainAntes !== null && mainDespues !== null && mainAntes !== mainDespues;
   const ok = !error && erroresReales.length === 0 && uiRespondio;
   return {
-    id: 'j-canjear-input-label',
-    nombre: 'Input con label accesible en /canjear + "Verificar palabra" produce respuesta sin errores de consola',
+    id: 'j-generar-input-label',
+    nombre: 'Input con label accesible en /generar + "Generar cupón" produce respuesta sin errores de consola',
     ok,
     detalle: { erroresReales, uiRespondio, mainDespuesPreview: mainDespues ? mainDespues.slice(-200) : null, error, screenshot },
   };
@@ -643,7 +645,7 @@ async function main() {
     testNotFoundYRedirects,
     testConsentimiento,
     testNavegacionCliente,
-    testCanjearPalabra,
+    testGenerarCupon,
     testSinFontsTerceros,
   ];
 

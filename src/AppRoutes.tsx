@@ -132,7 +132,9 @@ export const routeElements = (
   <>
     <Route path="/" element={<Home />} />
     <Route path="/login" element={<Login />} />
-    <Route path="/canjear" element={<Redeem />} />
+    <Route path="/generar" element={<Redeem />} />
+    {/* La dirección vieja: "canjear" ahora es solo lo de la tienda (ver seo/routes.ts). */}
+    <Route path="/canjear" element={<Navigate to="/generar" replace />} />
     {/* Aterrizaje del redirect de Google (entrar y crear cuenta). */}
     <Route path="/auth/callback" element={<AuthCallback />} />
     {/* Fuera de ProtectedMember a propósito: es justo donde se elige el apodo que falta. */}

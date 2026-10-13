@@ -53,7 +53,7 @@ export default function AuthCallback() {
     }
 
     if (readPendingRedeem()) {
-      navigate('/canjear', { replace: true })
+      navigate('/generar', { replace: true })
       return
     }
 

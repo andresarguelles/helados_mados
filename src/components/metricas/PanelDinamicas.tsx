@@ -8,12 +8,12 @@ type Columna = 'keyword' | 'canjes' | 'escaneos' | 'conversion' | 'existencias' 
 
 const COLUMNAS: { clave: Columna; nombre: string; ayuda: string }[] = [
   { clave: 'keyword', nombre: 'Dinámica', ayuda: 'Palabra secreta y premio' },
-  { clave: 'canjes', nombre: 'Canjes', ayuda: 'Palabras canjeadas en el rango' },
-  { clave: 'escaneos', nombre: 'Cobros', ayuda: 'QR cobrados en tienda en el rango' },
-  { clave: 'conversion', nombre: 'Conversión', ayuda: 'De los canjes del rango, cuántos ya se cobraron' },
+  { clave: 'canjes', nombre: 'Generados', ayuda: 'Cupones generados en el rango' },
+  { clave: 'escaneos', nombre: 'Canjes', ayuda: 'Cupones canjeados en tienda en el rango' },
+  { clave: 'conversion', nombre: 'Conversión', ayuda: 'De los cupones generados en el rango, cuántos ya se canjearon' },
   { clave: 'existencias', nombre: 'Existencias', ayuda: 'Piezas entregadas de las disponibles (total, no solo el rango)' },
-  { clave: 'pct_nuevos', nombre: 'Clientes nuevos', ayuda: 'Canjes que fueron el primer cupón de ese cliente' },
-  { clave: 'mediana_horas', nombre: 'Canje → cobro', ayuda: 'Mediana de horas entre canjear y cobrar' },
+  { clave: 'pct_nuevos', nombre: 'Clientes nuevos', ayuda: 'Cupones generados que fueron el primero de ese cliente' },
+  { clave: 'mediana_horas', nombre: 'Generado → canje', ayuda: 'Mediana de horas entre generar el cupón y canjearlo' },
 ]
 
 function valorDe(d: MetricaDinamica, c: Columna): number | string {

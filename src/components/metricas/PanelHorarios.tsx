@@ -34,7 +34,7 @@ export default function PanelHorarios({ celdas }: { celdas: CeldaHorario[] }) {
     return { valor: (d: number, h: number) => mapa.get(`${d}-${h}`) ?? 0, maximo, total, porDia, porHora }
   }, [celdas, medida])
 
-  const nombreMedida = medida === 'canjes' ? 'canjes' : 'cobros en tienda'
+  const nombreMedida = medida === 'canjes' ? 'cupones generados' : 'canjes'
   const pico = porHora.indexOf(Math.max(...porHora))
   const diaPico = porDia.indexOf(Math.max(...porDia))
 
@@ -71,7 +71,7 @@ export default function PanelHorarios({ celdas }: { celdas: CeldaHorario[] }) {
                 medida === m ? 'bg-brand-azul text-white' : 'text-brand-gris hover:text-brand-sombra'
               )}
             >
-              {m === 'canjes' ? 'Canjes' : 'Cobros en tienda'}
+              {m === 'canjes' ? 'Cupones generados' : 'Canjes'}
             </button>
           ))}
         </div>

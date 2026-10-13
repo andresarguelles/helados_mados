@@ -20,7 +20,7 @@ export interface Migas {
 }
 
 export interface SeoRoute {
-  /** Tal cual aparece en `<Route path>`: '/', '/canjear', '/admin/dashboard', '*'. */
+  /** Tal cual aparece en `<Route path>`: '/', '/generar', '/admin/dashboard', '*'. */
   path: string
   kind: RouteKind
   /** ≤ 60 caracteres en las indexables. */

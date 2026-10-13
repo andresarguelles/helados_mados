@@ -4,7 +4,8 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/cuenta", "destination": "/perfil", "permanent": true },
-    { "source": "/aviso-de-privacidad", "destination": "/privacidad", "permanent": true }
+    { "source": "/aviso-de-privacidad", "destination": "/privacidad", "permanent": true },
+    { "source": "/canjear", "destination": "/generar", "permanent": true }
   ],
   "rewrites": [
     { "source": "/perfil", "destination": "/spa" },

@@ -17,27 +17,27 @@ export const FAQ: readonly PreguntaFrecuente[] = [
   {
     pregunta: '¿Dónde sale la palabra secreta?',
     respuesta:
-      'La damos a conocer en vivo, durante el TikTok Live de @heladosmados o en la dinámica que anunciemos. Escríbela en la app mientras esa dinámica siga activa: fuera de esa ventana no se canjea nada.',
+      'La damos a conocer en vivo, durante el TikTok Live de @heladosmados o en la dinámica que anunciemos. Escríbela en la app mientras esa dinámica siga activa para generar tu cupón: fuera de esa ventana no se generan ni se canjean cupones.',
   },
   {
     pregunta: '¿Cuántos puntos puedo ganar?',
     respuesta:
-      'Ganas +1 punto al canjear la palabra secreta y +10 cuando presentas tu cupón QR en la estación y te lo escaneamos. Registrarte o llenar tus datos no da puntos: toda cuenta empieza en cero.',
+      'Ganas +1 punto al generar tu cupón con la palabra secreta y +10 cuando lo canjeas en la estación, donde te escaneamos el QR. Registrarte o llenar tus datos no da puntos: toda cuenta empieza en cero.',
   },
   {
     pregunta: '¿Dónde canjeo mi cupón?',
     respuesta:
-      'En nuestra estación de Avenida Centenario 1229, colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, CDMX. Presenta tu cupón QR en el mostrador y ahí mismo te lo escaneamos y te entregamos tu medalla.',
+      'En nuestra estación de Avenida Centenario 1229, colonia Reacomodo Valentín Gómez Farías, Álvaro Obregón, CDMX. Muestra tu cupón QR en el mostrador: ahí mismo te lo escaneamos y te entregamos tu medalla.',
   },
   {
     pregunta: '¿Participar cuesta algo?',
     respuesta:
-      'No. Canjear la palabra secreta y recoger tu medalla no tiene costo. Los puntos tampoco son dinero: no se compran, no se venden ni se cambian por efectivo.',
+      'No. Generar tu cupón y canjearlo por tu medalla no tiene costo. Los puntos tampoco son dinero: no se compran, no se venden ni se cambian por efectivo.',
   },
   {
-    pregunta: '¿Hay algún límite para canjear?',
+    pregunta: '¿Hay algún límite?',
     respuesta:
-      'Sí: un cupón por persona y por dinámica, y la misma palabra no se canjea dos veces. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá medalla que entregarte.',
+      'Sí: un cupón por persona y por dinámica; con la misma palabra no se genera un segundo cupón. Además, cada dinámica tiene existencias limitadas: si el producto se agota, tu cupón puede ser válido y aun así no habrá medalla que entregarte.',
   },
   {
     pregunta: '¿Quién puede participar?',

@@ -74,11 +74,11 @@ export default function Login() {
 
         {/* CTA to redeem */}
         <Link
-          to="/canjear"
+          to="/generar"
           className="btn-fresa text-center"
         >
           <Zap className="w-4 h-4" />
-          Canjear palabra secreta
+          Generar cupón
         </Link>
       </div>
 

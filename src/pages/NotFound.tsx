@@ -27,9 +27,9 @@ export default function NotFound() {
             <Home className="w-4 h-4" />
             Volver al inicio
           </Link>
-          <Link to="/canjear" className="btn-tinta">
+          <Link to="/generar" className="btn-tinta">
             <Zap className="w-4 h-4" />
-            Canjear palabra secreta
+            Generar cupón
           </Link>
         </div>
       </main>

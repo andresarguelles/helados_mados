@@ -32,8 +32,8 @@ export default function Home() {
                 <span className="block text-brand-verde">despega por un helado</span>
               </h1>
               <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
-                Únete al TikTok Live, ingresa la palabra secreta
-                y canjea tu medalla en tu estación. ¡Compite por ser Comandante!
+                Únete al TikTok Live, genera tu cupón con la palabra secreta
+                y canjéalo por tu medalla en tu estación. ¡Compite por ser Comandante!
               </p>
             </div>
 
@@ -41,11 +41,11 @@ export default function Home() {
             <div className="flex flex-col items-center gap-2.5">
               <Link
                 id="cta-redeem"
-                to="/canjear"
+                to="/generar"
                 className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
               >
                 <Zap className="w-4 h-4" />
-                Canjear palabra secreta
+                Generar cupón
               </Link>
 
               {!user && (
@@ -102,7 +102,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-3">
             {[
               { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
-              { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y canjea la palabra para obtener +1 punto digital.' },
+              { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y genera tu cupón con la palabra: +1 punto digital.' },
               { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe tu medalla. ¡Suma +10 puntos!' },
               { icon: <Trophy className="w-5 h-5" />, title: 'Compite y gana', desc: 'Sube en la tabla de líderes y compite por el primer lugar.' },
             ].map((step, i) => (

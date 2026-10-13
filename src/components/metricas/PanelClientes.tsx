@@ -18,9 +18,9 @@ function Embudo({ embudo }: { embudo: MetricasClientes['embudo'] }) {
   const pasos = [
     { nombre: 'Entraron con Google', n: embudo.cuentas },
     { nombre: 'Terminaron el registro', n: embudo.con_alta },
-    { nombre: 'Canjearon una palabra', n: embudo.con_canje },
-    { nombre: 'Cobraron en tienda', n: embudo.con_escaneo },
-    { nombre: 'Cobraron dos veces o más', n: embudo.recurrentes },
+    { nombre: 'Generaron un cupón', n: embudo.con_canje },
+    { nombre: 'Canjearon en tienda', n: embudo.con_escaneo },
+    { nombre: 'Canjearon dos veces o más', n: embudo.recurrentes },
   ]
   const base = embudo.cuentas || 1
   return (
@@ -92,9 +92,9 @@ function Frecuencia({ frecuencia }: { frecuencia: MetricasClientes['frecuencia']
   const datos = frecuencia.map(f => ({ etiqueta: `${f.rango}`, valor: f.clientes }))
   return (
     <Tarjeta
-      titulo="¿Cuántas veces canjean?"
-      subtitulo="Clientes activos del rango, según cuántas palabras canjearon."
-      tabla={<TablaSimple columnas={['Canjes', 'Clientes']} filas={frecuencia.map(f => [f.rango, fmt(f.clientes)])} />}
+      titulo="¿Cuántos cupones generan?"
+      subtitulo="Clientes activos del rango, según cuántos cupones generaron."
+      tabla={<TablaSimple columnas={['Cupones generados', 'Clientes']} filas={frecuencia.map(f => [f.rango, fmt(f.clientes)])} />}
     >
       {datos.length === 0 ? <SinDatos /> : <Barras datos={datos} colores={[...RAMPA]} unidad="clientes" />}
     </Tarjeta>

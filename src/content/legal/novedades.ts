@@ -28,8 +28,13 @@ const NOVEDADES: Record<string, Novedad> = {
   },
   'privacidad@4.1.0': {
     puntos: [
-      'Sacamos estadísticas internas de la promoción —canjes, horarios, dinámicas— para mejorarla. Son cifras de conjunto: no te identifican.',
+      'Sacamos estadísticas internas de la promoción —cupones generados, canjes, horarios, dinámicas— para mejorarla. Son cifras de conjunto: no te identifican.',
       'Podemos ofrecerte promociones según cómo participas. Si no quieres, escríbenos y dejas de aparecer en esas listas.',
+    ],
+  },
+  'terminos@3.1.0': {
+    puntos: [
+      'Cambiamos los nombres: con la palabra secreta generas tu cupón, y en la tienda lo canjeas. La página de la palabra ahora es /generar.',
     ],
   },
   'terminos@3.0.0': {

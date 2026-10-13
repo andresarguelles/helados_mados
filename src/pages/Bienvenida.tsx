@@ -143,8 +143,8 @@ export default function Bienvenida() {
       return
     }
 
-    // Si venía de /canjear, allá se reanuda el canje con la palabra guardada.
-    navigate(readPendingRedeem() ? '/canjear' : '/perfil', { replace: true })
+    // Si venía de /generar, allá se genera el cupón con la palabra guardada.
+    navigate(readPendingRedeem() ? '/generar' : '/perfil', { replace: true })
   }
 
   const handleLogout = async () => {

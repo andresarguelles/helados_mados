@@ -70,13 +70,13 @@ Si algún día necesitáramos un dato sensible, se lo pediríamos aparte y con s
 Estas finalidades son necesarias para la relación entre usted y nosotros. Sin ellas la plataforma no funciona, así que no dependen de un consentimiento aparte:
 
 - Crear su cuenta, identificarle y permitirle iniciar sesión.
-- Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda.
+- Registrar la palabra secreta con la que genera su cupón QR, y el canje de ese cupón en el mostrador de la tienda.
 - Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción.
 - Impedir el abuso de las promociones: un cupón por persona y por dinámica, y un mismo número de teléfono en una sola cuenta.
 - Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO.
 - Conservar la prueba de qué versión de estos documentos aceptó y cuándo.
 - Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente.
-- Elaborar estadísticas internas de la promoción —altas, canjes, cobros en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular.
+- Elaborar estadísticas internas de la promoción —altas, cupones generados, canjes en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular.
 
 ## Finalidades voluntarias y cómo negarse {#finalidades-voluntarias icono=Gift}
 

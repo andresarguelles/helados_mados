@@ -13,7 +13,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     icono: Shield,
     version: "4.1.0",
     actualizado: "2026-10-12",
-    astHash: "f9a9f035f91865198475dbb246b446b31cd8dfe117e01d06a310e68afcc39978",
+    astHash: "d972e4595bb26b6f55d795f14a90c6c245a5622c765a0061dc519be6a4dc89c5",
     secciones: [
       {
         id: "aviso-corto",
@@ -99,13 +99,13 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             tipo: 'lista', alcance: 'ambas',
             items: [
               [{ t: 'texto', v: "Crear su cuenta, identificarle y permitirle iniciar sesión." }],
-              [{ t: 'texto', v: "Registrar el canje de una palabra secreta, emitir su cupón QR y validarlo en el mostrador de la tienda." }],
+              [{ t: 'texto', v: "Registrar la palabra secreta con la que genera su cupón QR, y el canje de ese cupón en el mostrador de la tienda." }],
               [{ t: 'texto', v: "Llevar la cuenta de sus puntos y mostrar el marcador público de la promoción." }],
               [{ t: 'texto', v: "Impedir el abuso de las promociones: un cupón por persona y por dinámica, y un mismo número de teléfono en una sola cuenta." }],
               [{ t: 'texto', v: "Atender lo que nos pida sobre su cuenta, incluidas sus solicitudes de derechos ARCO." }],
               [{ t: 'texto', v: "Conservar la prueba de qué versión de estos documentos aceptó y cuándo." }],
               [{ t: 'texto', v: "Cumplir con las obligaciones legales que nos correspondan y atender requerimientos fundados y motivados de autoridad competente." }],
-              [{ t: 'texto', v: "Elaborar estadísticas internas de la promoción —altas, canjes, cobros en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular." }],
+              [{ t: 'texto', v: "Elaborar estadísticas internas de la promoción —altas, cupones generados, canjes en tienda, horarios y resultados de cada dinámica— para operarla y mejorarla. Son cifras de conjunto: no sirven para tomar decisiones sobre usted en particular." }],
             ],
           },
         ],
@@ -402,9 +402,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
     id: "terminos",
     titulo: "Términos y Condiciones",
     icono: Shield,
-    version: "3.0.0",
-    actualizado: "2026-10-11",
-    astHash: "36edde269300ed1cf7ae20e1bc4f7db7dbbe62964f6a342f2bb90f8ba55b77e6",
+    version: "3.1.0",
+    actualizado: "2026-10-13",
+    astHash: "7a78b9e785f96d037a759b81e72ea4a6f7bad35afd800c5cfb6f7b0ad7760893",
     secciones: [
       {
         id: "aceptacion",
@@ -414,7 +414,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Estos Términos y Condiciones son el acuerdo entre usted y Helados Mados por el uso de nuestra plataforma de promociones." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "La plataforma tiene dos caras: el sitio web www.heladosmados.com y la aplicación para Android. " }, { t: 'fuerte', v: "Este es el mismo documento en las dos." }, { t: 'texto', v: " Todo lo que lea aquí aplica igual en ambas. Lo único que cambia son los apartados marcados como propios de una plataforma, que usted verá igualmente desde la otra, con su etiqueta." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta, canjear una palabra secreta o usar cualquier parte de la plataforma, usted acepta estos términos y el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: ". Si no está de acuerdo con ellos, no use la plataforma." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Al crear una cuenta, generar un cupón con una palabra secreta o usar cualquier parte de la plataforma, usted acepta estos términos y el " }, { t: 'enlaceLegal', v: "aviso de privacidad", doc: "privacidad" }, { t: 'texto', v: ". Si no está de acuerdo con ellos, no use la plataforma." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Cada documento lleva una versión y una fecha. Guardamos cuál aceptó usted y cuándo. Lo explicamos en el apartado de cambios." }] },
         ],
       },
@@ -480,16 +480,17 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         rol: null,
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Durante una transmisión en TikTok Live u otra dinámica anunciamos una " }, { t: 'fuerte', v: "palabra secreta" }, { t: 'texto', v: "." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Usted la escribe en la plataforma mientras esa dinámica está vigente. Si es correcta, recibe un punto y se genera un " }, { t: 'fuerte', v: "cupón QR" }, { t: 'texto', v: " a su nombre." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Después presenta ese cupón en el mostrador de la tienda. Nuestro personal lo escanea y le entrega el producto de esa dinámica." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Reglas del canje:" }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Usted la escribe en la plataforma mientras esa dinámica está vigente. Si es correcta, recibe un punto y se " }, { t: 'fuerte', v: "genera un cupón QR" }, { t: 'texto', v: " a su nombre." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Después " }, { t: 'fuerte', v: "canjea" }, { t: 'texto', v: " ese cupón en el mostrador de la tienda: nuestro personal lo escanea y le entrega el producto de esa dinámica." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Las dos palabras significan cosas distintas, y así las usamos en todo este documento: con la palabra secreta usted " }, { t: 'fuerte', v: "genera" }, { t: 'texto', v: " su cupón; en la tienda lo " }, { t: 'fuerte', v: "canjea" }, { t: 'texto', v: ". Hasta la versión 3.0.0 de este documento llamábamos \"canjear\" también a escribir la palabra." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Reglas de los cupones:" }] },
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'texto', v: "Un cupón por persona y por dinámica. La misma palabra no se canjea dos veces." }],
-              [{ t: 'texto', v: "Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se canjea nada." }],
+              [{ t: 'texto', v: "Un cupón por persona y por dinámica. Con la misma palabra no se genera un segundo cupón." }],
+              [{ t: 'texto', v: "Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se generan ni se canjean cupones." }],
               [{ t: 'texto', v: "Los cupones son personales e intransferibles. No se venden ni se ceden." }],
-              [{ t: 'texto', v: "El cupón se consume al escanearlo. Uno ya canjeado no vuelve a servir." }],
+              [{ t: 'texto', v: "El cupón se consume al canjearlo. Uno ya canjeado no vuelve a servir." }],
             ],
           },
         ],
@@ -516,8 +517,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           {
             tipo: 'lista', alcance: 'ambas',
             items: [
-              [{ t: 'fuerte', v: "Un punto" }, { t: 'texto', v: " por canjear una palabra secreta." }],
-              [{ t: 'fuerte', v: "Diez puntos" }, { t: 'texto', v: " cuando presenta su cupón QR en el mostrador y lo escaneamos." }],
+              [{ t: 'fuerte', v: "Un punto" }, { t: 'texto', v: " por generar un cupón con una palabra secreta." }],
+              [{ t: 'fuerte', v: "Diez puntos" }, { t: 'texto', v: " por canjear su cupón QR en el mostrador, cuando lo escaneamos." }],
             ],
           },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Crear la cuenta o llenar sus datos no da puntos: " }, { t: 'fuerte', v: "toda cuenta empieza en cero" }, { t: 'texto', v: ". Hasta la versión 2.4.0 de este documento dábamos cinco puntos por completar el perfil y cinco por entrar por primera vez con Google. Esos bonos ya no existen, y los puntos que ya se entregaron por ellos se conservan." }] },
@@ -595,7 +596,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         bloques: [
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "La plataforma se ofrece " }, { t: 'fuerte', v: "tal cual" }, { t: 'texto', v: " y " }, { t: 'fuerte', v: "según disponibilidad" }, { t: 'texto', v: "." }] },
           { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "Puede haber fallas, mantenimientos o interrupciones, incluidas las de nuestros proveedores. Podemos cambiar la plataforma, suspenderla o retirarla." }] },
-          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No garantizamos que esté disponible en todo momento, ni que una dinámica concreta pueda canjearse en el instante en que usted lo intente." }] },
+          { tipo: 'parrafo', alcance: 'ambas', spans: [{ t: 'texto', v: "No garantizamos que esté disponible en todo momento, ni que en una dinámica concreta se pueda generar o canjear un cupón en el instante en que usted lo intente." }] },
         ],
       },
       {
@@ -677,4 +678,4 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
 export const PRIVACIDAD = LEGAL_DOCS.privacidad
 export const TERMINOS = LEGAL_DOCS.terminos
 
-export const LEGAL_BUNDLE_HASH = "b83e920f01085166879da5a0171a2ec9c2f0b3b0bd6ad58f515dd3dc9af93976"
+export const LEGAL_BUNDLE_HASH = "fcf4391f6544ba7154a453072fe81fdbc3e6d49ce5ff51db88f3ac72718405f9"

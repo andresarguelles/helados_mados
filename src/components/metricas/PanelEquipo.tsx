@@ -15,7 +15,7 @@ type RolAsignable = Exclude<Rol, 'superadmin'>
 
 const QUE_PUEDE: Record<RolAsignable, string> = {
   cliente: 'Solo su cuenta de cliente. Vuelve a aparecer en el ranking.',
-  staff: 'Escanear QR y manejar la Estación y las pantallas del mostrador. No ve dinámicas ni clientes. Sale del ranking.',
+  staff: 'Canjear cupones en el mostrador y manejar la Estación y las pantallas. No ve dinámicas ni clientes. Sale del ranking.',
   admin: 'Todo lo del staff, más crear dinámicas y ver el panel de clientes. Sale del ranking.',
 }
 

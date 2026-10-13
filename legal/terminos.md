@@ -2,8 +2,8 @@
 id: terminos
 titulo: Términos y Condiciones
 icono: Shield
-version: 3.0.0
-actualizado: 2026-10-11
+version: 3.1.0
+actualizado: 2026-10-13
 ---
 
 ## Lo que acepta al usar Helados Mados {#aceptacion icono=Shield}
@@ -12,7 +12,7 @@ Estos Términos y Condiciones son el acuerdo entre usted y Helados Mados por el 
 
 La plataforma tiene dos caras: el sitio web www.heladosmados.com y la aplicación para Android. **Este es el mismo documento en las dos.** Todo lo que lea aquí aplica igual en ambas. Lo único que cambia son los apartados marcados como propios de una plataforma, que usted verá igualmente desde la otra, con su etiqueta.
 
-Al crear una cuenta, canjear una palabra secreta o usar cualquier parte de la plataforma, usted acepta estos términos y el [aviso de privacidad](legal:privacidad). Si no está de acuerdo con ellos, no use la plataforma.
+Al crear una cuenta, generar un cupón con una palabra secreta o usar cualquier parte de la plataforma, usted acepta estos términos y el [aviso de privacidad](legal:privacidad). Si no está de acuerdo con ellos, no use la plataforma.
 
 Cada documento lleva una versión y una fecha. Guardamos cuál aceptó usted y cuándo. Lo explicamos en el apartado de cambios.
 
@@ -62,16 +62,18 @@ Hasta el 30 de septiembre de 2026, el sitio web tuvo un segundo acceso, con apod
 
 Durante una transmisión en TikTok Live u otra dinámica anunciamos una **palabra secreta**.
 
-Usted la escribe en la plataforma mientras esa dinámica está vigente. Si es correcta, recibe un punto y se genera un **cupón QR** a su nombre.
+Usted la escribe en la plataforma mientras esa dinámica está vigente. Si es correcta, recibe un punto y se **genera un cupón QR** a su nombre.
 
-Después presenta ese cupón en el mostrador de la tienda. Nuestro personal lo escanea y le entrega el producto de esa dinámica.
+Después **canjea** ese cupón en el mostrador de la tienda: nuestro personal lo escanea y le entrega el producto de esa dinámica.
 
-Reglas del canje:
+Las dos palabras significan cosas distintas, y así las usamos en todo este documento: con la palabra secreta usted **genera** su cupón; en la tienda lo **canjea**. Hasta la versión 3.0.0 de este documento llamábamos "canjear" también a escribir la palabra.
 
-- Un cupón por persona y por dinámica. La misma palabra no se canjea dos veces.
-- Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se canjea nada.
+Reglas de los cupones:
+
+- Un cupón por persona y por dinámica. Con la misma palabra no se genera un segundo cupón.
+- Cada dinámica tiene fecha y hora de inicio y de fin. Fuera de esa ventana no se generan ni se canjean cupones.
 - Los cupones son personales e intransferibles. No se venden ni se ceden.
-- El cupón se consume al escanearlo. Uno ya canjeado no vuelve a servir.
+- El cupón se consume al canjearlo. Uno ya canjeado no vuelve a servir.
 
 ## Existencias limitadas {#existencias icono=Package}
 
@@ -87,8 +89,8 @@ Al lanzar cada dinámica anunciamos sus condiciones y su vigencia, como piden lo
 
 Usted acumula puntos así:
 
-- **Un punto** por canjear una palabra secreta.
-- **Diez puntos** cuando presenta su cupón QR en el mostrador y lo escaneamos.
+- **Un punto** por generar un cupón con una palabra secreta.
+- **Diez puntos** por canjear su cupón QR en el mostrador, cuando lo escaneamos.
 
 Crear la cuenta o llenar sus datos no da puntos: **toda cuenta empieza en cero**. Hasta la versión 2.4.0 de este documento dábamos cinco puntos por completar el perfil y cinco por entrar por primera vez con Google. Esos bonos ya no existen, y los puntos que ya se entregaron por ellos se conservan.
 
@@ -139,7 +141,7 @@ La plataforma se ofrece **tal cual** y **según disponibilidad**.
 
 Puede haber fallas, mantenimientos o interrupciones, incluidas las de nuestros proveedores. Podemos cambiar la plataforma, suspenderla o retirarla.
 
-No garantizamos que esté disponible en todo momento, ni que una dinámica concreta pueda canjearse en el instante en que usted lo intente.
+No garantizamos que esté disponible en todo momento, ni que en una dinámica concreta se pueda generar o canjear un cupón en el instante en que usted lo intente.
 
 ## Limitación de responsabilidad {#responsabilidad icono=AlertCircle}
 

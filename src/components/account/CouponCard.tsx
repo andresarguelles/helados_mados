@@ -111,7 +111,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
               </div>
 
               <p className="text-xs text-brand-gris text-center font-body">
-                Muestra este QR en mostrador para canjear tu medalla
+                Muestra este QR en el mostrador para canjearlo por tu medalla
               </p>
               <p className="text-[10px] text-brand-sombra/30 font-mono break-all text-center">
                 ID: {coupon.id}

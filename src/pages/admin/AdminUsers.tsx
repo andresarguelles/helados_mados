@@ -256,10 +256,10 @@ export default function AdminUsers() {
 
                     <div className="flex items-center gap-3 text-xs text-white/75 font-body mt-1.5">
                       <span className="flex items-center gap-1">
-                        <Gift className="w-3 h-3 text-brand-amarillo/70" />{digital} digitales
+                        <Gift className="w-3 h-3 text-brand-amarillo/70" />{digital} generados
                       </span>
                       <span className="flex items-center gap-1">
-                        <QrCode className="w-3 h-3 text-brand-amarillo/70" />{physical} físicos
+                        <QrCode className="w-3 h-3 text-brand-amarillo/70" />{physical} canjeados
                       </span>
                     </div>
                   </div>

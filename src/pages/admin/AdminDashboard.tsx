@@ -215,7 +215,7 @@ export default function AdminDashboard() {
           </span>
           <span className="ml-auto flex items-center gap-1 text-brand-amarillo/70">
             <QrCode className="w-3 h-3" />
-            {getCouponCount(d.id)} cupones
+            {getCouponCount(d.id)} cupones generados
           </span>
         </div>
       </div>

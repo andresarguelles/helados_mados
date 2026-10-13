@@ -12,7 +12,7 @@ import { ScrollArea } from '../../components/ui/ScrollArea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/Table'
 
 /**
- * Red de seguridad: el marcador se relee en vivo con cada canje o escaneo (Realtime), y además
+ * Red de seguridad: el marcador se relee en vivo con cada cupón generado o canjeado (Realtime), y además
  * cada minuto por si el canal se cayera sin avisar en un monitor que pasa días encendido.
  */
 const REFRESCO_MS = 60_000
@@ -30,7 +30,7 @@ const PERIODOS: { period: LeaderboardPeriod; pestana: string; encabezado: string
 ]
 
 /**
- * El marcador del periodo, releído en cuanto hay un canje o un escaneo: quien cobra su QR en
+ * El marcador del periodo, releído en cuanto se genera o se canjea un cupón: quien canjea su QR en
  * el mostrador tiene que verse en la pantalla en ese momento, no un minuto después. Además se
  * relee cada minuto y al volver a ser visible. Un fallo conserva lo último que se pintó: un
  * corte de red no debe dejar la pared en blanco. `entries` es null hasta la primera respuesta
@@ -304,14 +304,14 @@ function Llamado() {
       {/* El margen blanco alrededor del código es su zona de silencio: sin ella, muchos
           lectores no lo detectan sobre el verde. */}
       <div className="shrink-0 bg-white border-4 border-brand-sombra rounded-[1.6vh] p-[1vh]">
-        <QRCodeSVG value={`${SITE_URL}/canjear`} size={256} fgColor="#1C2440" className="w-[8vh] h-[8vh]" />
+        <QRCodeSVG value={`${SITE_URL}/generar`} size={256} fgColor="#1C2440" className="w-[8vh] h-[8vh]" />
       </div>
       <div className="flex-1 min-w-0 [container-type:inline-size]">
         <p className="font-heading text-brand-sombra leading-none" style={{ fontSize: tamanoQueCabe(titulo, { maximoVh: 3.4, em: 0.7 }) }}>
           {titulo}
         </p>
         <p className="font-body text-brand-sombra text-[1.8vh] leading-snug mt-[0.8vh]">
-          Escanea, canjea la palabra secreta y gana tu medalla aquí mismo.
+          Escanea, genera tu cupón con la palabra secreta y canjéalo aquí mismo.
         </p>
       </div>
       <div className="shrink-0 animate-float">

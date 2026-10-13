@@ -9,7 +9,7 @@ import { ArrowLeft, Key, CheckCircle2, Loader2 } from 'lucide-react'
 import ErrorAlert from '../components/ui/ErrorAlert'
 
 // El QR solo se pinta en el paso de éxito, así que separarlo del bundle inicial
-// no cuesta nada de UX y sí aligera lo que carga cualquiera que solo va a canjear.
+// no cuesta nada de UX y sí aligera lo que carga cualquiera que solo va a generar su cupón.
 const QRCode = lazy(() =>
   import('qrcode.react').then(mod => ({ default: mod.QRCodeSVG }))
 )
@@ -19,12 +19,12 @@ const QRCode = lazy(() =>
 type Step = 'keyword' | 'auth' | 'success'
 
 /**
- * Lo que se acepta al continuar: canjear crea un cupón y suma un punto, aunque la cuenta ya
+ * Lo que se acepta al continuar: generar el cupón suma un punto, aunque la cuenta ya
  * existiera.
  *
  * `target="_blank"` aunque sea un `Link`: `keyword` y `step` viven en el estado de React
- * y salir de /canjear los borra. React Router no intercepta un click con target, así que
- * el documento se abre aparte y el canje se queda donde estaba.
+ * y salir de /generar los borra. React Router no intercepta un click con target, así que
+ * el documento se abre aparte y la generación se queda donde estaba.
  */
 function AvisoLegal() {
   return (
@@ -64,9 +64,9 @@ export default function Redeem() {
       const messages: Record<string, string> = {
         invalid: 'La palabra ya no está activa.',
         expired: 'Este entrenamiento ha expirado.',
-        already_redeemed: '¡Ya canjeaste esta palabra secreta! Solo un canje por entrenamiento.',
+        already_redeemed: '¡Ya generaste tu cupón con esta palabra! Solo uno por entrenamiento.',
         not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
-        no_username: 'Primero elige tu apodo para poder canjear.',
+        no_username: 'Primero elige tu apodo para poder generar tu cupón.',
       }
       setError(messages[result.reason] || 'Error inesperado.')
       return
@@ -90,7 +90,7 @@ export default function Redeem() {
 
   // ─── Reanudar tras volver de Google ─────────────────────────
   // El redirect de OAuth recarga la página, así que keyword y step se perdieron.
-  // pendingRedeem los rescata de sessionStorage y el canje continúa donde se quedó.
+  // pendingRedeem los rescata de sessionStorage y el cupón se genera donde se quedó.
   const resumed = useRef(false)
 
   useEffect(() => {
@@ -149,7 +149,7 @@ export default function Redeem() {
     setStep('auth')
   }
 
-  // Última oportunidad de guardar el canje antes de que el navegador se vaya a Google.
+  // Última oportunidad de guardar la palabra antes de que el navegador se vaya a Google.
   const persistBeforeGoogle = () => {
     savePendingRedeem({ keyword: keyword.trim().toUpperCase() })
   }
@@ -216,14 +216,14 @@ export default function Redeem() {
                 className="btn-fresa"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
-                {loading ? 'Verificando...' : 'Verificar palabra'}
+                {loading ? 'Generando...' : 'Generar cupón'}
               </button>
             </div>
 
             <div className="text-center">
               {profile ? (
                 <p className="text-xs text-brand-sombra/70 font-body">
-                  Canjearás como <span className="font-bold text-brand-azul">{profile.username}</span>
+                  Generarás tu cupón como <span className="font-bold text-brand-azul">{profile.username}</span>
                 </p>
               ) : (
                 <p className="text-xs text-brand-sombra/70 font-body">
@@ -256,12 +256,12 @@ export default function Redeem() {
 
             <div className="paper-card rounded-3xl p-6 flex flex-col gap-4">
               <GoogleButton
-                next="/canjear"
+                next="/generar"
                 onBeforeRedirect={persistBeforeGoogle}
               />
               <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
                 Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
-                al volver, tu canje sigue solo.
+                al volver, tu cupón se genera solo.
               </p>
               <AvisoLegal />
             </div>
@@ -279,7 +279,7 @@ export default function Redeem() {
                 </h1>
               </div>
               <p className="font-body text-brand-sombra/70 text-sm mt-2">
-                Tu cupón está listo. Preséntalo en mostrador para recibir tu medalla.
+                Tu cupón está listo. Canjéalo en el mostrador para recibir tu medalla.
               </p>
             </div>
 

@@ -1,4 +1,4 @@
-// El redirect de Google recarga la página, así que el estado de React de /canjear (la palabra secreta,
+// El redirect de Google recarga la página, así que el estado de React de /generar (la palabra secreta,
 // el paso actual) se pierde. Esto lo deja guardado para que el canje se reanude solo al volver.
 // sessionStorage y no localStorage: si el usuario abandona y cierra la pestaña, no queremos revivir
 // un canje viejo en la siguiente visita.

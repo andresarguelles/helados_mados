@@ -15,13 +15,13 @@ export const LEGAL_META: Record<string, LegalMeta> = {
     titulo: "Aviso de Privacidad",
     version: "4.1.0",
     actualizado: "2026-10-12",
-    astHash: "f9a9f035f91865198475dbb246b446b31cd8dfe117e01d06a310e68afcc39978",
+    astHash: "d972e4595bb26b6f55d795f14a90c6c245a5622c765a0061dc519be6a4dc89c5",
   },
   terminos: {
     id: "terminos",
     titulo: "Términos y Condiciones",
-    version: "3.0.0",
-    actualizado: "2026-10-11",
-    astHash: "36edde269300ed1cf7ae20e1bc4f7db7dbbe62964f6a342f2bb90f8ba55b77e6",
+    version: "3.1.0",
+    actualizado: "2026-10-13",
+    astHash: "7a78b9e785f96d037a759b81e72ea4a6f7bad35afd800c5cfb6f7b0ad7760893",
   },
 }

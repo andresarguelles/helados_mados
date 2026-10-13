@@ -10,13 +10,13 @@ export const TOOL_DIR = path.resolve(LIB_DIR, '..');
 export const REPO_ROOT = path.resolve(TOOL_DIR, '..', '..');
 
 // Rutas de la app a auditar en cada seccion (vista de rastreador, HTTP, Playwright).
-export const ROUTES = ['/', '/canjear', '/login', '/terminos', '/privacidad', '/eliminar-cuenta'];
+export const ROUTES = ['/', '/generar', '/login', '/terminos', '/privacidad', '/eliminar-cuenta'];
 
 // Subconjunto para Lighthouse (el que pide la tarea, no todas las rutas).
-export const LIGHTHOUSE_ROUTES = ['/', '/canjear', '/terminos', '/privacidad'];
+export const LIGHTHOUSE_ROUTES = ['/', '/generar', '/terminos', '/privacidad'];
 
 // Subconjunto para PSI (el que pide la tarea).
-export const PSI_ROUTES = ['/', '/canjear'];
+export const PSI_ROUTES = ['/', '/generar'];
 
 // Paths fijos para la matriz HTTP (sin seguir redirects).
 export const STATIC_PATHS = [
@@ -28,7 +28,8 @@ export const STATIC_PATHS = [
   '/esta-ruta-no-existe-seo',
   '/cuenta',
   '/aviso-de-privacidad',
-  '/canjear/',
+  '/canjear',
+  '/generar/',
   '/auth/callback?code=x',
   '/perfil',
   '/admin',

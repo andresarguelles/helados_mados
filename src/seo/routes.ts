@@ -7,7 +7,7 @@
  * navegar en el cliente (`applyHead`), el `sitemap.xml` (`sitemap.ts`) y las reglas de
  * `vercel.json` que verifica `scripts/seo-check.mjs`.
  *
- * Indexables: `/`, `/canjear`, `/terminos`, `/privacidad`, `/eliminar-cuenta`. `/login`
+ * Indexables: `/`, `/generar`, `/terminos`, `/privacidad`, `/eliminar-cuenta`. `/login`
  * lleva `noindex,follow` (hay que poder llegar a él siguiendo enlaces, pero no tiene
  * contenido propio que indexar). Las rutas privadas y de admin llevan `noindex`; admin
  * además `nofollow`, porque no hay nada ahí que valga la pena que un rastreador siga.
@@ -71,24 +71,26 @@ const HOME: SeoRoute = {
 
 // ─── Rutas indexables ───────────────────────────────────────────────────────
 
-const CANJEAR_TITLE = 'Canjear palabra secreta del Live — Helados Mados'
-const CANJEAR_DESCRIPTION =
-  'Escribe la palabra secreta de nuestro TikTok Live y canjéala aquí: suma un punto y ' +
-  'recibe tu cupón QR para pasar por tu helado a la Estación.'
-const CANJEAR_MIGAS: Migas[] = [INICIO, { nombre: 'Canjear', path: '/canjear' }]
+// Desde 2026-10-13 "canjear" es solo lo de la tienda: con la palabra se GENERA el cupón, y en el
+// mostrador se canjea. Por eso la página vive en /generar, y /canjear redirige para siempre.
+const GENERAR_TITLE = 'Genera tu cupón con la palabra del Live — Helados Mados'
+const GENERAR_DESCRIPTION =
+  'Escribe la palabra secreta de nuestro TikTok Live y genera tu cupón: suma un punto y ' +
+  'canjéalo en la Estación por tu helado.'
+const GENERAR_MIGAS: Migas[] = [INICIO, { nombre: 'Generar cupón', path: '/generar' }]
 
-const CANJEAR: SeoRoute = {
-  path: '/canjear',
+const GENERAR: SeoRoute = {
+  path: '/generar',
   kind: 'prerender',
-  title: CANJEAR_TITLE,
-  description: CANJEAR_DESCRIPTION,
+  title: GENERAR_TITLE,
+  description: GENERAR_DESCRIPTION,
   index: true,
-  migas: CANJEAR_MIGAS,
+  migas: GENERAR_MIGAS,
   jsonLd: schemaSecundaria({
-    path: '/canjear',
-    title: CANJEAR_TITLE,
-    description: CANJEAR_DESCRIPTION,
-    migas: CANJEAR_MIGAS,
+    path: '/generar',
+    title: GENERAR_TITLE,
+    description: GENERAR_DESCRIPTION,
+    migas: GENERAR_MIGAS,
   }),
 }
 
@@ -242,6 +244,18 @@ const CUENTA_REDIRECT: SeoRoute = {
   robots: 'noindex,follow',
 }
 
+// La dirección vieja de la palabra secreta. Circula en enlaces del Live, en el QR de la pantalla
+// del mostrador y en lo que Google ya indexó: la redirección permanente conserva todo eso.
+const CANJEAR_REDIRECT: SeoRoute = {
+  path: '/canjear',
+  kind: 'redirect',
+  redirectTo: '/generar',
+  title: GENERAR_TITLE,
+  description: GENERAR_DESCRIPTION,
+  index: false,
+  robots: 'noindex,follow',
+}
+
 const AVISO_PRIVACIDAD_REDIRECT: SeoRoute = {
   path: '/aviso-de-privacidad',
   kind: 'redirect',
@@ -361,7 +375,7 @@ export const NOT_FOUND: SeoRoute = {
   kind: 'prerender',
   title: 'Página no encontrada — Helados Mados',
   description:
-    'No encontramos esta página. Vuelve al inicio o canjea la palabra secreta del ' +
+    'No encontramos esta página. Vuelve al inicio o genera tu cupón con la palabra secreta del ' +
     'TikTok Live de Helados Mados.',
   index: false,
   robots: 'noindex',
@@ -386,7 +400,7 @@ export const SPA_SHELL: SeoRoute = {
 export const SEO_ROUTES: readonly SeoRoute[] = [
   HOME,
   LOGIN,
-  CANJEAR,
+  GENERAR,
   AUTH_CALLBACK,
   BIENVENIDA,
   PERFIL,
@@ -397,6 +411,7 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
   TERMINOS,
   PRIVACIDAD,
   AVISO_PRIVACIDAD_REDIRECT,
+  CANJEAR_REDIRECT,
   ELIMINAR_CUENTA,
   ADMIN,
   ADMIN_DASHBOARD,
@@ -414,7 +429,7 @@ export const SEO_ROUTES: readonly SeoRoute[] = [
 
 /** `matchPath` insensible a mayúsculas, sobre las rutas del manifiesto; si nada, `NOT_FOUND`. */
 export function seoForPath(pathname: string): SeoRoute {
-  // Normaliza la barra final: '/canjear/' y '/canjear' son la misma ruta para el manifiesto,
+  // Normaliza la barra final: '/generar/' y '/generar' son la misma ruta para el manifiesto,
   // aunque `BrowserRouter` las trate como pathnames distintos.
   const normalized =
     pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname

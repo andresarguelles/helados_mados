@@ -1,7 +1,7 @@
 {
   "name": "Helados Mados",
   "short_name": "Mados",
-  "description": "Despega por un helado: canjea la palabra secreta del TikTok Live y junta medallas en la Estación Álvaro Obregón, CDMX.",
+  "description": "Despega por un helado: genera tu cupón con la palabra secreta del TikTok Live y canjéalo por medallas en la Estación Álvaro Obregón, CDMX.",
   "lang": "es-MX",
   "start_url": "/",
   "scope": "/",
