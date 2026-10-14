@@ -78,7 +78,7 @@ export default function Login() {
           className="btn-fresa text-center"
         >
           <Zap className="w-4 h-4" />
-          Generar cupón
+          Ingresar palabra secreta
         </Link>
       </div>
 

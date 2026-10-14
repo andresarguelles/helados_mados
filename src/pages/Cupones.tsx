@@ -67,12 +67,12 @@ export default function Cupones() {
           ) : active.length === 0 ? (
             <div className="paper-card rounded-3xl p-8 text-center">
               <p className="font-heading text-brand-gris text-sm">Sin cupones activos</p>
-              <p className="text-xs text-brand-gris mt-1 font-body">Genera tu cupón con la palabra secreta del Live</p>
+              <p className="text-xs text-brand-gris mt-1 font-body">Ingresa la palabra secreta del Live y aquí aparecerá tu QR.</p>
               <button
                 onClick={() => navigate('/generar')}
                 className="btn-fresa mt-4 text-xs px-6 py-2.5"
               >
-                Generar cupón
+                Ingresar palabra secreta
               </button>
             </div>
           ) : (

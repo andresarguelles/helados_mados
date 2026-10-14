@@ -29,7 +29,7 @@ export default function NotFound() {
           </Link>
           <Link to="/generar" className="btn-tinta">
             <Zap className="w-4 h-4" />
-            Generar cupón
+            Ingresar palabra secreta
           </Link>
         </div>
       </main>

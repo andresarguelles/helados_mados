@@ -60,7 +60,7 @@ const INICIO: Migas = { nombre: 'Inicio', path: '/' }
 const HOME_TITLE = 'Helados Mados — Heladería espacial en la Ciudad de México'
 const HOME_DESCRIPTION =
   'Helados tradicionales en la Ciudad de México. Síguenos en TikTok Live, atrapa la palabra ' +
-  'secreta, genera tu cupón y canjéalo en nuestra estación.'
+  'secreta y canjea tu cupón QR en nuestra estación.'
 
 const HOME: SeoRoute = {
   path: '/',
@@ -75,11 +75,13 @@ const HOME: SeoRoute = {
 
 // Desde 2026-10-13 "canjear" es solo lo de la tienda: con la palabra se GENERA el cupón, y en el
 // mostrador se canjea. Por eso la página vive en /generar, y /canjear redirige para siempre.
-const GENERAR_TITLE = 'Genera tu cupón con la palabra del Live — Helados Mados'
+// Desde 2026-10-14 el primer paso ni siquiera dice "cupón": se ingresa y se valida la palabra
+// secreta, y el cupón aparece hasta la pantalla del QR. Título y miga siguen al H1.
+const GENERAR_TITLE = 'Ingresa la palabra secreta del Live — Helados Mados'
 const GENERAR_DESCRIPTION =
-  'Escribe la palabra secreta de nuestro TikTok Live y genera tu cupón: suma un punto y ' +
-  'canjéalo en la estación por el premio de la dinámica.'
-const GENERAR_MIGAS: Migas[] = [INICIO, { nombre: 'Generar cupón', path: '/generar' }]
+  'Escribe la palabra secreta de nuestro TikTok Live: suma un punto y llévate un cupón QR ' +
+  'para canjear en la estación por el premio de la dinámica.'
+const GENERAR_MIGAS: Migas[] = [INICIO, { nombre: 'Palabra secreta', path: '/generar' }]
 
 const GENERAR: SeoRoute = {
   path: '/generar',
@@ -377,7 +379,7 @@ export const NOT_FOUND: SeoRoute = {
   kind: 'prerender',
   title: 'Página no encontrada — Helados Mados',
   description:
-    'No encontramos esta página. Vuelve al inicio o genera tu cupón con la palabra secreta del ' +
+    'No encontramos esta página. Vuelve al inicio o ingresa la palabra secreta del ' +
     'TikTok Live de Helados Mados.',
   index: false,
   robots: 'noindex',

@@ -62,7 +62,7 @@ export default function Footer() {
           </Link>
           <span aria-hidden className="text-white/40">·</span>
           <Link to="/generar" className="hover:text-white transition-colors">
-            Generar cupón
+            Ingresar palabra secreta
           </Link>
           <span aria-hidden className="text-white/40">·</span>
           <Link to="/terminos" className="hover:text-white transition-colors">

@@ -34,7 +34,7 @@ export default function Misiones() {
           <p className="font-heading text-brand-gris text-sm">Aún no hay misiones disponibles</p>
           <p className="text-xs text-brand-gris font-body max-w-xs">
             Estamos preparando el primer set de misiones. Mientras tanto, sigue el Live
-            y genera tu cupón con la palabra secreta.
+            e ingresa la palabra secreta.
           </p>
         </div>
       </div>

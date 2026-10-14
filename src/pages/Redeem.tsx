@@ -64,9 +64,9 @@ export default function Redeem() {
       const messages: Record<string, string> = {
         invalid: 'La palabra ya no está activa.',
         expired: 'Este entrenamiento ha expirado.',
-        already_redeemed: '¡Ya generaste tu cupón con esta palabra! Solo uno por entrenamiento.',
+        already_redeemed: '¡Ya usaste esta palabra secreta! Solo una vez por entrenamiento.',
         not_authenticated: 'Tu sesión expiró. Inicia sesión de nuevo.',
-        no_username: 'Primero elige tu apodo para poder generar tu cupón.',
+        no_username: 'Primero elige tu apodo para poder usar la palabra secreta.',
       }
       setError(messages[result.reason] || 'Error inesperado.')
       return
@@ -216,14 +216,14 @@ export default function Redeem() {
                 className="btn-fresa"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
-                {loading ? 'Generando...' : 'Generar cupón'}
+                {loading ? 'Validando...' : 'Validar palabra secreta'}
               </button>
             </div>
 
             <div className="text-center">
               {profile ? (
                 <p className="text-xs text-brand-sombra/70 font-body">
-                  Generarás tu cupón como <span className="font-bold text-brand-azul">{profile.username}</span>
+                  Participas como <span className="font-bold text-brand-azul">{profile.username}</span>
                 </p>
               ) : (
                 <p className="text-xs text-brand-sombra/70 font-body">
@@ -261,7 +261,7 @@ export default function Redeem() {
               />
               <p className="text-xs text-brand-gris font-body leading-relaxed text-center">
                 Guardamos tu palabra <span className="font-bold text-brand-azul">{keyword}</span>:
-                al volver, tu cupón se genera solo.
+                al volver, se valida sola.
               </p>
               <AvisoLegal />
             </div>
@@ -279,14 +279,13 @@ export default function Redeem() {
                 </h1>
               </div>
               <p className="font-body text-brand-sombra/70 text-sm mt-2">
-                Tu cupón está listo. Canjéalo en el mostrador para recibir tu premio.
+                Muestra este cupón en caja para canjear tu premio en la heladería.
               </p>
             </div>
 
             {/* Prize banner */}
             <div className="w-full bg-brand-amarillo/25 border-2 border-brand-sombra rounded-3xl px-5 py-4 text-center">
               <p className="font-heading text-brand-sombra text-xl">{prizeLabel}</p>
-              <p className="text-xs text-brand-sombra/70 mt-1 font-body">Canjeable con este QR</p>
             </div>
 
             {/* QR Ticket */}
@@ -319,7 +318,7 @@ export default function Redeem() {
                 <span className="points-chip">+1 pt</span>
               </div>
               <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-brand-sombra/10">
-                <span className="font-body text-sm text-brand-gris">Al canjear en tu estación</span>
+                <span className="font-body text-sm text-brand-gris">Al canjearlo en la heladería</span>
                 <span className="points-chip">+10 pts</span>
               </div>
             </div>

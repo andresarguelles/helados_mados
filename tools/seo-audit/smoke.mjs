@@ -485,7 +485,7 @@ async function testConsentimiento(browser, base, outDir) {
 }
 
 // ---------------------------------------------------------------------------
-// i) Navegacion cliente: footer "Terminos y Condiciones" y "Generar cupón"
+// i) Navegacion cliente: footer "Terminos y Condiciones" y "Ingresar palabra secreta"
 // ---------------------------------------------------------------------------
 async function testNavegacionCliente(browser, base, outDir) {
   const detalle = {};
@@ -522,7 +522,7 @@ async function testNavegacionCliente(browser, base, outDir) {
     let urlDespues = null;
     try {
       await page.goto(u(base, '/'), { waitUntil: 'networkidle', timeout: 20000 });
-      await page.getByRole('link', { name: /^generar cupón$/i }).first().click({ timeout: 10000 });
+      await page.getByRole('link', { name: /^ingresar palabra secreta$/i }).first().click({ timeout: 10000 });
       await page.waitForURL(/\/generar/, { timeout: 10000 }).catch(() => {});
       await page.waitForTimeout(500);
       tituloDespues = await page.title();
@@ -539,7 +539,7 @@ async function testNavegacionCliente(browser, base, outDir) {
   const ok = detalle.terminos.ok && detalle.generar.ok;
   return {
     id: 'i-navegacion-cliente',
-    nombre: 'Navegacion cliente sin recarga: footer "Términos y Condiciones" y CTA "Generar cupón"',
+    nombre: 'Navegacion cliente sin recarga: footer "Términos y Condiciones" y CTA "Ingresar palabra secreta"',
     ok,
     detalle,
   };
@@ -562,7 +562,7 @@ async function testGenerarCupon(browser, base, outDir) {
     await page.goto(u(base, '/generar'), { waitUntil: 'networkidle', timeout: 20000 });
     mainAntes = await page.$eval('main', (el) => el.innerText).catch(() => null);
     await page.fill('#keyword-input', 'PRUEBA');
-    await page.getByRole('button', { name: /generar cupón/i }).click({ timeout: 10000 });
+    await page.getByRole('button', { name: /validar palabra secreta/i }).click({ timeout: 10000 });
     await page.waitForTimeout(2500);
     mainDespues = await page.$eval('main', (el) => el.innerText).catch(() => null);
   } catch (e) {
@@ -579,7 +579,7 @@ async function testGenerarCupon(browser, base, outDir) {
   const ok = !error && erroresReales.length === 0 && uiRespondio;
   return {
     id: 'j-generar-input-label',
-    nombre: 'Input con label accesible en /generar + "Generar cupón" produce respuesta sin errores de consola',
+    nombre: 'Input con label accesible en /generar + "Validar palabra secreta" produce respuesta sin errores de consola',
     ok,
     detalle: { erroresReales, uiRespondio, mainDespuesPreview: mainDespues ? mainDespues.slice(-200) : null, error, screenshot },
   };

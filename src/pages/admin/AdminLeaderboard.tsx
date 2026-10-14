@@ -311,7 +311,7 @@ function Llamado() {
           {titulo}
         </p>
         <p className="font-body text-brand-sombra text-[1.8vh] leading-snug mt-[0.8vh]">
-          Escanea, genera tu cupón con la palabra secreta y canjéalo aquí mismo.
+          Escanea, ingresa la palabra secreta y canjea tu QR aquí mismo.
         </p>
       </div>
       <div className="shrink-0 animate-float">

@@ -34,8 +34,8 @@ export default function Home() {
                 <span className="block text-brand-verde">despega por un helado</span>
               </h1>
               <p className="text-white/90 font-body mt-3 text-sm leading-relaxed max-w-xs mx-auto">
-                Únete al TikTok Live, genera tu cupón con la palabra secreta y canjéalo
-                en la estación por el premio de la dinámica. ¡Compite por un lugar en el podio!
+                Únete al TikTok Live, ingresa la palabra secreta y canjea tu QR en la
+                estación por el premio de la dinámica. ¡Compite por un lugar en el podio!
               </p>
             </div>
 
@@ -47,7 +47,7 @@ export default function Home() {
                 className="btn-fresa text-base px-10 py-4 shadow-sticker-white hover:shadow-sticker-lg"
               >
                 <Zap className="w-4 h-4" />
-                Generar cupón
+                Ingresar palabra secreta
               </Link>
 
               {!user && (
@@ -104,7 +104,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-3">
             {[
               { icon: <Sparkles className="w-5 h-5" />, title: 'Mira el Live', desc: 'Conéctate a nuestro TikTok Live y espera la palabra secreta del día.' },
-              { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y genera tu cupón con la palabra: +1 punto digital.' },
+              { icon: <Zap className="w-5 h-5" />, title: 'Ingresa la palabra', desc: 'Regístrate con tu apodo y valida la palabra: +1 punto digital y tu QR.' },
               { icon: <Gift className="w-5 h-5" />, title: 'Canjea en tu estación', desc: 'Presenta tu QR en mostrador y recibe el premio de la dinámica. ¡Suma +10 puntos!' },
               { icon: <Trophy className="w-5 h-5" />, title: 'Compite en el ranking', desc: 'Suma puntos y sube en la tabla de líderes: los tres primeros lugares son el orgullo de Helados Mados.' },
             ].map((step, i) => (
