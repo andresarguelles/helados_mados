@@ -21,7 +21,9 @@ coverage
 
 # Secretos que NO viven en ningún respaldo ni en Supabase fuera de su panel.
 # Ya los cubre la regla .env.* de arriba; va explícito porque perderlo duele:
-#   .env.backup.local — cadena de conexión a Postgres para `npm run db:backup`
+#   .env.backup.local — cadena de conexión a Postgres de producción. Los scripts que la
+#   usaban viven ahora en el repo helados_mados_backend; la regla se queda por si el
+#   archivo sigue en esta carpeta.
 .env.backup.local
 
 # Editor directories and files
@@ -47,5 +49,6 @@ Thumbs.db
 .agents/skills/
 
 # Respaldos de la base de datos (contienen datos personales y hashes de contraseña)
-backups/*
-!backups/README.md
+# Los respaldos se generan ahora desde el repo helados_mados_backend; la regla se queda
+# por las carpetas que ya existan aquí.
+backups/
