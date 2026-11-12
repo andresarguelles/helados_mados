@@ -1,9 +1,12 @@
 /**
- * Plomería compartida para los scripts que hablan directo con Postgres
- * (backup-db.mjs, reset-test-account.mjs).
+ * Plomería compartida de los scripts de este repo: casi todos usan solo ROOT y die.
+ *
+ * Lo demás (readDbUrl, connEnv, run, query) habla directo con Postgres y lo usan los
+ * scripts de respaldo, que desde el 2026-11-11 viven en el repo helados_mados_backend;
+ * allá hay una copia de este archivo. Aquí se queda porque los scripts del sitio lo importan.
  *
  * Requiere SUPABASE_DB_URL (en el entorno o en .env.backup.local) con la cadena
- * de conexión del "Session pooler" del proyecto — ver backups/README.md.
+ * de conexión del "Session pooler" del proyecto.
  *
  * La contraseña nunca se pasa como argumento: la URL se descompone en las
  * variables PG* del proceso hijo para que no quede en argv ni en los logs.

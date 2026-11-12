@@ -15,8 +15,6 @@
     "preview": "node scripts/serve-dist.mjs",
     "legal:build": "node scripts/legal-build.mjs",
     "legal:check": "node scripts/legal-check.mjs --cross",
-    "db:backup": "node scripts/backup-db.mjs",
-    "db:reset-user": "node scripts/reset-test-account.mjs",
     "phone": "node scripts/phone-link.mjs"
   },
   "devDependencies": {
