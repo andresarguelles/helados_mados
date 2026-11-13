@@ -11,7 +11,9 @@ import ConfirmDialog from '../ui/ConfirmDialog'
 import ErrorAlert from '../ui/ErrorAlert'
 import { Tarjeta, fechaHora } from './comun'
 
-type RolAsignable = Exclude<Rol, 'superadmin'>
+// Los roles que se reparten aquí. El de Gerente no: se nombrará desde la app de administración
+// (Story 1.6). Aquí se le ve con su insignia y se le puede pasar a cualquiera de estos tres.
+type RolAsignable = 'cliente' | 'staff' | 'admin'
 
 const QUE_PUEDE: Record<RolAsignable, string> = {
   cliente: 'Solo su cuenta de cliente. Vuelve a aparecer en el ranking.',
@@ -35,6 +37,7 @@ const insignia = (rol: Rol) => cn(
   'inline-flex items-center rounded-full px-2 py-0.5 font-body text-[11px] font-bold',
   rol === 'superadmin' ? 'bg-brand-sombra text-white'
     : rol === 'admin' ? 'bg-brand-azul text-white'
+    : rol === 'gerente' ? 'bg-brand-amarillo text-brand-sombra'
     : rol === 'staff' ? 'bg-brand-verde text-brand-sombra'
     : 'bg-brand-papel text-brand-gris'
 )

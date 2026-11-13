@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
+import { alcanza } from '../../lib/roles'
 import { Html5Qrcode } from 'html5-qrcode'
 import { cn } from '../../lib/utils'
 import { ArrowLeft, QrCode, CheckCircle2, XCircle, RotateCcw, Star, Gift } from 'lucide-react'
@@ -20,11 +21,11 @@ const ERROR_MESSAGES: Record<ErrorReason, { title: string; desc: string }> = {
 export default function AdminScanner() {
   const navigate = useNavigate()
   const { scanCoupon } = useStore()
-  // El staff no tiene dinámicas: su otra pantalla es la Estación.
-  const esStaff = useStore(s => s.rol === 'staff')
-  const regreso = esStaff
-    ? { to: '/admin/estacion', label: 'Estación' }
-    : { to: '/admin/dashboard', label: 'Entrenamientos' }
+  // Quien no llega a admin (staff, Gerente) no tiene dinámicas: su otra pantalla es la Estación.
+  const veDinamicas = useStore(s => alcanza(s.rol, 'admin'))
+  const regreso = veDinamicas
+    ? { to: '/admin/dashboard', label: 'Entrenamientos' }
+    : { to: '/admin/estacion', label: 'Estación' }
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const [scanState, setScanState] = useState<ScanState>('scanning')
   const [errorReason, setErrorReason] = useState<ErrorReason | null>(null)

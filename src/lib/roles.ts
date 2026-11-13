@@ -4,17 +4,27 @@
 //
 //   cliente     — todos, por omisión.
 //   staff       — personal del mostrador: escáner, Estación y pantallas.
+//   gerente     — aquí, lo mismo que el staff, y nunca cuenta como admin. Lo que lo distinguirá
+//                 vivirá en la app de administración: entre otras cosas, abrir y cerrar la caja,
+//                 registrar Merma y Pedidos, cancelar Ventas. El sitio lo conoce desde la Story 1.5
+//                 del MVP 0, antes de que la base lo permita (Story 1.6).
 //   admin       — además, dinámicas y clientes.
 //   superadmin  — además, Métricas y asignar roles.
+//
+// `scripts/roles-check.mjs` rompe el build si cambia, para algún rol, lo que decide este archivo:
+// nivel, pantalla de inicio, permisos y nombre visible. La barra y las pantallas no las revisa.
 import type { Profile } from './types'
 
-export type Rol = 'cliente' | 'staff' | 'admin' | 'superadmin'
+export type Rol = 'cliente' | 'staff' | 'gerente' | 'admin' | 'superadmin'
 
-const NIVEL: Record<Rol, number> = { cliente: 0, staff: 1, admin: 2, superadmin: 3 }
+// Gerente y staff comparten nivel, así que `alcanza` no los distingue: `alcanza('staff', 'gerente')`
+// es verdadero. Ninguna ruta del sitio pide `gerente`; una que lo pidiera se abriría a todo el staff.
+const NIVEL: Record<Rol, number> = { cliente: 0, staff: 1, gerente: 1, admin: 2, superadmin: 3 }
 
 export const NOMBRE_ROL: Record<Rol, string> = {
   cliente: 'Cliente',
   staff: 'Staff',
+  gerente: 'Gerente',
   admin: 'Admin',
   superadmin: 'Superadmin',
 }
@@ -30,15 +40,18 @@ export function rolDe(profile: Pick<Profile, 'role' | 'is_admin'> | null): Rol {
   return profile.is_admin ? 'admin' : 'cliente'
 }
 
-/** Si `rol` tiene al menos los permisos de `minimo`. */
+/** Si `rol` tiene al menos los permisos de `minimo`. Va por nivel: no distingue `gerente` de `staff`. */
 export function alcanza(rol: Rol, minimo: Rol): boolean {
   return NIVEL[rol] >= NIVEL[minimo]
 }
 
-/** Dónde empieza cada rol al entrar al panel. El staff no tiene dashboard: su casa es el escáner. */
+/**
+ * Dónde empieza cada rol al entrar al panel, por nivel. Quien no llega a admin (staff, Gerente)
+ * no tiene dashboard: su casa es el escáner.
+ */
 export function inicioDe(rol: Rol): string {
-  if (rol === 'staff') return '/admin/scanner'
   if (alcanza(rol, 'admin')) return '/admin/dashboard'
+  if (alcanza(rol, 'staff')) return '/admin/scanner'
   return '/admin'
 }
 

@@ -30,11 +30,15 @@ const ESCANER: NavItem = { to: '/admin/scanner', label: 'Escáner', icon: QrCode
 const ESTACION: NavItem = { to: '/admin/estacion', label: 'Estación', icon: Store }
 const METRICAS: NavItem = { to: '/admin/metricas', label: 'Métricas', icon: ChartColumn }
 
+// La del personal del mostrador: el staff y el Gerente llevan la misma.
+const PERSONAL_ITEMS: NavItem[] = [INICIO, ESCANER, ESTACION]
+
 // Una barra por rol (0044). El superadmin cambia Inicio por Métricas: con seis no caben las
 // etiquetas en un teléfono, y la home sigue a un toque desde el logo.
 const ITEMS_POR_ROL: Record<Rol, NavItem[]> = {
   cliente: MEMBER_ITEMS,
-  staff: [INICIO, ESCANER, ESTACION],
+  staff: PERSONAL_ITEMS,
+  gerente: PERSONAL_ITEMS,
   admin: [INICIO, DINAMICAS, CLIENTES, ESCANER, ESTACION],
   superadmin: [DINAMICAS, CLIENTES, ESCANER, ESTACION, METRICAS],
 }

@@ -285,7 +285,9 @@ export type MotivoRol =
   | 'forbidden' | 'invalid_role' | 'not_found' | 'self' | 'target_superadmin'
   | 'no_username' | 'sin_acceso' | 'sin_cambio' | 'error'
 
-export async function asignarRol(usuario: string, rol: Exclude<Rol, 'superadmin'>): Promise<{ ok: true } | { ok: false; motivo: MotivoRol }> {
+// Ni el superadmin ni el Gerente se nombran desde el sitio: el Gerente se nombrará desde la app de
+// administración (Story 1.6).
+export async function asignarRol(usuario: string, rol: Exclude<Rol, 'superadmin' | 'gerente'>): Promise<{ ok: true } | { ok: false; motivo: MotivoRol }> {
   const r = await pedir(supabase.rpc('asignar_rol', { p_usuario: usuario, p_rol: rol }), () => null)
   return r.ok ? { ok: true } : { ok: false, motivo: r.motivo as MotivoRol }
 }

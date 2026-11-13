@@ -8,7 +8,8 @@ import { Shield, AlertCircle, LogOut } from 'lucide-react'
 /**
  * El panel también se entra con Google: no hay otro acceso desde el 2026-09-30. Quién entra lo
  * decide `profiles.role` (0044), no el botón, y la frontera real son el RLS y las RPC. Cada rol
- * aterriza en su propia pantalla: el staff en el escáner, el resto en las dinámicas.
+ * aterriza en su propia pantalla: el staff y el Gerente en el escáner, el admin y el superadmin
+ * en las dinámicas.
  */
 export default function AdminLogin() {
   const navigate = useNavigate()

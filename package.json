@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/legal-check.mjs --publicable",
-    "build": "tsc && npm run build:client && npm run build:ssr && npm run build:html && npm run seo:check",
+    "build": "tsc && npm run roles:check && npm run build:client && npm run build:ssr && npm run build:html && npm run seo:check",
     "build:client": "vite build",
     "build:ssr": "vite build --ssr src/entry-server.tsx --outDir dist-ssr",
     "build:html": "node scripts/prerender.mjs",
+    "roles:check": "node scripts/roles-check.mjs",
     "seo:check": "node scripts/seo-check.mjs",
     "seo:audit": "node tools/seo-audit/audit.mjs",
     "preview": "node scripts/serve-dist.mjs",
