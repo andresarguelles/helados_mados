@@ -36,12 +36,16 @@ const CATALOGO: Sabor[] = [
   { id: 'cereza', nombre: 'Cereza', base: 'agua', color: '#C8324C' },
   { id: 'chicle-azul', nombre: 'Chicle Azul', base: 'agua', color: '#6EC3EE' },
   { id: 'chocolate-abuelita', nombre: 'Chocolate Abuelita', base: 'leche', color: '#6B3A26' },
+  // Chocolate con menta: dos bandas, el café del chocolate y el verde de la menta.
+  { id: 'chocomenta', nombre: 'Chocomenta', base: 'leche', color: ['#5C3A21', '#7FD1B9'] },
   { id: 'cola-de-tigre', nombre: 'Cola de Tigre', base: 'leche', color: '#EE9A3F' },
   { id: 'ferrero-rocher', nombre: 'Ferrero Rocher', base: 'leche', color: '#8A5A3B' },
   { id: 'huevo-kinder', nombre: 'Huevo Kinder', base: 'leche', color: '#C79F78' },
   { id: 'limon', nombre: 'Limón', base: 'agua', color: '#E4EDB0' },
   { id: 'mamey', nombre: 'Mamey', base: 'leche', color: '#E9805A' },
   { id: 'mango', nombre: 'Mango', base: 'agua', color: '#F6B23C' },
+  // Mango con chile: dos bandas, el amarillo del mango y el rojo del chile.
+  { id: 'mango-chile', nombre: 'Mango Chile', base: 'agua', color: ['#F6B23C', '#C8102E'] },
   // Chocolate, vainilla y fresa: el napolitano son tres helados, así que lleva tres bandas.
   { id: 'napolitano', nombre: 'Napolitano', base: 'leche', color: ['#5B3524', '#F1E3BC', '#F0A6B4'] },
   { id: 'nescafe', nombre: 'Nescafé', base: 'leche', color: '#A9805C' },
