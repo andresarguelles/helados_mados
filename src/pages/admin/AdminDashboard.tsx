@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
 import {
-  A_ELEGIR, BORRADOR_VACIO, borradorDe, guardarPremioDinamica, mensajePremio, mismoPremio,
+  A_ELEGIR, BORRADOR_VACIO, borradorDe, debeGuardarPremio, guardarPremioDinamica, mensajePremio,
   pendientesConCupones, textoDePremio, textoSinCanjear, validarBorrador, verPremioDinamica,
   verRevisionDinamicas,
   type BorradorPremio, type DinamicaEnRevision, type OpcionesPremio, type Premio, type TipoPremio,
@@ -178,7 +178,10 @@ export default function AdminDashboard() {
       if (data.description !== editTarget.description) cambios.description = data.description
       if (data.prize_label !== editTarget.prize_label) cambios.prize_label = data.prize_label
 
-      const premioCambia = premioEstado === 'listo' && !mismoPremio(premio, premioGuardado)
+      // Guardar el Premio marca «revisada»: si la Dinámica cambia, la base la deja pendiente y el
+      // Premio se manda en el mismo guardado (Story 5.3).
+      const premioCambia = debeGuardarPremio(premioEstado === 'listo', premio, premioGuardado,
+        Object.keys(cambios).length > 0)
       if (Object.keys(cambios).length === 0 && !premioCambia) { setModal(null); return }
 
       const inicio = cambios.starts_at ?? editTarget.starts_at
@@ -194,8 +197,10 @@ export default function AdminDashboard() {
       if (Object.keys(cambios).length > 0) {
         const result = await updateDynamic(editTarget.id, cambios)
         if (!result.success) { setSaving(false); setError(result.error); return }
-        // Ya quedó: si el Premio falla, el reintento solo manda el Premio.
+        // Ya quedó: si el Premio falla, el reintento solo manda el Premio. La base ya dejó
+        // pendiente la revisión, así que el reintento la vuelve a marcar.
         setEditTarget({ ...editTarget, ...cambios })
+        setPremioGuardado(g => g ? { ...g, revisada: false } : g)
         setAviso('')
       }
       if (premioCambia) {
@@ -381,7 +386,11 @@ export default function AdminDashboard() {
           </div>
           <p className="text-white/85 text-xs font-body mt-1">{textoDePremio(d.premio)}</p>
           <p className="text-white/75 text-xs font-body mt-1">
-            {pendiente || !d.revisada_en
+            {pendiente && d.cambiada_en
+              ? d.cambiada_por
+                ? `Cambió ${d.cambiada_por}, ${formatDate(d.cambiada_en)}`
+                : `Cambió el ${formatDate(d.cambiada_en)}`
+              : pendiente || !d.revisada_en
               ? `Termina el ${formatDate(d.termina)}`
               : d.revisada_por
                 ? `Revisó ${d.revisada_por}, ${formatDate(d.revisada_en)}`
@@ -640,7 +649,7 @@ export default function AdminDashboard() {
                   {premioEstado === 'error' && (
                     <div className="flex flex-col gap-2">
                       <p className="font-body text-xs text-red-600">
-                        No se pudo cargar el premio: {premioError} El entrenamiento se guarda sin cambiar su premio.
+                        No se pudo cargar el premio: {premioError} El entrenamiento se guarda sin cambiar su premio; si cambias algo, su revisión queda pendiente.
                       </p>
                       <button
                         type="button"
@@ -654,6 +663,12 @@ export default function AdminDashboard() {
 
                   {premioEstado === 'listo' && (
                     <>
+                      {/* Story 5.3: alguien cambió el entrenamiento después de revisarlo */}
+                      {premioGuardado && !premioGuardado.revisada && (
+                        <p className="font-body text-xs font-bold text-brand-sombra">
+                          Pendiente de revisar: el entrenamiento cambió después de su revisión. Al guardar, el premio queda revisado.
+                        </p>
+                      )}
                       <div className="inline-flex self-start rounded-full border border-brand-grisclaro bg-white p-0.5" role="radiogroup" aria-label="Tipo de premio">
                         {([['helado', 'Helado'], ['otro', 'Otro']] as [TipoPremio, string][]).map(([tipo, nombre]) => (
                           <button

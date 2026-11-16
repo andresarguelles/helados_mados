@@ -107,6 +107,12 @@ export interface DinamicaEnRevision {
   /** Nombre de quien la marcó revisada. */
   revisada_por: string | null
   revisada_en: string | null
+  /**
+   * La última edición de la Dinámica en este formulario (Story 5.3, migración 0113): al cambiarla,
+   * su revisión vuelve a pendiente. Nombre de quien la cambió (nulo si fue por SQL) y cuándo.
+   */
+  cambiada_por: string | null
+  cambiada_en: string | null
 }
 
 export type LecturaRevision = { success: true; dinamicas: DinamicaEnRevision[] } | Rechazo
@@ -119,7 +125,24 @@ export async function verRevisionDinamicas(): Promise<LecturaRevision> {
   if (error) return { success: false, reason: 'error' }
   const r = data as { success?: unknown; dinamicas?: unknown } | null
   if (r?.success !== true || !Array.isArray(r.dinamicas)) return rechazo(r)
-  return { success: true, dinamicas: r.dinamicas as DinamicaEnRevision[] }
+  // Una base sin la 0113 no manda las marcas de cambio: cuentan como nulas.
+  const dinamicas = (r.dinamicas as DinamicaEnRevision[]).map(d => ({
+    ...d,
+    cambiada_por: d.cambiada_por ?? null,
+    cambiada_en: d.cambiada_en ?? null,
+  }))
+  return { success: true, dinamicas }
+}
+
+/**
+ * Si el guardado de H-01 debe mandar el Premio (solo con la sección cargada). Guardar el Premio es
+ * lo que marca «revisada» (Stories 5.2 y 5.3): se manda si cambió, si cambió algo de la Dinámica
+ * (que la base acaba de dejar pendiente) o si el guardado todavía no está revisado.
+ */
+export function debeGuardarPremio(seccionLista: boolean, borrador: BorradorPremio, guardado: Premio | null,
+  dinamicaCambia: boolean): boolean {
+  if (!seccionLista) return false
+  return !mismoPremio(borrador, guardado) || dinamicaCambia || guardado?.revisada !== true
 }
 
 /** Las pendientes que tienen Cupones sin canjear: las que hay que revisar antes del día 1. */
