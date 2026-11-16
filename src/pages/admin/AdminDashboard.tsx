@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
 import {
   A_ELEGIR, BORRADOR_VACIO, borradorDe, guardarPremioDinamica, mensajePremio, mismoPremio,
-  validarBorrador, verPremioDinamica,
-  type BorradorPremio, type OpcionesPremio, type Premio, type TipoPremio,
+  pendientesConCupones, textoDePremio, textoSinCanjear, validarBorrador, verPremioDinamica,
+  verRevisionDinamicas,
+  type BorradorPremio, type DinamicaEnRevision, type OpcionesPremio, type Premio, type TipoPremio,
 } from '../../lib/premios'
 import { formatDate, toDatetimeLocalValue } from '../../lib/fechas'
 import { isDynamicActive, isDynamicExpired, isDynamicUpcoming, cn } from '../../lib/utils'
@@ -59,8 +60,30 @@ export default function AdminDashboard() {
   const [premioError, setPremioError] = useState('')
   // Solo cuenta la última lectura: abrir otra dinámica mientras carga descarta la anterior.
   const lecturaPremio = useRef(0)
+  // Revisión de premios (H-02, Story 5.2): solo el Superadmin. Lista todas las dinámicas con su
+  // estado y sus cupones sin canjear; cada una se abre en el formulario (H-01), que la marca.
+  const [vista, setVista] = useState<'entrenamientos' | 'revision'>('entrenamientos')
+  const [revisionEstado, setRevisionEstado] = useState<'cargando' | 'listo' | 'error'>('cargando')
+  const [revision, setRevision] = useState<DinamicaEnRevision[]>([])
+  const [revisionError, setRevisionError] = useState('')
+  const lecturaRevision = useRef(0)
 
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
+
+  const cargarRevision = useCallback(async () => {
+    const turno = ++lecturaRevision.current
+    setRevisionEstado('cargando')
+    const r = await verRevisionDinamicas()
+    if (turno !== lecturaRevision.current) return
+    if (!r.success) { setRevisionError(mensajePremio(r)); setRevisionEstado('error'); return }
+    setRevision(r.dinamicas)
+    setRevisionEstado('listo')
+  }, [])
+
+  // Al entrar y cada vez que se cierra el formulario: lo que se guardó ahí cambia la revisión.
+  useEffect(() => {
+    if (isSuperadmin && modal === null) cargarRevision()
+  }, [isSuperadmin, modal, cargarRevision])
 
   const cargarPremio = async (dynamicId: string | null) => {
     const turno = ++lecturaPremio.current
@@ -218,6 +241,7 @@ export default function AdminDashboard() {
     setDeleting(false)
     if (!result.success) setListError(result.error)
     setDeleteTarget(null)
+    if (result.success && isSuperadmin) cargarRevision()
   }
 
   const getStatusBadge = (d: Dynamic) => {
@@ -326,6 +350,58 @@ export default function AdminDashboard() {
     )
   }
 
+  const pendientes = pendientesConCupones(revision)
+
+  const abrirDesdeRevision = (id: string) => {
+    const d = dynamics.find(x => x.id === id)
+    if (d) { openEdit(d); return }
+    setListError('Ese entrenamiento ya no está en la lista. Recarga la página.')
+  }
+
+  const renderRevisionRow = (d: DinamicaEnRevision) => {
+    const pendiente = d.estado === 'pendiente'
+    return (
+      <button
+        key={d.id}
+        type="button"
+        onClick={() => abrirDesdeRevision(d.id)}
+        aria-label={`Revisar el premio de ${d.palabra}`}
+        className="w-full text-left bg-white/5 border border-white/10 rounded-3xl p-5 flex items-start gap-3 hover:bg-white/10 transition-colors"
+      >
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-heading text-brand-amarillo text-lg tracking-wider">{d.palabra}</span>
+            <span className={cn(
+              'flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded-full',
+              pendiente ? 'bg-brand-amarillo/15 text-brand-amarillo' : 'bg-brand-verde/15 text-brand-verde'
+            )}>
+              <span className={cn('w-1.5 h-1.5 rounded-full', pendiente ? 'bg-brand-amarillo' : 'bg-brand-verde')} />
+              {pendiente ? 'Pendiente' : 'Revisada'}
+            </span>
+          </div>
+          <p className="text-white/85 text-xs font-body mt-1">{textoDePremio(d.premio)}</p>
+          <p className="text-white/75 text-xs font-body mt-1">
+            {pendiente || !d.revisada_en
+              ? `Termina el ${formatDate(d.termina)}`
+              : d.revisada_por
+                ? `Revisó ${d.revisada_por}, ${formatDate(d.revisada_en)}`
+                : `Revisada el ${formatDate(d.revisada_en)}`}
+          </p>
+        </div>
+        <div className="shrink-0 flex flex-col items-end gap-2">
+          <span className={cn(
+            'flex items-center gap-1 text-xs font-body',
+            d.sin_canjear > 0 ? 'text-brand-amarillo/70' : 'text-white/60'
+          )}>
+            <QrCode className="w-3 h-3" />
+            {textoSinCanjear(d.sin_canjear)}
+          </span>
+          <ChevronRight className="w-4 h-4 text-white/60" />
+        </div>
+      </button>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-brand-azul flex flex-col">
       <AdminHeader title="Panel del equipo" />
@@ -348,6 +424,52 @@ export default function AdminDashboard() {
           </button>
         </div>
 
+        {/* Revisión de premios (H-02, Story 5.2): solo el Superadmin */}
+        {isSuperadmin && (
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-4 flex flex-col gap-3">
+            <div>
+              <h2 className="font-heading text-white text-sm uppercase">Premios para el control</h2>
+              <p className="text-white/85 text-xs font-body mt-0.5" aria-live="polite">
+                {revisionEstado === 'error'
+                  ? `No se pudo leer la revisión: ${revisionError}`
+                  : revisionEstado === 'cargando' && revision.length === 0
+                    ? 'Revisando los entrenamientos…'
+                    : pendientes === 0
+                      ? 'Todos los entrenamientos con cupones sin canjear ya tienen su premio.'
+                      : pendientes === 1
+                        ? '1 entrenamiento con cupones sin canjear sigue pendiente.'
+                        : `${pendientes} entrenamientos con cupones sin canjear siguen pendientes.`}
+              </p>
+              {revisionEstado === 'error' && (
+                <button
+                  type="button"
+                  onClick={cargarRevision}
+                  className="mt-1 font-body text-xs font-bold text-brand-amarillo underline"
+                >
+                  Reintentar
+                </button>
+              )}
+            </div>
+            <div role="radiogroup" aria-label="Vista" className="grid grid-cols-2 rounded-full border border-white/20 p-0.5">
+              {([['entrenamientos', 'Entrenamientos'], ['revision', 'Revisión']] as const).map(([clave, nombre]) => (
+                <button
+                  key={clave}
+                  type="button"
+                  role="radio"
+                  aria-checked={vista === clave}
+                  onClick={() => setVista(clave)}
+                  className={cn(
+                    'rounded-full px-4 py-1.5 font-body text-xs font-bold transition-colors',
+                    vista === clave ? 'bg-white text-brand-azul' : 'text-white/80 hover:text-white'
+                  )}
+                >
+                  {nombre}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {listError && (
           <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-2xl px-4 py-3">
             <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
@@ -356,7 +478,24 @@ export default function AdminDashboard() {
         )}
 
         {/* Dynamics list */}
-        {!dynamicsLoaded ? (
+        {isSuperadmin && vista === 'revision' ? (
+          revision.length > 0 ? (
+            <div className="flex flex-col gap-3">{revision.map(renderRevisionRow)}</div>
+          ) : revisionEstado === 'listo' ? (
+            <div className="text-center py-16 text-white/75">
+              <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <p className="font-heading">Sin entrenamientos creados</p>
+            </div>
+          ) : revisionEstado === 'cargando' ? (
+            <div className="flex flex-col gap-3">
+              {[0, 1].map(i => (
+                <div key={i} className="relative overflow-hidden bg-white/5 border border-white/10 rounded-3xl h-24">
+                  <div className="absolute inset-0 shimmer opacity-20" />
+                </div>
+              ))}
+            </div>
+          ) : null
+        ) : !dynamicsLoaded ? (
           <div className="flex flex-col gap-3">
             {[0, 1].map(i => (
               <div key={i} className="relative overflow-hidden bg-white/5 border border-white/10 rounded-3xl h-32">

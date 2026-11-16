@@ -501,6 +501,9 @@ isOneToOne: false
 "ver_recepcion":
 { Args: { "p_pedido_id": string }; Returns: Json
                            },
+"ver_revision_dinamicas":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "ver_seguimiento_de_pedido":
 { Args: { "p_estacion_id": string,"p_pedido_id": string }; Returns: Json
                            },

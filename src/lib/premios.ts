@@ -1,5 +1,5 @@
-// El Premio normalizado de una dinámica (MVP 0, Story 5.1; FR-17 y AD-15). Vive en
-// `control.premios_dinamica` del backend y solo se lee y escribe con estas dos RPC, que son del
+// El Premio normalizado de una dinámica (MVP 0, Stories 5.1 y 5.2; FR-17 y AD-15). Vive en
+// `control.premios_dinamica` del backend y solo se lee y escribe con estas RPC, que son del
 // Superadmin y validan Presentación y Sabor contra el catálogo (`CONTRATO.md` de
 // `helados_mados_backend`, «heladosmados.com»). No cambia `dynamics`: los clientes siguen viendo
 // `description` y `prize_label` tal cual.
@@ -80,6 +80,63 @@ export async function guardarPremioDinamica(dynamicId: string, borrador: Borrado
   const r = data as { success?: unknown; premio?: unknown } | null
   if (r?.success !== true || !r.premio) return rechazo(r)
   return { success: true, premio: r.premio as Premio }
+}
+
+/** El Premio de una Dinámica en la revisión (H-02, Story 5.2): nombres del catálogo, sin costo. */
+export interface ResumenPremio {
+  tipo: TipoPremio
+  /** Nombre de la Presentación; nulo en un Premio de tipo otro. */
+  presentacion: string | null
+  /** Nombre del Sabor; nulo si es «a elegir» o de tipo otro. */
+  sabor: string | null
+  a_elegir: boolean
+}
+
+/** Una fila de `ver_revision_dinamicas` (migración 0108 del backend). */
+export interface DinamicaEnRevision {
+  id: string
+  palabra: string
+  premio_texto: string
+  inicia: string
+  termina: string
+  /** Una Dinámica sin Premio guardado cuenta como pendiente. */
+  estado: 'revisada' | 'pendiente'
+  /** Cupones ni canjeados ni vencidos. */
+  sin_canjear: number
+  premio: ResumenPremio | null
+  /** Nombre de quien la marcó revisada. */
+  revisada_por: string | null
+  revisada_en: string | null
+}
+
+export type LecturaRevision = { success: true; dinamicas: DinamicaEnRevision[] } | Rechazo
+
+/** Todas las Dinámicas con su estado de revisión: las pendientes primero (solo el Superadmin). */
+export async function verRevisionDinamicas(): Promise<LecturaRevision> {
+  const { data, error } = await supabase
+    .rpc('ver_revision_dinamicas')
+    .setHeader('x-mados-version', VERSION_CONTROL)
+  if (error) return { success: false, reason: 'error' }
+  const r = data as { success?: unknown; dinamicas?: unknown } | null
+  if (r?.success !== true || !Array.isArray(r.dinamicas)) return rechazo(r)
+  return { success: true, dinamicas: r.dinamicas as DinamicaEnRevision[] }
+}
+
+/** Las pendientes que tienen Cupones sin canjear: las que hay que revisar antes del día 1. */
+export function pendientesConCupones(dinamicas: DinamicaEnRevision[]): number {
+  return dinamicas.filter(d => d.estado === 'pendiente' && d.sin_canjear > 0).length
+}
+
+/** El Premio en una línea: «Sencillo · Fresa», «Doble · A elegir», «Otro premio» o sin premio. */
+export function textoDePremio(p: ResumenPremio | null): string {
+  if (!p) return 'Sin premio para el control'
+  if (p.tipo === 'otro') return 'Otro premio'
+  return `${p.presentacion ?? 'Sin presentación'} · ${p.a_elegir ? 'A elegir' : p.sabor ?? 'Sin sabor'}`
+}
+
+/** «1 cupón sin canjear», «12 cupones sin canjear». */
+export function textoSinCanjear(n: number): string {
+  return n === 1 ? '1 cupón sin canjear' : `${n} cupones sin canjear`
 }
 
 /** Los argumentos de `guardar_premio_dinamica` para un borrador que ya pasó `validarBorrador`. */
