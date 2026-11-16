@@ -119,6 +119,7 @@ interface LeaderboardRange {
 }
 
 type DynamicWriteResult = { success: true } | { success: false; error: string }
+type DynamicCreateResult = { success: true; dynamic: Dynamic } | { success: false; error: string }
 
 type RedeemResult =
   | { success: true; coupon: Coupon }
@@ -217,7 +218,8 @@ interface AppState {
   // Dynamics
   fetchDynamics: () => Promise<void>
   getActiveDynamic: (keyword: string) => Promise<Dynamic | null>
-  addDynamic: (data: Omit<Dynamic, 'id' | 'created_at' | 'physical_redeemed'>) => Promise<DynamicWriteResult>
+  /** Devuelve la fila creada: el Premio (Story 5.1) se guarda con su id. */
+  addDynamic: (data: Omit<Dynamic, 'id' | 'created_at' | 'physical_redeemed'>) => Promise<DynamicCreateResult>
   updateDynamic: (id: string, data: Partial<Dynamic>) => Promise<DynamicWriteResult>
   deleteDynamic: (id: string) => Promise<DynamicWriteResult>
 
@@ -431,10 +433,11 @@ export const useStore = create<AppState>()((set, get) => ({
   },
 
   addDynamic: async (data) => {
-    const { error } = await supabase.from('dynamics').insert(data)
+    // `select()` pide la fila de vuelta (la deja ver dynamics_select_visible, como a todo admin).
+    const { data: creada, error } = await supabase.from('dynamics').insert(data).select().single()
     if (error) return { success: false, error: dynamicErrorMessage(error) }
     await get().fetchDynamics()
-    return { success: true }
+    return { success: true, dynamic: creada }
   },
 
   updateDynamic: async (id, data) => {

@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../../lib/store'
 import { Dynamic } from '../../lib/types'
+import {
+  A_ELEGIR, BORRADOR_VACIO, borradorDe, guardarPremioDinamica, mensajePremio, mismoPremio,
+  validarBorrador, verPremioDinamica,
+  type BorradorPremio, type OpcionesPremio, type Premio, type TipoPremio,
+} from '../../lib/premios'
 import { formatDate, toDatetimeLocalValue } from '../../lib/fechas'
 import { isDynamicActive, isDynamicExpired, isDynamicUpcoming, cn } from '../../lib/utils'
 import AdminHeader from '../../components/admin/AdminHeader'
@@ -31,7 +36,7 @@ const emptyForm: {
 }
 
 export default function AdminDashboard() {
-  const { dynamics, addDynamic, updateDynamic, deleteDynamic, coupons, fetchDynamics } = useStore()
+  const { dynamics, addDynamic, updateDynamic, deleteDynamic, coupons, fetchDynamics, isSuperadmin } = useStore()
   const [modal, setModal] = useState<ModalMode>(null)
   const [editTarget, setEditTarget] = useState<Dynamic | null>(null)
   const [form, setForm] = useState(emptyForm)
@@ -45,8 +50,39 @@ export default function AdminDashboard() {
   const [dynamicsLoaded, setDynamicsLoaded] = useState(false)
   const [statusFilter, setStatusFilter] = useState<'all' | StatusGroupKey>('all')
   const [filterOpen, setFilterOpen] = useState(false)
+  // Premio para el control (Story 5.1): solo el Superadmin lo ve y lo fija. `inactivo` es todo
+  // otro rol, que ve el formulario de siempre.
+  const [premioEstado, setPremioEstado] = useState<'inactivo' | 'cargando' | 'listo' | 'error'>('inactivo')
+  const [premioOpciones, setPremioOpciones] = useState<OpcionesPremio>({ presentaciones: [], sabores: [] })
+  const [premioGuardado, setPremioGuardado] = useState<Premio | null>(null)
+  const [premio, setPremio] = useState<BorradorPremio>(BORRADOR_VACIO)
+  const [premioError, setPremioError] = useState('')
+  // Solo cuenta la última lectura: abrir otra dinámica mientras carga descarta la anterior.
+  const lecturaPremio = useRef(0)
 
   useEffect(() => { fetchDynamics().then(() => setDynamicsLoaded(true)) }, [fetchDynamics])
+
+  const cargarPremio = async (dynamicId: string | null) => {
+    const turno = ++lecturaPremio.current
+    setPremioGuardado(null)
+    setPremio(BORRADOR_VACIO)
+    setPremioError('')
+    if (!isSuperadmin) { setPremioEstado('inactivo'); return }
+    setPremioEstado('cargando')
+    const r = await verPremioDinamica(dynamicId)
+    if (turno !== lecturaPremio.current) return
+    if (!r.success) { setPremioError(mensajePremio(r)); setPremioEstado('error'); return }
+    const opciones = { presentaciones: r.presentaciones, sabores: r.sabores }
+    setPremioOpciones(opciones)
+    setPremioGuardado(r.premio)
+    setPremio(borradorDe(r.premio, opciones))
+    setPremioEstado('listo')
+  }
+
+  const cambiarPremio = (cambio: Partial<BorradorPremio>) => {
+    setPremio(p => ({ ...p, ...cambio }))
+    setError('')
+  }
 
   const openCreate = () => {
     const now = new Date()
@@ -60,6 +96,7 @@ export default function AdminDashboard() {
     setError('')
     setAviso('')
     setModal('create')
+    cargarPremio(null)
   }
 
   const openEdit = (d: Dynamic) => {
@@ -78,6 +115,7 @@ export default function AdminDashboard() {
     setError('')
     setAviso('')
     setModal('edit')
+    cargarPremio(d.id)
   }
 
   const handleSave = async () => {
@@ -91,6 +129,11 @@ export default function AdminDashboard() {
     }
     if (new Date(form.starts_at) >= new Date(form.ends_at)) { setError('La fecha de fin debe ser posterior a la de inicio'); return }
     if (!form.prize_label.trim()) { setError('Describe el premio'); return }
+    if (premioEstado === 'cargando') { setError('Espera a que cargue el premio para el control.'); return }
+    if (premioEstado === 'listo') {
+      const falta = validarBorrador(premio)
+      if (falta) { setError(falta); return }
+    }
 
     const data = {
       keyword: form.keyword.trim().toUpperCase(),
@@ -112,7 +155,8 @@ export default function AdminDashboard() {
       if (data.description !== editTarget.description) cambios.description = data.description
       if (data.prize_label !== editTarget.prize_label) cambios.prize_label = data.prize_label
 
-      if (Object.keys(cambios).length === 0) { setModal(null); return }
+      const premioCambia = premioEstado === 'listo' && !mismoPremio(premio, premioGuardado)
+      if (Object.keys(cambios).length === 0 && !premioCambia) { setModal(null); return }
 
       const inicio = cambios.starts_at ?? editTarget.starts_at
       const fin = cambios.ends_at ?? editTarget.ends_at
@@ -124,19 +168,45 @@ export default function AdminDashboard() {
       }
 
       setSaving(true)
-      const result = await updateDynamic(editTarget.id, cambios)
+      if (Object.keys(cambios).length > 0) {
+        const result = await updateDynamic(editTarget.id, cambios)
+        if (!result.success) { setSaving(false); setError(result.error); return }
+        // Ya quedó: si el Premio falla, el reintento solo manda el Premio.
+        setEditTarget({ ...editTarget, ...cambios })
+        setAviso('')
+      }
+      if (premioCambia) {
+        const r = await guardarPremioDinamica(editTarget.id, premio)
+        if (!r.success) {
+          setSaving(false)
+          setError(Object.keys(cambios).length > 0
+            ? `Los cambios del entrenamiento se guardaron, pero el premio para el control no: ${mensajePremio(r)}`
+            : mensajePremio(r))
+          return
+        }
+        setPremioGuardado(r.premio)
+      }
       setSaving(false)
-
-      if (!result.success) { setError(result.error); return }
       setModal(null)
       return
     }
 
     setSaving(true)
     const result = await addDynamic(data)
-    setSaving(false)
+    if (!result.success) { setSaving(false); setError(result.error); return }
 
-    if (!result.success) { setError(result.error); return }
+    if (premioEstado === 'listo') {
+      const r = await guardarPremioDinamica(result.dynamic.id, premio)
+      if (!r.success) {
+        // El entrenamiento ya existe: el modal pasa a editarlo y el reintento solo manda el Premio.
+        setSaving(false)
+        setEditTarget(result.dynamic)
+        setModal('edit')
+        setError(`El entrenamiento se creó, pero su premio para el control no se guardó: ${mensajePremio(r)} Toca «Guardar cambios» para intentarlo otra vez.`)
+        return
+      }
+    }
+    setSaving(false)
     setModal(null)
   }
 
@@ -411,6 +481,116 @@ export default function AdminDashboard() {
                   className="field-input"
                 />
               </div>
+
+              {/* Premio para el control (Story 5.1): solo el Superadmin */}
+              {premioEstado !== 'inactivo' && (
+                <fieldset className="flex flex-col gap-3 rounded-2xl border border-brand-sombra/10 bg-white p-4">
+                  <legend className="font-heading text-brand-sombra text-xs px-1">
+                    Premio para el control <span className="text-brand-azul">*</span>
+                  </legend>
+                  <p className="font-body text-xs text-brand-gris -mt-1">
+                    Lo que se entrega en tienda. Los clientes siguen viendo la descripción de arriba.
+                  </p>
+
+                  {premioEstado === 'cargando' && (
+                    <p className="flex items-center gap-2 font-body text-xs text-brand-gris">
+                      <Loader2 className="w-4 h-4 animate-spin" /> Cargando el catálogo…
+                    </p>
+                  )}
+
+                  {premioEstado === 'error' && (
+                    <div className="flex flex-col gap-2">
+                      <p className="font-body text-xs text-red-600">
+                        No se pudo cargar el premio: {premioError} El entrenamiento se guarda sin cambiar su premio.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => cargarPremio(modal === 'edit' && editTarget ? editTarget.id : null)}
+                        className="self-start font-body text-xs font-bold text-brand-azul underline"
+                      >
+                        Reintentar
+                      </button>
+                    </div>
+                  )}
+
+                  {premioEstado === 'listo' && (
+                    <>
+                      <div className="inline-flex self-start rounded-full border border-brand-grisclaro bg-white p-0.5" role="radiogroup" aria-label="Tipo de premio">
+                        {([['helado', 'Helado'], ['otro', 'Otro']] as [TipoPremio, string][]).map(([tipo, nombre]) => (
+                          <button
+                            key={tipo}
+                            type="button"
+                            role="radio"
+                            aria-checked={premio.tipo === tipo}
+                            onClick={() => cambiarPremio({ tipo })}
+                            className={cn(
+                              'rounded-full px-4 py-1.5 font-body text-xs font-bold transition-colors',
+                              premio.tipo === tipo ? 'bg-brand-sombra text-white' : 'text-brand-gris hover:text-brand-sombra'
+                            )}
+                          >
+                            {nombre}
+                          </button>
+                        ))}
+                      </div>
+
+                      {premio.tipo === 'helado' && (
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label htmlFor="premio-presentacion" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+                              Presentación
+                            </label>
+                            <select
+                              id="premio-presentacion"
+                              value={premio.presentacion}
+                              onChange={e => cambiarPremio({ presentacion: e.target.value })}
+                              className="field-input"
+                            >
+                              <option value="">Elige</option>
+                              {premioOpciones.presentaciones.map(o => (
+                                <option key={o.clave} value={o.clave}>{o.nombre}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label htmlFor="premio-sabor" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+                              Sabor
+                            </label>
+                            <select
+                              id="premio-sabor"
+                              value={premio.sabor}
+                              onChange={e => cambiarPremio({ sabor: e.target.value })}
+                              className="field-input"
+                            >
+                              <option value="">Elige</option>
+                              <option value={A_ELEGIR}>A elegir (el cliente escoge)</option>
+                              {premioOpciones.sabores.map(o => (
+                                <option key={o.slug} value={o.slug}>{o.nombre}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+
+                      {premio.tipo === 'otro' && (
+                        <div>
+                          <label htmlFor="premio-costo" className="font-heading text-brand-sombra text-xs mb-1.5 block">
+                            Costo en pesos
+                          </label>
+                          <input
+                            id="premio-costo"
+                            type="text"
+                            inputMode="decimal"
+                            value={premio.costo}
+                            onChange={e => cambiarPremio({ costo: e.target.value })}
+                            placeholder="0.00"
+                            className="field-input"
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </fieldset>
+              )}
 
               {/* Stock */}
               <div>
