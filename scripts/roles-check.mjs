@@ -2,7 +2,8 @@
 /**
  * Guardarraíl de `src/lib/roles.ts`. No escribe nada: transpila el archivo con el `typescript`
  * del repo (`transpileModule`), lo importa y afirma, rol por rol, a qué rol cae cada perfil,
- * sus permisos, dónde empieza y su nombre visible. Sobre todo, que el Gerente sea aquí
+ * sus permisos, dónde empieza, su nombre visible (Story 1.33: los mismos que en la app) y qué
+ * roles reparte Equipo (`ROLES_ASIGNABLES`, nunca superadmin). Sobre todo, que el Gerente sea aquí
  * exactamente el staff (MVP 0 Story 1.5): con el escáner y sin pantallas de admin, que el aviso
  * de privacidad 4.1.0 no le da. Nada de eso lo ven `tsc` ni el prerender.
  *
@@ -122,6 +123,37 @@ for (const [titulo, perfil, rol, isStaff, isAdmin, isSuperadmin, inicio, visible
     if (g !== s) problemas.push(`alcanza('gerente', '${m}') = ${g}, alcanza('staff', '${m}') = ${s}`)
   }
   verificar(`alcanza('gerente', m) === alcanza('staff', m) para ${roles.join(', ')}`, problemas)
+}
+
+// ─── 3. Los nombres de rol, los mismos que en la app de administración (Story 1.33) ─────
+
+{
+  const esperados = { cliente: 'Cliente', staff: 'Staff', gerente: 'Gerente', admin: 'Admin', superadmin: 'Superadmin' }
+  const problemas = []
+  const reales = Object.keys(NOMBRE_ROL).sort().join(', ')
+  const deseados = Object.keys(esperados).sort().join(', ')
+  if (reales !== deseados) problemas.push(`NOMBRE_ROL tiene ${reales}, esperaba ${deseados}`)
+  for (const [rol, nombre] of Object.entries(esperados)) {
+    if (NOMBRE_ROL[rol] !== nombre) problemas.push(`NOMBRE_ROL.${rol} = ${mostrar(NOMBRE_ROL[rol])}, esperaba ${mostrar(nombre)}`)
+  }
+  verificar('NOMBRE_ROL: Cliente, Staff, Gerente, Admin y Superadmin, nada más', problemas)
+}
+
+// ─── 4. Equipo reparte Cliente, Staff, Gerente y Admin; nunca Superadmin ────────────────
+
+{
+  const problemas = []
+  const asignables = mod.ROLES_ASIGNABLES
+  if (!Array.isArray(asignables)) {
+    problemas.push('roles.ts no exporta ROLES_ASIGNABLES como arreglo')
+  } else {
+    const esperado = ['cliente', 'staff', 'gerente', 'admin']
+    if (asignables.join(', ') !== esperado.join(', ')) {
+      problemas.push(`ROLES_ASIGNABLES = ${mostrar(asignables)}, esperaba ${mostrar(esperado)}`)
+    }
+    if (asignables.includes('superadmin')) problemas.push('ROLES_ASIGNABLES incluye superadmin: ese se ve, no se asigna')
+  }
+  verificar('ROLES_ASIGNABLES: cliente, staff, gerente y admin, sin superadmin', problemas)
 }
 
 // ─── Resumen ─────────────────────────────────────────────────────────────────────────

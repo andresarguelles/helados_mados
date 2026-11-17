@@ -31,7 +31,7 @@ export function useConsulta<T>(pedir: () => Promise<Resultado<T>>, clave: string
 }
 
 export const MENSAJE_ERROR: Record<string, string> = {
-  forbidden: 'Solo el superadmin puede ver las métricas.',
+  forbidden: 'Solo el Superadmin puede ver las métricas.',
   invalid: 'El rango de fechas no es válido.',
   rango_grande: 'Ese rango es demasiado largo para verlo por día. Agrupa por semana o por mes.',
   error: 'No pudimos cargar estos datos. Revisa tu conexión e intenta de nuevo.',

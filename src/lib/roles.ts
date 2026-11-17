@@ -4,18 +4,29 @@
 //
 //   cliente     — todos, por omisión.
 //   staff       — personal del mostrador: escáner, Estación y pantallas.
-//   gerente     — aquí, lo mismo que el staff, y nunca cuenta como admin. Lo que lo distinguirá
-//                 vivirá en la app de administración: entre otras cosas, abrir y cerrar la caja,
-//                 registrar Merma y Pedidos, cancelar Ventas. El sitio lo conoce desde la Story 1.5
-//                 del MVP 0, antes de que la base lo permita (Story 1.6).
+//   gerente     — aquí, lo mismo que el staff, y nunca cuenta como admin. Lo que lo distingue vive
+//                 en la app de administración: entre otras cosas, abrir y cerrar la caja,
+//                 registrar Merma y Pedidos, cancelar Ventas. Se nombra desde Equipo o desde la
+//                 app (Más › Personal), las dos con `asignar_rol` (MVP 0, Stories 1.6 y 1.33).
 //   admin       — además, dinámicas y clientes.
 //   superadmin  — además, Métricas y asignar roles.
 //
-// `scripts/roles-check.mjs` rompe el build si cambia, para algún rol, lo que decide este archivo:
-// nivel, pantalla de inicio, permisos y nombre visible. La barra y las pantallas no las revisa.
+// Los nombres visibles son los mismos que en la app de administración: Superadmin, Admin,
+// Gerente y Staff (MVP 0 Story 1.33). `scripts/roles-check.mjs` rompe el build si cambia, para
+// algún rol, lo que decide este archivo: nivel, pantalla de inicio, permisos, nombre visible y
+// qué roles se asignan en Equipo. La barra y las pantallas no las revisa.
 import type { Profile } from './types'
 
 export type Rol = 'cliente' | 'staff' | 'gerente' | 'admin' | 'superadmin'
+
+/**
+ * Los roles que el superadmin reparte en Métricas › Equipo, en el orden de sus botones. Nunca
+ * `superadmin`: ese se ve, no se asigna (y `asignar_rol` lo rechaza). Una sola lista para la
+ * pantalla y para `asignarRol`, así un rol nuevo no entra sin que alguien lo decida aquí.
+ */
+export const ROLES_ASIGNABLES = ['cliente', 'staff', 'gerente', 'admin'] as const
+
+export type RolAsignable = (typeof ROLES_ASIGNABLES)[number]
 
 // Gerente y staff comparten nivel, así que `alcanza` no los distingue: `alcanza('staff', 'gerente')`
 // es verdadero. Ninguna ruta del sitio pide `gerente`; una que lo pidiera se abriría a todo el staff.

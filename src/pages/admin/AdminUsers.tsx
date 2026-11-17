@@ -25,7 +25,7 @@ const VIAS: { key: BajaVia; label: string; hint: string }[] = [
 const identificadorDe = (p: Profile) => p.username ?? p.email ?? ''
 
 const MENSAJES: Record<string, string> = {
-  forbidden: 'Tu cuenta no tiene permisos de administrador.',
+  forbidden: 'Tu cuenta no tiene permisos de Admin.',
   not_found: 'Esa cuenta ya no existe. Recarga la lista.',
   target_is_admin: 'No se puede eliminar una cuenta del personal desde aquí.',
   confirmation_mismatch: 'El nombre no coincide. No se eliminó nada.',

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Loader2, Search, ShieldCheck } from 'lucide-react'
 import { cn } from '../../lib/utils'
-import { NOMBRE_ROL, type Rol } from '../../lib/roles'
+import { NOMBRE_ROL, ROLES_ASIGNABLES, type Rol, type RolAsignable } from '../../lib/roles'
 import {
   asignarRol, buscarUsuarios, fetchBitacoraRoles, fetchEquipo,
   type CambioDeRol, type Miembro, type MotivoRol,
@@ -11,22 +11,21 @@ import ConfirmDialog from '../ui/ConfirmDialog'
 import ErrorAlert from '../ui/ErrorAlert'
 import { Tarjeta, fechaHora } from './comun'
 
-// Los roles que se reparten aquí. El de Gerente no: se nombrará desde la app de administración
-// (Story 1.6). Aquí se le ve con su insignia y se le puede pasar a cualquiera de estos tres.
-type RolAsignable = 'cliente' | 'staff' | 'admin'
-
+// Los roles que se reparten aquí son los de `ROLES_ASIGNABLES` (`roles.ts`), con los mismos
+// nombres que en la app de administración (MVP 0 Story 1.33). El Superadmin se ve, no se asigna.
 const QUE_PUEDE: Record<RolAsignable, string> = {
   cliente: 'Solo su cuenta de cliente. Vuelve a aparecer en el ranking.',
   staff: 'Canjear cupones en el mostrador y manejar la Estación y las pantallas. No ve dinámicas ni clientes. Sale del ranking.',
-  admin: 'Todo lo del staff, más crear dinámicas y ver el panel de clientes. Sale del ranking.',
+  gerente: 'En este sitio, lo mismo que el Staff: canjear cupones en el mostrador y manejar la Estación y las pantallas. Sale del ranking. Sus Estaciones se eligen en la app de administración: Más › Personal.',
+  admin: 'Todo lo del Staff, más crear dinámicas y ver el panel de clientes. Sale del ranking.',
 }
 
 const MOTIVOS: Record<MotivoRol, string> = {
-  forbidden: 'Solo el superadmin puede asignar roles.',
+  forbidden: 'Solo el Superadmin puede asignar roles.',
   invalid_role: 'Ese rol no se puede asignar.',
   not_found: 'Esa cuenta ya no existe.',
   self: 'No puedes cambiar tu propio rol.',
-  target_superadmin: 'El rol de otro superadmin no se cambia desde aquí.',
+  target_superadmin: 'El rol de otro Superadmin no se cambia desde aquí.',
   no_username: 'Esa cuenta no ha terminado su registro.',
   sin_acceso: 'Es una cuenta antigua sin acceso con Google: no podría entrar.',
   sin_cambio: 'Esa cuenta ya tiene ese rol.',
@@ -105,7 +104,7 @@ export default function PanelEquipo() {
         </div>
         {editable ? (
           <div className="inline-flex rounded-full border border-brand-grisclaro bg-white p-0.5" role="radiogroup" aria-label={`Rol de ${m.username}`}>
-            {(['cliente', 'staff', 'admin'] as const).map(rol => (
+            {ROLES_ASIGNABLES.map(rol => (
               <button
                 key={rol}
                 type="button"
