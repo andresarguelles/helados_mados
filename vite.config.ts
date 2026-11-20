@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 const LOOPBACK = new Set(["localhost", "127.0.0.1", "[::1]", "::1"]);
@@ -65,8 +65,45 @@ function printSupabaseRedirectUrls(): Plugin {
   };
 }
 
+const REF_PRODUCCION = "cwmrevxwuzaldzwqjiuc";
+
+/**
+ * Fija el entorno antes de compilar (Story 6.8, igual que la app de administracion): `VITE_ENTORNO`
+ * vale local, pruebas o produccion (sin la variable, produccion, tambien en `npm run dev`). Se
+ * inyecta como `__MADOS_ENTORNO__`, constante que el build pliega: las ramas ajenas a produccion
+ * (formulario de correo, franja) no llegan a dist/ en el build de produccion. Local y pruebas
+ * nunca pueden apuntar a la Supabase de produccion. Corre en el build del cliente y en `--ssr`.
+ */
+function entornoDelBuild(): Plugin {
+  let entorno = "produccion";
+  return {
+    name: "mados:entorno-del-build",
+    config(config, { mode }) {
+      const variables = loadEnv(mode, config.envDir ?? config.root ?? ".", "VITE_");
+      const elegido = variables.VITE_ENTORNO || "produccion";
+      if (elegido !== "produccion" && elegido !== "local" && elegido !== "pruebas") {
+        throw new Error("VITE_ENTORNO debe ser local, pruebas o produccion.");
+      }
+      if (elegido !== "produccion" && (variables.VITE_SUPABASE_URL ?? "").includes(REF_PRODUCCION)) {
+        throw new Error(
+          `VITE_ENTORNO=${elegido} no puede apuntar a la Supabase de produccion (VITE_SUPABASE_URL).`
+        );
+      }
+      entorno = elegido;
+      return { define: { __MADOS_ENTORNO__: JSON.stringify(entorno) } };
+    },
+    transformIndexHtml(html) {
+      if (entorno === "produccion") return html;
+      const rotulo = entorno === "local" ? "LOCAL" : "PRUEBAS";
+      return html
+        .replace("<html ", `<html data-entorno="${entorno}" `)
+        .replace("<title>", `<title>[${rotulo}] `);
+    },
+  };
+}
+
 export default defineConfig(({ isSsrBuild }) => ({
-  plugins: [react(), printSupabaseRedirectUrls()],
+  plugins: [react(), entornoDelBuild(), printSupabaseRedirectUrls()],
   server: {
     port: 3000,
     // Sin esto Vite se mueve al 3001+ si el 3000 esta ocupado, window.location.origin deja de

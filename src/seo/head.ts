@@ -20,6 +20,16 @@ function metaTag(key: string, attrs: Record<string, string>): HeadTag {
   return { tag: 'meta', key, attrs }
 }
 
+/**
+ * Fuera de produccion el `<title>` lleva `[LOCAL] ` o `[PRUEBAS] ` (Story 6.8); og y twitter no.
+ * `__MADOS_ENTORNO__` lo pliega el build: en produccion el prefijo no existe en dist/.
+ */
+function prefijoDeEntorno(): string {
+  if (__MADOS_ENTORNO__ === 'local') return '[LOCAL] '
+  if (__MADOS_ENTORNO__ === 'pruebas') return '[PRUEBAS] '
+  return ''
+}
+
 /** Arma todas las etiquetas del `<head>` de una ruta, en el orden en que se pintan. */
 export function buildHeadTags(route: SeoRoute): HeadTag[] {
   const description = route.description ?? route.title
@@ -31,7 +41,7 @@ export function buildHeadTags(route: SeoRoute): HeadTag[] {
   const robotsContent = route.index ? 'index,follow,max-image-preview:large' : route.robots ?? 'noindex'
 
   const tags: HeadTag[] = [
-    { tag: 'title', key: 'title', text: route.title },
+    { tag: 'title', key: 'title', text: `${prefijoDeEntorno()}${route.title}` },
     metaTag('description', { name: 'description', content: description }),
     metaTag('robots', { name: 'robots', content: robotsContent }),
   ]

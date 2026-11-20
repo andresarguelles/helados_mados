@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { preloadByPath } from './AppRoutes'
 import './index.css'
+import { EntrarConCorreo } from './components/auth/entradaConCorreo'
 
 const container = document.getElementById('root')!
 
@@ -19,6 +20,17 @@ const container = document.getElementById('root')!
 // nunca produce una hidratación a medias.
 const ssrPath = container.dataset.ssrPath
 const here = location.pathname.replace(/\/+$/, '') || '/'
+
+// Fuera de producción (Story 6.8) la franja de entorno va en su propio div del body, con su propio
+// root: queda fuera de la hidratación de #root. La condición la pliega el build: en producción el
+// import() desaparece y la franja no llega a dist/.
+if (__MADOS_ENTORNO__ !== 'produccion') {
+  void import('./components/entorno/FranjaEntorno').then(({ FranjaEntorno }) => {
+    const franja = document.createElement('div')
+    document.body.appendChild(franja)
+    ReactDOM.createRoot(franja).render(<FranjaEntorno />)
+  })
+}
 
 const app = (
   <React.StrictMode>
@@ -50,6 +62,9 @@ function olvidarRecarga() {
 }
 
 async function montar() {
+  // Solo fuera de producción (Story 6.8): el formulario de correo ya cargado antes de hidratar.
+  if (EntrarConCorreo) await EntrarConCorreo.preload()
+
   if (ssrPath && ssrPath === here) {
     // Si esta ruta cuelga de un lazyWithPreload (hoy /terminos y /privacidad, ver
     // preloadByPath en AppRoutes.tsx), hay que esperar a que su chunk YA esté en memoria

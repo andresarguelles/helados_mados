@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react'
 import { useStore } from '../../lib/store'
 import { cn } from '../../lib/utils'
 import ErrorAlert from '../ui/ErrorAlert'
+import { EntrarConCorreo } from './entradaConCorreo'
 
 // Las reglas de marca de Google piden su logo a color sobre un botón claro y un texto del tipo
 // "Continuar con Google" — no un botón con la identidad de Helados Mados.
@@ -26,7 +27,25 @@ interface GoogleButtonProps {
   className?: string
 }
 
-export default function GoogleButton({
+// Fuera de producción (Story 6.8) se entra con correo y contraseña (ver entradaConCorreo.ts):
+// un solo lugar cubre Login, Redeem y AdminLogin. En producción EntrarConCorreo es null.
+export default function GoogleButton(props: GoogleButtonProps) {
+  // Sin Suspense a propósito: main.tsx y entry-server.tsx precargan el módulo antes de pintar, y
+  // lazyWithPreload lo dibuja ya cargado. Un Suspense aquí hace que el prerender (React 19) deje el
+  // formulario en un segmento oculto (<!--$?-->) y seo:check rechace la página.
+  if (EntrarConCorreo) {
+    return (
+      <EntrarConCorreo
+        next={props.next}
+        onBeforeRedirect={props.onBeforeRedirect}
+        className={props.className}
+      />
+    )
+  }
+  return <BotonDeGoogle {...props} />
+}
+
+function BotonDeGoogle({
   label = 'Continuar con Google',
   next,
   onBeforeRedirect,

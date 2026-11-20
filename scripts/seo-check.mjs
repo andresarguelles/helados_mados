@@ -211,7 +211,9 @@ for (const route of PRERENDER_PAGINAS) {
   const robotsN = contarOcurrencias(html, /<meta[^>]*name="robots"/gi)
   if (robotsN !== 1) problemas.push(`${robotsN} meta robots (debe ser exactamente 1)`)
 
+  // Fuera de producción el título lleva `[LOCAL] ` o `[PRUEBAS] ` (Story 6.8): el largo se mide sin él.
   const tituloTexto = decodeEntities((html.match(/<title[^>]*>([^<]*)<\/title>/) ?? [, ''])[1])
+    .replace(/^\[(LOCAL|PRUEBAS)\] /, '')
   const descTexto = contenidoMeta(html, 'name', 'description') ?? ''
 
   if (route.index) {

@@ -22,6 +22,7 @@ import {
 } from './seo/routes'
 import { buildHeadTags, headTagsToHtml } from './seo/head'
 import { buildSitemapXml } from './seo/sitemap'
+import { EntrarConCorreo } from './components/auth/entradaConCorreo'
 
 // Lo que necesitan scripts/prerender.mjs (y de ahí, scripts/seo-check.mjs): un solo punto
 // de entrada al manifiesto SEO desde el bundle compilado, sin que esos scripts tengan que
@@ -66,6 +67,10 @@ export const appRoutePaths: string[] = createRoutesFromChildren(routeElements)
  */
 export async function render(url: string): Promise<string> {
   const errores: unknown[] = []
+
+  // Solo fuera de producción (Story 6.8): con el formulario de correo ya cargado, el prerender lo
+  // deja en su sitio y no en un segmento oculto. En producción es null y no hace nada.
+  if (EntrarConCorreo) await EntrarConCorreo.preload()
 
   const { prelude } = await prerender(
     <StrictMode>

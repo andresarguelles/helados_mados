@@ -1,0 +1,27 @@
+/* Franja de entorno (Story 6.8). Solo FranjaEntorno importa este archivo, y solo se carga fuera de
+   producción: en el build de producción ni el módulo ni este CSS llegan a dist/. */
+.franja-entorno {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 12px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Baja el contenido y lo fijo arriba (Navbar y AdminHeader: `fixed top-0`) para que la franja no los tape. */
+html[data-entorno] body {
+  padding-top: 24px;
+}
+
+html[data-entorno] .fixed.top-0 {
+  top: 24px;
+}

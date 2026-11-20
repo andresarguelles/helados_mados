@@ -24,7 +24,11 @@ export type ConsentimientoMedicion = 'aceptado' | 'rechazado'
 
 const CLAVE = 'mados:cookies-medicion'
 
-const ID_MEDICION = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined
+// Fuera de producción (local y pruebas, Story 6.8) no hay medición aunque el ID exista.
+const ID_MEDICION =
+  __MADOS_ENTORNO__ === 'produccion'
+    ? (import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined)
+    : undefined
 
 // El dev server no mide: ni siquiera se descarga el script remoto, para que Enhanced
 // Measurement (scroll, clics salientes...) tampoco dispare hits desde localhost. Para
